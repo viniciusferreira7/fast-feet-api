@@ -1,46 +1,38 @@
-Aqui está tudo em **Markdown com checkboxes**, pronto para usar:
-
----
-
 # 📦 FastFeet API
 
-## 🚀 Funcionalidades da Aplicação
+## 🚀 Application Features
 
-* [ ] Dois tipos de usuário: entregador e admin
-* [ ] Login com CPF e senha
-* [ ] CRUD dos entregadores
-* [ ] CRUD das encomendas
-* [ ] CRUD dos destinatários
-* [ ] Marcar encomenda como **aguardando** (disponível para retirada)
-* [ ] Retirar uma encomenda
-* [ ] Marcar encomenda como **entregue**
-* [ ] Marcar encomenda como **devolvida**
-* [ ] Listar encomendas próximas ao local do entregador
-* [ ] Alterar a senha de um usuário
-* [ ] Listar as entregas de um usuário
-* [ ] Notificar o destinatário a cada alteração de status
-
----
-
-## ⚖️ Regras de Negócio
-
-* [ ] Apenas admins podem realizar CRUD das encomendas
-* [ ] Apenas admins podem realizar CRUD dos entregadores
-* [ ] Apenas admins podem realizar CRUD dos destinatários
-* [ ] Encomendas entregues devem ter **foto obrigatória**
-* [ ] Apenas o entregador que retirou a encomenda pode marcá-la como entregue
-* [ ] Apenas admins podem alterar a senha de um usuário
-* [ ] Entregadores não podem listar entregas de outros entregadores
+* [ ] Two types of users: delivery person and admin
+* [ ] Login with CPF and password
+* [ ] CRUD for delivery persons
+* [ ] CRUD for packages
+* [ ] CRUD for recipients
+* [ ] Mark package as **waiting** (available for pickup)
+* [ ] Pick up a package
+* [ ] Mark package as **delivered**
+* [ ] Mark package as **returned**
+* [ ] List packages near the delivery person's location
+* [ ] Change a user's password
+* [ ] List a user's deliveries
+* [ ] Notify the recipient on each status change
 
 ---
 
-## 🧠 Conceitos Praticados
+## ⚖️ Business Rules
 
-* [ ] Domain-Driven Design (DDD), Domain Events e Clean Architecture
-* [ ] Autenticação e autorização com RBAC
-* [ ] Testes unitários e end-to-end (E2E)
-* [ ] Integração com serviços externos (ex.: notificações)
+* [ ] Only admins can perform CRUD operations on packages
+* [ ] Only admins can perform CRUD operations on delivery persons
+* [ ] Only admins can perform CRUD operations on recipients
+* [ ] Delivered packages must have a **mandatory photo**
+* [ ] Only the delivery person who picked up the package can mark it as delivered
+* [ ] Only admins can change a user's password
+* [ ] Delivery persons cannot list deliveries from other delivery persons
 
 ---
 
-Se quiser, posso transformar isso em um README completo ou em inglês.
+## 🧠 Practiced Concepts
+
+* [ ] Domain-Driven Design (DDD), Domain Events and Clean Architecture
+* [ ] Authentication and authorization with RBAC
+* [ ] Unit and end-to-end (E2E) tests
+* [ ] Integration with external services (e.g., notifications)
