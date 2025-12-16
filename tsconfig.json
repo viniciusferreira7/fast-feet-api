@@ -21,6 +21,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["vitest/globals", "multer"]
+    "types": ["vitest/globals"]
   }
 }

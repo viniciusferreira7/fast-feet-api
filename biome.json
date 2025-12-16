@@ -39,7 +39,8 @@
       },
       "style": {
         "useConst": "error",
-        "useTemplate": "error"
+        "useTemplate": "error",
+        "useImportType": "off"
       },
       "suspicious": {
         "noAsyncPromiseExecutor": "error",
