@@ -12,6 +12,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "docker:build": "docker build -t fast-feet-api:latest -t fast-feet-api:$(git rev-parse --short HEAD) .",
+    "docker:build:prod": "docker build --target production -t fast-feet-api:latest -t fast-feet-api:$(git rev-parse --short HEAD) .",
     "format": "pnpm exec biome format --write",
     "lint": "pnpm exec biome lint --write",
     "check": "pnpm exec biome check",
