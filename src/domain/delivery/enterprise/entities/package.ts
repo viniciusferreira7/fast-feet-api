@@ -2,6 +2,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { PackageCode } from '../value-object/package-code';
 import { PackageStatus } from '../value-object/package-status';
+import type { PackageAttachment } from './package-attachment';
 
 export interface PackageProps {
   id: UniqueEntityId;
@@ -10,6 +11,7 @@ export interface PackageProps {
   recipientAddress: string;
   deliveryPersonId: UniqueEntityId | null;
   status: PackageStatus;
+  attachment: PackageAttachment;
   createdAt: Date;
   updatedAt: Date | null;
   deliveredAt: Date | null;
@@ -38,6 +40,10 @@ export class Package extends AggregateRoot<PackageProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  get attachment() {
+    return this.props.attachment;
   }
 
   get createdAt() {
