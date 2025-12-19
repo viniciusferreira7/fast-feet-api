@@ -27,7 +27,7 @@ export abstract class Entity<Props> {
     return false;
   }
 
-  // get domainEvents() {
+  // get domainEvents() { //TODO:
   //   return this._domainEvents;
   // }
 
