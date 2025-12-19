@@ -1,10 +1,11 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+import { Cpf } from '../value-object/cpf';
 
 export interface DeliveryPersonProps {
   id: UniqueEntityId;
   name: string;
-  cpf: string;
+  cpf: Cpf;
   password: string;
   createdAt: Date;
   updatedAt: Date | null;
