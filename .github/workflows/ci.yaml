@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -54,7 +54,6 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: false
 
     permissions:
       contents: read
@@ -72,7 +71,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -126,7 +125,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -142,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # needs: [quality, test-unit, test-e2e] FIXME:
-    needs: [quality]
+    needs: [quality, test-unit]
     if: github.ref == 'refs/heads/main'
 
     permissions:
@@ -165,7 +164,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -213,7 +212,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
