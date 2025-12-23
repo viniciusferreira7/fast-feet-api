@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.1.0...v1.2.0) (2025-12-23)
+
+
+### Features
+
+* create either to use on retuning of use cases ([8c53685](https://github.com/viniciusferreira7/fast-feet-api/commit/8c53685a0b73e33d69ffeb90284ae69d36bb260e))
+
 # [1.1.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.0.0...v1.1.0) (2025-12-23)
 
 
