@@ -1,5 +1,6 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+import type { Optional } from '@/core/types/optional';
 import type { Cpf } from '../value-object/cpf';
 
 export interface AdminPersonProps {
@@ -31,11 +32,14 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
     return this.props.updatedAt;
   }
 
-  public static create(props: AdminPersonProps, id?: UniqueEntityId) {
+  public static create(
+    props: Optional<AdminPersonProps, 'createdAt'>,
+    id?: UniqueEntityId
+  ) {
     return new AdminPerson(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date(),
+        createdAt: props?.createdAt ?? new Date(),
       },
       id
     );
