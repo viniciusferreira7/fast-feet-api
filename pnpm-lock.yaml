@@ -78,6 +78,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.0.15
         version: 4.0.15(vitest@4.0.15(@types/node@22.19.2)(terser@5.44.1))
+      gerador-validador-cpf:
+        specifier: ^6.3.0
+        version: 6.3.0
       globals:
         specifier: ^16.0.0
         version: 16.5.0
@@ -2731,6 +2734,10 @@ packages:
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
+
+  gerador-validador-cpf@6.3.0:
+    resolution: {integrity: sha512-mEa0SRR4dGeXb2psbhY1JN+B+Yo9mUANM3IbeD267cvWarxZ30wCEIScxIgBHBgdFvfky8/DcTK7BBB1tpq8vQ==}
+    engines: {node: '>=18'}
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -7628,6 +7635,8 @@ snapshots:
   function-timeout@1.0.2: {}
 
   gensync@1.0.0-beta.2: {}
+
+  gerador-validador-cpf@6.3.0: {}
 
   get-caller-file@2.0.5: {}
 
