@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.0.0...v1.1.0) (2025-12-23)
+
+
+### Features
+
+* add zod to validate envs ([28239a3](https://github.com/viniciusferreira7/fast-feet-api/commit/28239a3b3ed2a4079eba9c2983cec98bd4432e9c))
+
 # 1.0.0 (2025-12-19)
 
 
