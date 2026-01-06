@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
 import { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 
@@ -60,17 +61,19 @@ export class PackageCode extends ValueObject<PackageCodeProps> {
     return timeStr + randomStr;
   }
 
-  public static create(value?: string): PackageCode {
+  public static create(
+    value?: string
+  ): Either<InvalidatePackageCodeError, PackageCode> {
     const code = value ?? PackageCode.generateULID();
 
     if (!PackageCode.validate(code)) {
-      throw new InvalidatePackageCodeError();
+      return left(new InvalidatePackageCodeError());
     }
 
-    return new PackageCode({ value: code.toUpperCase() });
+    return right(new PackageCode({ value: code.toUpperCase() }));
   }
 
-  public static generate(): PackageCode {
+  public static generate(): Either<InvalidatePackageCodeError, PackageCode> {
     return PackageCode.create();
   }
 }

@@ -4,55 +4,79 @@ import { PackageCode } from './package-code';
 
 describe('Package code', () => {
   it('should be able to create validate package code', () => {
-    const code = PackageCode.create();
+    const result = PackageCode.create();
 
-    expect(code).toBeInstanceOf(PackageCode);
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value).toBeInstanceOf(PackageCode);
+    }
   });
 
   it('should be able to return code from package code class', () => {
-    const code = PackageCode.create();
+    const result = PackageCode.create();
 
-    expect(code.value).toEqual(expect.any(String));
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.value).toEqual(expect.any(String));
+    }
   });
 
   it('should normalize code to uppercase', () => {
     const lowerCaseUlid = '01hzyz9z7x6kqjv9d5f0p2w3r4';
 
-    const code = PackageCode.create(lowerCaseUlid);
+    const result = PackageCode.create(lowerCaseUlid);
 
-    expect(code.value).toBe(lowerCaseUlid.toUpperCase());
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.value).toBe(lowerCaseUlid.toUpperCase());
+    }
   });
 
   it('should be able to generate code from package code class', () => {
-    const code = PackageCode.generate();
+    const result = PackageCode.generate();
 
-    expect(code).toBeInstanceOf(PackageCode);
-    expect(code.value).toEqual(expect.any(String));
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value).toBeInstanceOf(PackageCode);
+      expect(result.value.value).toEqual(expect.any(String));
+    }
   });
 
   it('should not allow ULID with invalid length', () => {
-    expect(() => {
-      PackageCode.create('01HZYZ9Z7X6KQJ');
-    }).toThrow(InvalidatePackageCodeError);
+    const result = PackageCode.create('01HZYZ9Z7X6KQJ');
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(InvalidatePackageCodeError);
+    }
   });
 
   it('should not allow ULID with invalid characters', () => {
-    expect(() => {
-      PackageCode.create('01HZYZ9Z7X6KQJ@#$%^&*()123');
-    }).toThrow(InvalidatePackageCodeError);
+    const result = PackageCode.create('01HZYZ9Z7X6KQJ@#$%^&*()123');
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(InvalidatePackageCodeError);
+    }
   });
 
   it('should not able to register invalidate code with wrong ULID', () => {
-    expect(() => {
-      PackageCode.create('dfdsgDGSD5343');
-    }).toThrow(InvalidatePackageCodeError);
+    const result = PackageCode.create('dfdsgDGSD5343');
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(InvalidatePackageCodeError);
+    }
   });
 
   it('should not able to register code which timestamp is on future', () => {
     const futureUlid = generateFutureUlid(10);
 
-    expect(() => {
-      PackageCode.create(futureUlid);
-    }).toThrow(InvalidatePackageCodeError);
+    const result = PackageCode.create(futureUlid);
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(InvalidatePackageCodeError);
+    }
   });
 });

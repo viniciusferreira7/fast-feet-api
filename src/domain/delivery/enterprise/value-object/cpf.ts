@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 
@@ -46,12 +47,12 @@ export class Cpf extends ValueObject<CpfProps> {
     return true;
   }
 
-  public static create(value: string): Cpf | null {
+  public static create(value: string): Either<InvalidateCpfError, Cpf> {
     if (!Cpf.validate(value)) {
-      throw new InvalidateCpfError();
+      return left(new InvalidateCpfError());
     }
 
     const cleanedCpf = value.replace(/[^\d]/g, '');
-    return new Cpf({ value: cleanedCpf });
+    return right(new Cpf({ value: cleanedCpf }));
   }
 }
