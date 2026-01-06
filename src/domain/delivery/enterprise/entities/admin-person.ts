@@ -4,23 +4,23 @@ import type { Optional } from '@/core/types/optional';
 import type { Cpf } from '../value-object/cpf';
 
 export interface AdminPersonProps {
-  id: UniqueEntityId;
   name: string;
   cpf: Cpf;
+  email: string;
   password: string;
   createdAt: Date;
   updatedAt: Date | null;
 }
 
 export class AdminPerson extends AggregateRoot<AdminPersonProps> {
-  get id() {
-    return this.props.id;
-  }
   get name() {
     return this.props.name;
   }
   get cpf() {
     return this.props.cpf;
+  }
+  get email() {
+    return this.props.email;
   }
   get password() {
     return this.props.password;
@@ -33,13 +33,14 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
   }
 
   public static create(
-    props: Optional<AdminPersonProps, 'createdAt'>,
+    props: Optional<AdminPersonProps, 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId
   ) {
     return new AdminPerson(
       {
         ...props,
         createdAt: props?.createdAt ?? new Date(),
+        updatedAt: props?.updatedAt ?? null,
       },
       id
     );
