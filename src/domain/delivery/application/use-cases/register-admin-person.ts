@@ -1,6 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
-import { Cpf } from '../../enterprise/value-object/cpf';
+import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';

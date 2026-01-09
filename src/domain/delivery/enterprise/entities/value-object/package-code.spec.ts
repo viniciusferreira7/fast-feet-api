@@ -1,5 +1,5 @@
 import { generateFutureUlid } from 'test/utils/generate-future-ulid';
-import { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
+import { InvalidatePackageCodeError } from '@/domain/delivery/errors/invalidate-package-code-error';
 import { PackageCode } from './package-code';
 
 describe('Package code', () => {

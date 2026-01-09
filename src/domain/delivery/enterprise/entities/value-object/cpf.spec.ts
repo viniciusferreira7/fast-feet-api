@@ -1,5 +1,5 @@
 import { generate as generateCpf } from 'gerador-validador-cpf';
-import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { InvalidateCpfError } from '@/domain/delivery/errors/invalidate-cpf-error';
 import { Cpf } from './cpf';
 
 describe('CPF', () => {

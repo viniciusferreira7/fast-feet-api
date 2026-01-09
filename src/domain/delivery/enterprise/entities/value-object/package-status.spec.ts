@@ -1,4 +1,4 @@
-import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
+import { InvalidatePackageStatusError } from '@/domain/delivery/errors/invalidate-package-status-error';
 import { PackageStatus } from './package-status';
 
 describe('Package Status', () => {

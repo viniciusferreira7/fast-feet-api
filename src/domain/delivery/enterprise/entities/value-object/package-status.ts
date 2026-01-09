@@ -1,5 +1,5 @@
 import { ValueObject } from '@/core/entities/value-object/value-object';
-import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
+import { InvalidatePackageStatusError } from '@/domain/delivery/errors/invalidate-package-status-error';
 
 interface PackageStatusProps {
   value: string;

@@ -2,7 +2,7 @@ import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
-import { Cpf } from '../../enterprise/value-object/cpf';
+import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { AdminPersonAlreadyExistsError } from './errors/admin-person-already-exists';
 import { RegisterAdminPerson } from './register-admin-person';

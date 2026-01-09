@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
-import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { InvalidateCpfError } from '@/domain/delivery/errors/invalidate-cpf-error';
 
 interface CpfProps {
   value: string;
