@@ -1,9 +1,9 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
-import { PackageCode } from '../value-object/package-code';
-import { PackageStatus } from '../value-object/package-status';
 import type { PackageAttachment } from './package-attachment';
+import { PackageCode } from './value-object/package-code';
+import { PackageStatus } from './value-object/package-status';
 
 export interface PackageProps {
   id: UniqueEntityId;

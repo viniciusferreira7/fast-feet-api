@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
-import { Cpf } from '../value-object/cpf';
+import type { Cpf } from './value-object/cpf';
 
 export interface DeliveryPersonProps {
   name: string;

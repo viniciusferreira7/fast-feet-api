@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
-import { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
+import { InvalidatePackageCodeError } from '@/domain/delivery/errors/invalidate-package-code-error';
 
 interface PackageCodeProps {
   value: string;
