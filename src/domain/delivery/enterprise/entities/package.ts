@@ -1,6 +1,8 @@
+import { Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import type { PackageAttachment } from './package-attachment';
 import { PackageCode } from './value-object/package-code';
 import { PackageStatus } from './value-object/package-status';
@@ -12,7 +14,7 @@ export interface PackageProps {
   recipientAddress: string;
   deliveryPersonId: UniqueEntityId | null;
   status: PackageStatus;
-  attachment: PackageAttachment;
+  attachment: PackageAttachment | null;
   createdAt: Date;
   updatedAt: Date | null;
   deliveredAt: Date | null;
@@ -59,13 +61,21 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.deliveredAt;
   }
 
-  public updateStatus(newStatus: PackageStatus): void {
+  public updateStatus(
+    newStatus: PackageStatus
+  ): Either<MissingAttachmentError, void> {
+    if (newStatus.isDelivered() && !this.props.attachment) {
+      return left(new MissingAttachmentError());
+    }
+
     this.props.status = this.props.status.transitionTo(newStatus);
     this.props.updatedAt = new Date();
 
     if (newStatus.isDelivered()) {
       this.props.deliveredAt = new Date();
     }
+
+    return right(undefined);
   }
 
   public assignDeliveryPerson(deliveryPersonId: UniqueEntityId): void {
@@ -73,8 +83,13 @@ export class Package extends AggregateRoot<PackageProps> {
     this.props.updatedAt = new Date();
   }
 
+  public addAttachment(attachment: PackageAttachment): void {
+    this.props.attachment = attachment;
+    this.props.updatedAt = new Date();
+  }
+
   public static create(
-    props: Optional<PackageProps, 'createdAt'>,
+    props: Optional<PackageProps, 'createdAt' | 'updatedAt' | 'deliveredAt'>,
     id?: UniqueEntityId
   ) {
     return new Package(
@@ -84,8 +99,8 @@ export class Package extends AggregateRoot<PackageProps> {
         status: props.status ?? PackageStatus.create('pending'),
         deliveryPersonId: props.deliveryPersonId ?? null,
         createdAt: props?.createdAt ?? new Date(),
-        updatedAt: null,
-        deliveredAt: null,
+        updatedAt: props?.updatedAt ?? null,
+        deliveredAt: props?.deliveredAt ?? null,
       },
       id
     );

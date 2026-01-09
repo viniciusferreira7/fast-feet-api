@@ -15,7 +15,9 @@ export function makePackage(
   const packageCodeResult = PackageCode.create();
 
   if (packageCodeResult.isLeft()) {
-    throw new Error('Failed to generate valid package code for package factory');
+    throw new Error(
+      'Failed to generate valid package code for package factory'
+    );
   }
 
   const packageEntity = Package.create(
@@ -26,6 +28,7 @@ export function makePackage(
       recipientAddress: faker.location.streetAddress({ useFullAddress: true }),
       status: PackageStatus.create('pending'),
       attachment: null,
+      deliveryPersonId: new UniqueEntityId(),
       ...override,
     },
     id
