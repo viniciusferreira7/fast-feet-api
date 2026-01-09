@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.2.0...v1.3.0) (2026-01-09)
+
+
+### Features
+
+* create factories for entities ([4a66d47](https://github.com/viniciusferreira7/fast-feet-api/commit/4a66d4704b421af5f6e07512cd9e3f2739d01d07))
+
 # [1.2.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.1.0...v1.2.0) (2026-01-09)
 
 
