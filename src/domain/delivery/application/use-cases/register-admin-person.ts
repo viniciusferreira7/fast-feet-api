@@ -4,7 +4,7 @@ import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import { AdminPersonAlreadyExistsError } from './errors/admin-person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists';
 
 interface RegisterAdminPersonUseCaseRequest {
   name: string;
@@ -14,7 +14,7 @@ interface RegisterAdminPersonUseCaseRequest {
 }
 
 type RegisterAdminPersonUseCaseResponse = Either<
-  InvalidateCpfError | AdminPersonAlreadyExistsError,
+  InvalidateCpfError | PersonAlreadyExistsError,
   {
     adminPerson: AdminPerson;
   }
@@ -39,11 +39,11 @@ export class RegisterAdminPerson {
       ]);
 
     if (adminPersonWithSameCpf) {
-      return left(new AdminPersonAlreadyExistsError(cpf));
+      return left(new PersonAlreadyExistsError(cpf));
     }
 
     if (adminPersonWithSameEmail) {
-      return left(new AdminPersonAlreadyExistsError(email));
+      return left(new PersonAlreadyExistsError(email));
     }
 
     const adminPersonCpf = Cpf.create(cpf);

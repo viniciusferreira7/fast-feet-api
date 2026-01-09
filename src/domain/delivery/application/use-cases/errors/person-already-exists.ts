@@ -1,6 +1,6 @@
 import type { ErrorImplementation } from '@/core/errors/error-implementation';
 
-export class AdminPersonAlreadyExistsError
+export class PersonAlreadyExistsError
   extends Error
   implements ErrorImplementation
 {

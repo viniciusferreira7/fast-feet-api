@@ -4,7 +4,7 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
-import { AdminPersonAlreadyExistsError } from './errors/admin-person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists';
 import { RegisterAdminPerson } from './register-admin-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
@@ -68,7 +68,7 @@ describe('Register Admin Person', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(AdminPersonAlreadyExistsError);
+      expect(result.value).toBeInstanceOf(PersonAlreadyExistsError);
     }
   });
 
@@ -89,7 +89,7 @@ describe('Register Admin Person', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(AdminPersonAlreadyExistsError);
+      expect(result.value).toBeInstanceOf(PersonAlreadyExistsError);
     }
   });
 
