@@ -33,13 +33,14 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
   }
 
   public static create(
-    props: Optional<DeliveryPersonProps, 'createdAt'>,
+    props: Optional<DeliveryPersonProps, 'createdAt' | 'updatedAt'>,
     id?: UniqueEntityId
   ) {
     return new DeliveryPerson(
       {
         ...props,
         createdAt: props?.createdAt ?? new Date(),
+        updatedAt: props?.updatedAt ?? null,
       },
       id
     );
