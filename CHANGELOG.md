@@ -1,3 +1,23 @@
+# [1.2.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.1.0...v1.2.0) (2026-01-09)
+
+
+### Bug Fixes
+
+* correct imports ([8d86e81](https://github.com/viniciusferreira7/fast-feet-api/commit/8d86e8136ee77b5ed60ba5c62d9b54991928042c))
+
+
+### Features
+
+* create admin persons repository interface ([aed97a0](https://github.com/viniciusferreira7/fast-feet-api/commit/aed97a03dd9d01368d20a4ba5e8add38da8fdb61))
+* create either to use on retuning of use cases ([8c53685](https://github.com/viniciusferreira7/fast-feet-api/commit/8c53685a0b73e33d69ffeb90284ae69d36bb260e))
+* create encrypter abstract class ([c5b4a56](https://github.com/viniciusferreira7/fast-feet-api/commit/c5b4a56f3bd470d186fa6e6902ffe4e91034f95f))
+* create fake hasher and encrypter to use in unit tests ([5a29df7](https://github.com/viniciusferreira7/fast-feet-api/commit/5a29df749da0e28121c4a2f7b117cc340f441f5c))
+* create hash abstract class ([ddc534f](https://github.com/viniciusferreira7/fast-feet-api/commit/ddc534f5d7dff5623b01789617ed7f531e632e73))
+* create in-memory admin people repository ([82e6575](https://github.com/viniciusferreira7/fast-feet-api/commit/82e6575e0ea473ec3cf7b91cfcd40301a968d957))
+* create package history value object ([8455c3f](https://github.com/viniciusferreira7/fast-feet-api/commit/8455c3ff4c6258585e49354ea009d0811efeb0ba))
+* create use case to register delivery person ([a9725ae](https://github.com/viniciusferreira7/fast-feet-api/commit/a9725ae9ea8f6c8d7dbcd4213fb005b8b8cfcb72))
+* create use case tov register admin person ([2b5e1dc](https://github.com/viniciusferreira7/fast-feet-api/commit/2b5e1dc687fcf4219c35420f09cc62e2cb60d890))
+
 # [1.1.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.0.0...v1.1.0) (2025-12-23)
 
 
