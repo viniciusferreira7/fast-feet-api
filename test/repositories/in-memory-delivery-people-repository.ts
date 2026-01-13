@@ -1,3 +1,4 @@
+import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { DeliveryPeopleRepository } from '@/domain/delivery/application/repositories/delivery-people-repository';
 import type { DeliveryPerson } from '@/domain/delivery/enterprise/entities/delivery-person';
 
@@ -22,6 +23,14 @@ export class InMemoryDeliveryPeopleRepository
   async findByEmail(email: string): Promise<DeliveryPerson | null> {
     const deliveryPerson = this.deliveryPeople.find(
       (person) => person.email === email
+    );
+
+    return deliveryPerson ?? null;
+  }
+
+  async findById(id: string): Promise<DeliveryPerson | null> {
+    const deliveryPerson = this.deliveryPeople.find((person) =>
+      person.id.equals(new UniqueEntityId(id))
     );
 
     return deliveryPerson ?? null;
