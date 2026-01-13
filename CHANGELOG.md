@@ -1,3 +1,14 @@
+# [1.4.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.3.0...v1.4.0) (2026-01-13)
+
+
+### Features
+
+* add findById method to people repositories ([1c346c3](https://github.com/viniciusferreira7/fast-feet-api/commit/1c346c30cc0181dde2b2c7552ea89a85c1225e27))
+* add implementation for in memory packages repository ([f192902](https://github.com/viniciusferreira7/fast-feet-api/commit/f1929024e5fdf7c78a8e8ce546656ede11401876))
+* add new methods into in memory repositories ([3638228](https://github.com/viniciusferreira7/fast-feet-api/commit/363822889419c7148931833d186ba78bdd5728e4))
+* add package repository interface ([43beb68](https://github.com/viniciusferreira7/fast-feet-api/commit/43beb68c88aadc5717172ff553e5c7ce8569d44a))
+* create use case to register package ([43c8736](https://github.com/viniciusferreira7/fast-feet-api/commit/43c87360dac5674bd200de81fe153dbbccab89ea))
+
 # [1.3.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.2.0...v1.3.0) (2026-01-09)
 
 
