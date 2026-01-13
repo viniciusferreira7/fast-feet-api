@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import type { PackageAttachment } from './package-attachment';
 import { PackageCode } from './value-object/package-code';
@@ -14,7 +15,7 @@ export interface PackageProps {
   recipientAddress: string;
   deliveryPersonId: UniqueEntityId | null;
   status: PackageStatus;
-  attachment: PackageAttachment | null;
+  attachment?: PackageAttachment | null;
   createdAt: Date;
   updatedAt: Date | null;
   deliveredAt: Date | null;
@@ -63,12 +64,18 @@ export class Package extends AggregateRoot<PackageProps> {
 
   public updateStatus(
     newStatus: PackageStatus
-  ): Either<MissingAttachmentError, void> {
+  ): Either<MissingAttachmentError | InvalidatePackageStatusError, void> {
     if (newStatus.isDelivered() && !this.props.attachment) {
       return left(new MissingAttachmentError());
     }
 
-    this.props.status = this.props.status.transitionTo(newStatus);
+    const transitionResult = this.props.status.transitionTo(newStatus);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    this.props.status = transitionResult.value;
     this.props.updatedAt = new Date();
 
     if (newStatus.isDelivered()) {
@@ -92,12 +99,35 @@ export class Package extends AggregateRoot<PackageProps> {
     props: Optional<PackageProps, 'createdAt' | 'updatedAt' | 'deliveredAt'>,
     id?: UniqueEntityId
   ) {
+    let code: PackageCode;
+    if (props.code) {
+      code = props.code;
+    } else {
+      const codeResult = PackageCode.generate();
+      if (codeResult.isLeft()) {
+        throw new Error('Failed to generate package code');
+      }
+      code = codeResult.value;
+    }
+
+    let status: PackageStatus;
+    if (props.status) {
+      status = props.status;
+    } else {
+      const statusResult = PackageStatus.create('pending');
+      if (statusResult.isLeft()) {
+        throw new Error('Failed to create default pending status');
+      }
+      status = statusResult.value;
+    }
+
     return new Package(
       {
         ...props,
-        code: props.code ?? PackageCode.generate(),
-        status: props.status ?? PackageStatus.create('pending'),
+        code,
+        status,
         deliveryPersonId: props.deliveryPersonId ?? null,
+        attachment: props.attachment ?? null,
         createdAt: props?.createdAt ?? new Date(),
         updatedAt: props?.updatedAt ?? null,
         deliveredAt: props?.deliveredAt ?? null,
