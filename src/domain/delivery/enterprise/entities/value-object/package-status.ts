@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
 import { InvalidatePackageStatusError } from '@/domain/delivery/errors/invalidate-package-status-error';
 
@@ -43,12 +44,14 @@ export class PackageStatus extends ValueObject<PackageStatusProps> {
     );
   }
 
-  public static create(value: string): PackageStatus {
+  public static create(
+    value: string
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
     if (!PackageStatus.validate(value)) {
-      throw new InvalidatePackageStatusError();
+      return left(new InvalidatePackageStatusError());
     }
 
-    return new PackageStatus({ value });
+    return right(new PackageStatus({ value }));
   }
 
   public canTransitionTo(newStatus: PackageStatus): boolean {
@@ -57,11 +60,13 @@ export class PackageStatus extends ValueObject<PackageStatusProps> {
     return allowedTransitions.includes(newStatus.value);
   }
 
-  public transitionTo(newStatus: PackageStatus): PackageStatus {
+  public transitionTo(
+    newStatus: PackageStatus
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
     if (!this.canTransitionTo(newStatus)) {
-      throw new InvalidatePackageStatusError();
+      return left(new InvalidatePackageStatusError());
     }
-    return newStatus;
+    return right(newStatus);
   }
 
   public isPending(): boolean {
