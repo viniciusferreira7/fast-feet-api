@@ -7,7 +7,7 @@ import type { InvalidatePackageCodeError } from '../../errors/invalidate-package
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackageRepository } from '../repositories/package-repository';
+import type { PackagesRepository } from '../repositories/packages-repository';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
@@ -28,7 +28,7 @@ type RegisterPackageUseCaseResponse = Either<
 
 export class RegisterPackage {
   constructor(
-    private readonly packageRepository: PackageRepository,
+    private readonly packagesRepository: PackagesRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository
   ) {}
@@ -75,7 +75,7 @@ export class RegisterPackage {
       deliveryPersonId: deliveryPerson?.id ?? null,
     });
 
-    await this.packageRepository.register(packageCreated);
+    await this.packagesRepository.register(packageCreated);
 
     return right({ package: packageCreated });
   }
