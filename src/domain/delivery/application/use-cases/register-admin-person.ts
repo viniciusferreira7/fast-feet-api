@@ -4,7 +4,7 @@ import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import { PersonAlreadyExistsError } from './errors/person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterAdminPersonUseCaseRequest {
   name: string;

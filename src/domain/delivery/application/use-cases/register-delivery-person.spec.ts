@@ -4,7 +4,7 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
-import { PersonAlreadyExistsError } from './errors/person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterDeliveryPerson } from './register-delivery-person';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;

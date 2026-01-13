@@ -4,7 +4,7 @@ import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import { PersonAlreadyExistsError } from './errors/person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterDeliveryPersonUseCaseRequest {
   name: string;
@@ -22,7 +22,7 @@ type RegisterDeliveryPersonUseCaseResponse = Either<
 
 export class RegisterDeliveryPerson {
   constructor(
-    private readonly DeliveryPeopleRepository: DeliveryPeopleRepository,
+    private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
     private readonly hashGenerator: HashGenerator
   ) {}
 
@@ -34,8 +34,8 @@ export class RegisterDeliveryPerson {
   }: RegisterDeliveryPersonUseCaseRequest): Promise<RegisterDeliveryPersonUseCaseResponse> {
     const [DeliveryPersonWithSameCpf, DeliveryPersonWithSameEmail] =
       await Promise.all([
-        this.DeliveryPeopleRepository.findByCpf(cpf),
-        this.DeliveryPeopleRepository.findByEmail(email),
+        this.deliveryPeopleRepository.findByCpf(cpf),
+        this.deliveryPeopleRepository.findByEmail(email),
       ]);
 
     if (DeliveryPersonWithSameCpf) {
@@ -61,7 +61,7 @@ export class RegisterDeliveryPerson {
       password: hashedPassword,
     });
 
-    await this.DeliveryPeopleRepository.register(deliveryPerson);
+    await this.deliveryPeopleRepository.register(deliveryPerson);
 
     return right({ deliveryPerson });
   }

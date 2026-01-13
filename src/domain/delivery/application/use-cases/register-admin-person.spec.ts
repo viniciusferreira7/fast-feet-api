@@ -4,7 +4,7 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
-import { PersonAlreadyExistsError } from './errors/person-already-exists';
+import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterAdminPerson } from './register-admin-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
