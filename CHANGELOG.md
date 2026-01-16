@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.5.0...v1.6.0) (2026-01-16)
+
+
+### Bug Fixes
+
+* add missing dependecy dependencies on unit test ([753f111](https://github.com/viniciusferreira7/fast-feet-api/commit/753f11126046deccb4099b1a034b7633655f7e60))
+
+
+### Features
+
+* return history of packge ([86d35f2](https://github.com/viniciusferreira7/fast-feet-api/commit/86d35f2fe9eb9abc812ccee621fcc42004d2da1c))
+
 # [1.5.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.4.0...v1.5.0) (2026-01-16)
 
 
