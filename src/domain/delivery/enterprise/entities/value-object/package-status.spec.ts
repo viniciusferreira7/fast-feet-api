@@ -1,5 +1,5 @@
 import { InvalidatePackageStatusError } from '@/domain/delivery/errors/invalidate-package-status-error';
-import { PackageStatus } from './package-status';
+import { PackageStatus, type Status } from './package-status';
 
 describe('Package Status', () => {
   describe('create', () => {
@@ -14,7 +14,7 @@ describe('Package Status', () => {
     });
 
     it('should be able to create all valid statuses', () => {
-      const validStatuses = [
+      const validStatuses: Status[] = [
         'pending',
         'awaiting_pickup',
         'picked_up',
@@ -39,7 +39,7 @@ describe('Package Status', () => {
     });
 
     it('should not be able to create invalidate package status', () => {
-      const result = PackageStatus.create('invalid_status');
+      const result = PackageStatus.create('invalid_status' as Status);
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {
@@ -48,7 +48,7 @@ describe('Package Status', () => {
     });
 
     it('should not be able to create package status with empty string', () => {
-      const result = PackageStatus.create('');
+      const result = PackageStatus.create('' as Status);
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {

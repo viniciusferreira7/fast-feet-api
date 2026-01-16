@@ -2,12 +2,24 @@ import { Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
 import { InvalidatePackageStatusError } from '@/domain/delivery/errors/invalidate-package-status-error';
 
+export type Status =
+  | 'pending'
+  | 'awaiting_pickup'
+  | 'picked_up'
+  | 'at_distribution_center'
+  | 'in_transit'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'failed_delivery'
+  | 'returned'
+  | 'canceled';
+
 interface PackageStatusProps {
-  value: string;
+  value: Status;
 }
 
 export class PackageStatus extends ValueObject<PackageStatusProps> {
-  private static readonly VALID_STATUSES = [
+  private static readonly VALID_STATUSES: Status[] = [
     'pending',
     'awaiting_pickup',
     'picked_up',
@@ -20,7 +32,7 @@ export class PackageStatus extends ValueObject<PackageStatusProps> {
     'canceled',
   ] as const;
 
-  private static readonly VALID_TRANSITIONS: Record<string, readonly string[]> =
+  private static readonly VALID_TRANSITIONS: Record<Status, readonly Status[]> =
     {
       pending: ['awaiting_pickup', 'canceled'],
       awaiting_pickup: ['picked_up', 'canceled'],
@@ -34,18 +46,18 @@ export class PackageStatus extends ValueObject<PackageStatusProps> {
       canceled: [],
     };
 
-  get value() {
+  get value(): Status {
     return this.props.value;
   }
 
-  private static validate(status: string): boolean {
+  private static validate(status: Status): boolean {
     return PackageStatus.VALID_STATUSES.includes(
       status as (typeof this.VALID_STATUSES)[number]
     );
   }
 
   public static create(
-    value: string
+    value: Status
   ): Either<InvalidatePackageStatusError, PackageStatus> {
     if (!PackageStatus.validate(value)) {
       return left(new InvalidatePackageStatusError());
