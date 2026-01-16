@@ -119,23 +119,30 @@ src/
 │   │   ├── aggregate-root.ts      # Base class for aggregates
 │   │   ├── entity.ts              # Base entity class
 │   │   └── value-object/          # Value object base classes
+│   ├── events/                     # Domain events infrastructure
+│   │   ├── domain-event.ts        # Domain event interface
+│   │   └── domain-events.ts       # Domain events dispatcher
+│   ├── watched-list.ts            # Watched list for tracking collection changes
 │   ├── errors/                     # Core error classes
 │   └── types/                      # Core type definitions
 │
 ├── domain/                         # Domain layer
 │   └── delivery/                   # Delivery context (bounded context)
 │       ├── enterprise/             # Enterprise business rules
-│       │   └── entities/           # Domain entities and value objects
-│       │       ├── admin-person.ts
-│       │       ├── delivery-person.ts
-│       │       ├── package.ts
-│       │       ├── attachments.ts
-│       │       ├── package-attachment.ts
-│       │       └── value-object/   # Value objects
-│       │           ├── cpf.ts
-│       │           ├── package-code.ts
-│       │           ├── package-status.ts
-│       │           └── package-history.ts
+│       │   ├── entities/           # Domain entities and value objects
+│       │   │   ├── admin-person.ts
+│       │   │   ├── delivery-person.ts
+│       │   │   ├── package.ts
+│       │   │   ├── package-history.ts
+│       │   │   ├── attachments.ts
+│       │   │   ├── package-attachment.ts
+│       │   │   └── value-object/   # Value objects
+│       │   │       ├── cpf.ts
+│       │   │       ├── package-code.ts
+│       │   │       ├── package-status.ts
+│       │   │       └── package-history-list.ts
+│       │   └── events/             # Domain events
+│       │       └── package-history-created-event.ts
 │       ├── application/            # Application business rules
 │       │   ├── use-cases/          # Use cases (application services)
 │       │   ├── repositories/       # Repository interfaces
@@ -165,6 +172,14 @@ src/
   - Assignment to delivery person
   - Photo attachment for delivery proof
   - Audit trail with timestamps
+  - Collection of history entries for tracking changes
+
+- **PackageHistory**: Immutable audit log entry for package status changes
+  - Tracks status transitions (from/to)
+  - Records author and delivery person
+  - Includes descriptive notes
+  - Timestamp of the change
+  - Implements domain events for event-driven architecture
 
 - **PackageAttachment**: Photo proof of delivery
 - **Attachments**: File attachments management
@@ -199,9 +214,10 @@ src/
   - **State Transitions**: Enforced valid transitions between states
   - **Final States**: `delivered`, `returned`, `canceled` (no transitions allowed)
 
-- **PackageHistory**: Audit log for status changes
-  - Tracks who changed status and when
-  - Immutable history record
+- **PackageHistoryList**: Collection of package history entries
+  - Extends WatchedList for tracking changes
+  - Detects new, removed, and current history entries
+  - Enables domain event dispatching for new entries
 
 ### Package Lifecycle Flow
 
@@ -287,14 +303,25 @@ The project includes comprehensive testing with Vitest:
 
 - **Test Utilities**:
   - Fake implementations (FakeHasher for password hashing)
-  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository)
+  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository)
+  - Test data factories (makeAdminPerson, makeDeliveryPerson, makePackage, makePackageHistory)
   - Test data generators (CPF generator, ULID generator)
 
 ### Test Structure
 ```
 test/
 ├── cryptography/           # Fake cryptography implementations
+├── factories/              # Test data factories
+│   ├── make-admin-person.ts
+│   ├── make-delivery-person.ts
+│   ├── make-package.ts
+│   ├── make-package-attachment.ts
+│   └── make-package-history.ts
 ├── repositories/           # In-memory repository implementations
+│   ├── in-memory-admin-people-repository.ts
+│   ├── in-memory-delivery-people-repository.ts
+│   ├── in-memory-packages-repository.ts
+│   └── in-memory-packages-history-repository.ts
 └── utils/                  # Test utilities and helpers
 ```
 
@@ -330,7 +357,12 @@ NODE_ENV="development"
 - User registration (Admin and Delivery Person)
 - Password hashing with cryptography layer
 - Repository pattern with in-memory implementations for testing
+- Domain events infrastructure for event-driven architecture
+- Package history tracking with immutable audit trail
+- WatchedList pattern for tracking collection changes
+- Package assignment to delivery person use case
 - Comprehensive unit tests for domain logic
+- Test data factories for easy test setup
 
 ### In Progress 🚧
 - JWT authentication
