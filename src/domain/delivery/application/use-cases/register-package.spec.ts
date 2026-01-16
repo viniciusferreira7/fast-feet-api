@@ -2,6 +2,7 @@ import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
+import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
@@ -10,13 +11,18 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { RegisterPackage } from './register-package';
 
 let packagesRepository: InMemoryPackagesRepository;
+let packageHistoryRepository: InMemoryPackagesHistoryRepository;
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let sut: RegisterPackage;
 
 describe('Register Package', () => {
   beforeEach(() => {
-    packagesRepository = new InMemoryPackagesRepository();
+    packageHistoryRepository = new InMemoryPackagesHistoryRepository();
+
+    packagesRepository = new InMemoryPackagesRepository(
+      packageHistoryRepository
+    );
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     sut = new RegisterPackage(
