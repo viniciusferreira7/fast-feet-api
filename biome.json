@@ -10,7 +10,8 @@
         "noUselessCatch": "error",
         "noUselessTypeConstraint": "error",
         "noAdjacentSpacesInRegex": "error",
-        "noArguments": "error"
+        "noArguments": "error",
+        "noStaticOnlyClass": "off"
       },
       "correctness": {
         "noConstAssign": "error",
@@ -82,6 +83,7 @@
     "attributePosition": "auto"
   },
   "javascript": {
+    "globals": ["vi", "describe", "it", "expect", "beforeEach", "afterEach"],
     "formatter": {
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
