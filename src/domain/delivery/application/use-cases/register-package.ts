@@ -2,6 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
+import { PackageHistoryList } from '../../enterprise/entities/value-object/package-history-list';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import type { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
@@ -73,6 +74,8 @@ export class RegisterPackage {
       status: packageStatus.value,
       code: packageCode.value,
       deliveryPersonId: deliveryPerson?.id ?? null,
+      authorId: author.id,
+      histories: new PackageHistoryList(),
     });
 
     await this.packagesRepository.register(packageCreated);

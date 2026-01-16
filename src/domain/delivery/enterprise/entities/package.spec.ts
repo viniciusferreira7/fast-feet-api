@@ -2,7 +2,7 @@ import { makePackage } from 'test/factories/make-package';
 import { makePackageAttachment } from 'test/factories/make-package-attachment';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
-import { PackageStatus } from './value-object/package-status';
+import { PackageStatus, type Status } from './value-object/package-status';
 
 describe('Package', () => {
   it('should be able to create a package', () => {
@@ -28,7 +28,10 @@ describe('Package', () => {
         status: pendingStatusResult.value,
       });
 
-      const result = packageEntity.updateStatus(awaitingPickupResult.value);
+      const result = packageEntity.updateStatus(
+        awaitingPickupResult.value,
+        new UniqueEntityId()
+      );
 
       expect(result.isRight()).toBe(true);
       expect(packageEntity.status.isAwaitingPickup()).toBe(true);
@@ -49,7 +52,10 @@ describe('Package', () => {
         attachment: null,
       });
 
-      const result = packageEntity.updateStatus(deliveredResult.value);
+      const result = packageEntity.updateStatus(
+        deliveredResult.value,
+        new UniqueEntityId()
+      );
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {
@@ -77,7 +83,10 @@ describe('Package', () => {
         attachment,
       });
 
-      const result = packageEntity.updateStatus(deliveredResult.value);
+      const result = packageEntity.updateStatus(
+        deliveredResult.value,
+        new UniqueEntityId()
+      );
 
       expect(result.isRight()).toBe(true);
       expect(packageEntity.status.isDelivered()).toBe(true);
@@ -118,7 +127,11 @@ describe('Package', () => {
         status: pendingResult.value,
       });
 
-      packageEntity.assignDeliveryPerson(deliveryPersonId);
+      packageEntity.assignDeliveryPerson(
+        deliveryPersonId,
+        new UniqueEntityId(),
+        pendingResult.value
+      );
 
       expect(packageEntity.deliveryPersonId).toBe(deliveryPersonId);
       expect(packageEntity.updatedAt).toBeInstanceOf(Date);
@@ -146,7 +159,7 @@ describe('Package', () => {
 
       expect(packageEntity.deliveredAt).toBeNull();
 
-      packageEntity.updateStatus(deliveredResult.value);
+      packageEntity.updateStatus(deliveredResult.value, new UniqueEntityId());
 
       expect(packageEntity.deliveredAt).toBeInstanceOf(Date);
     }
@@ -163,7 +176,7 @@ describe('Package', () => {
         attachment: null,
       });
 
-      const statuses = [
+      const statuses: Status[] = [
         'awaiting_pickup',
         'picked_up',
         'at_distribution_center',
@@ -177,7 +190,10 @@ describe('Package', () => {
         expect(newStatusResult.isRight()).toBe(true);
 
         if (newStatusResult.isRight()) {
-          const result = packageEntity.updateStatus(newStatusResult.value);
+          const result = packageEntity.updateStatus(
+            newStatusResult.value,
+            new UniqueEntityId()
+          );
 
           expect(result.isRight()).toBe(true);
           expect(packageEntity.status.value).toBe(statusValue);
@@ -201,7 +217,10 @@ describe('Package', () => {
         attachment: null,
       });
 
-      const failedResult = packageEntity.updateStatus(deliveredResult.value);
+      const failedResult = packageEntity.updateStatus(
+        deliveredResult.value,
+        new UniqueEntityId()
+      );
 
       expect(failedResult.isLeft()).toBe(true);
       if (failedResult.isLeft()) {
@@ -215,7 +234,10 @@ describe('Package', () => {
 
       expect(packageEntity.attachment).toBe(attachment);
 
-      const successResult = packageEntity.updateStatus(deliveredResult.value);
+      const successResult = packageEntity.updateStatus(
+        deliveredResult.value,
+        new UniqueEntityId()
+      );
 
       expect(successResult.isRight()).toBe(true);
       expect(packageEntity.status.isDelivered()).toBe(true);
