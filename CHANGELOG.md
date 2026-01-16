@@ -1,3 +1,21 @@
+# [1.5.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.4.0...v1.5.0) (2026-01-16)
+
+
+### Bug Fixes
+
+* resolve type errors in package status tests ([35e2648](https://github.com/viniciusferreira7/fast-feet-api/commit/35e2648fc49fc021c048b2350e20d1b409a16fcc))
+
+
+### Features
+
+* add domain events and watched list infrastructure ([8c52361](https://github.com/viniciusferreira7/fast-feet-api/commit/8c52361ede78070b6bab71621103fe37f0342f5f))
+* add findById and update methods to packages repository ([520fe70](https://github.com/viniciusferreira7/fast-feet-api/commit/520fe70bec44175978c016dfe26785ccc47a386c))
+* add package assigned to delivery event ([92a15e5](https://github.com/viniciusferreira7/fast-feet-api/commit/92a15e51417f0f4f2ecd1b1446e64aa73d8d3075))
+* add package histories management to package entity ([a029efd](https://github.com/viniciusferreira7/fast-feet-api/commit/a029efde0c6f6e76af8e803b25e606556a84ea41))
+* add use case to assign package to delivery person ([af815c7](https://github.com/viniciusferreira7/fast-feet-api/commit/af815c729a591270edbdf48afc103fcf112731fd))
+* implement package history tracking with audit trail ([f3c1956](https://github.com/viniciusferreira7/fast-feet-api/commit/f3c1956342f5d7a51340255f6a85e2c52555c90c))
+* integrate package history into package factory ([567dd7b](https://github.com/viniciusferreira7/fast-feet-api/commit/567dd7bc613dfcc4ea332875f9dfafeb4ddfda07))
+
 # [1.4.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.3.0...v1.4.0) (2026-01-13)
 
 
