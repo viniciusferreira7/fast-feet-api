@@ -44,6 +44,7 @@ export function makePackage(
   const packageEntity = Package.create(
     {
       id: packageId,
+      name: faker.lorem.words({ min: 3, max: 20 }),
       code: packageCodeResult.value,
       recipientId: new UniqueEntityId(),
       authorId,

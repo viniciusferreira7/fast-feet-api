@@ -14,6 +14,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
   recipientId: string;
+  name: string;
   recipientAddress: string;
   deliveryPersonId: string | null;
   authorId: string;
@@ -37,10 +38,11 @@ export class RegisterPackage {
   ) {}
 
   async execute({
+    recipientId,
+    name,
     authorId,
     deliveryPersonId,
     recipientAddress,
-    recipientId,
   }: RegisterPackageUseCaseRequest): Promise<RegisterPackageUseCaseResponse> {
     const [author, deliveryPerson, recipientPerson] = await Promise.all([
       this.adminPeopleRepository.findById(authorId),
@@ -76,6 +78,7 @@ export class RegisterPackage {
 
     const packageCreated = Package.create({
       id: new UniqueEntityId(),
+      name: name,
       recipientId: recipientPerson.id,
       recipientAddress,
       status: packageStatus.value,

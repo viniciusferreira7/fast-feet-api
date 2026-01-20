@@ -48,6 +48,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
@@ -76,6 +77,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
@@ -93,6 +95,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: 'non-existent-id',
@@ -109,6 +112,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: 'non-existent-id',
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
@@ -127,6 +131,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: 'non-existent-id',
       authorId: admin.id.toString(),
@@ -146,6 +151,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
@@ -166,6 +172,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
@@ -186,6 +193,7 @@ describe('Register Package', () => {
 
     await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
@@ -210,6 +218,7 @@ describe('Register Package', () => {
 
     await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
@@ -217,6 +226,7 @@ describe('Register Package', () => {
 
     await sut.execute({
       recipientId: recipientPerson2.id.toString(),
+      name: 'Package',
       recipientAddress: '456 Oak Ave, Town, State',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
@@ -242,6 +252,7 @@ describe('Register Package', () => {
 
     const result = await sut.execute({
       recipientId: recipientPerson.id.toString(),
+      name: 'Package',
       recipientAddress: '123 Main St, City, State',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),

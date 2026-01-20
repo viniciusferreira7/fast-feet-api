@@ -13,6 +13,7 @@ import { PackageStatus } from './value-object/package-status';
 
 export interface PackageProps {
   id: UniqueEntityId;
+  name: string;
   code: PackageCode;
   recipientId: UniqueEntityId;
   recipientAddress: string;
@@ -31,6 +32,9 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.id;
   }
 
+  get name() {
+    return this.props.name;
+  }
   get code() {
     return this.props.code;
   }
