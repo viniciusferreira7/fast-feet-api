@@ -1,3 +1,22 @@
+# [1.7.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.6.0...v1.7.0) (2026-01-20)
+
+
+### Bug Fixes
+
+* correct factory of package ([e51f4eb](https://github.com/viniciusferreira7/fast-feet-api/commit/e51f4eb814dd5c23c3528355981a4aa0a86e7fd2))
+
+
+### Features
+
+* add name field into package entity ([10dc405](https://github.com/viniciusferreira7/fast-feet-api/commit/10dc405b1ef7bc5062179d8c9eb27dbf294d5550))
+* create factory for recipient ([d914c43](https://github.com/viniciusferreira7/fast-feet-api/commit/d914c4347941bfabe98a5fdb1c6152ea3bc67e93))
+* create in memory notifications repository ([403061e](https://github.com/viniciusferreira7/fast-feet-api/commit/403061e9ef4dc3fc670abdeeda85494754628618))
+* create notification entity and repository ([760a8ef](https://github.com/viniciusferreira7/fast-feet-api/commit/760a8ef343ac2115c3577b1b24bf9896c5901173))
+* create recipient entity ([af972c5](https://github.com/viniciusferreira7/fast-feet-api/commit/af972c555e70ae76c5761aa66f00aeb8304eb609))
+* create recipient people repository and in memory repository for it ([933e5d9](https://github.com/viniciusferreira7/fast-feet-api/commit/933e5d99186d9053e6930f9c0059af795fd25611))
+* create use case to register recipient person ([f9fd8c5](https://github.com/viniciusferreira7/fast-feet-api/commit/f9fd8c518826c30533937e3e836b335475c32841))
+* create use case to send notification ([086e7af](https://github.com/viniciusferreira7/fast-feet-api/commit/086e7af1148891452581bd3d75fca929f0b07b66))
+
 # [1.6.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.5.0...v1.6.0) (2026-01-16)
 
 
