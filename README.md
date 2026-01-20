@@ -315,25 +315,29 @@ The project includes comprehensive testing with Vitest:
 
 - **Test Utilities**:
   - Fake implementations (FakeHasher for password hashing, FakeCpfValidator for CPF validation)
-  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository)
-  - Test data factories (makeAdminPerson, makeDeliveryPerson, makePackage, makePackageHistory)
+  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
+  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment)
   - Test data generators (CPF generator, ULID generator)
 
 ### Test Structure
 ```
 test/
 ├── cryptography/           # Fake cryptography implementations
+│   └── fake-hasher.ts
 ├── factories/              # Test data factories
 │   ├── make-admin-person.ts
 │   ├── make-delivery-person.ts
+│   ├── make-recipient-person.ts
 │   ├── make-package.ts
 │   ├── make-package-attachment.ts
 │   └── make-package-history.ts
 ├── repositories/           # In-memory repository implementations
 │   ├── in-memory-admin-people-repository.ts
 │   ├── in-memory-delivery-people-repository.ts
+│   ├── in-memory-recipient-people-repository.ts
 │   ├── in-memory-packages-repository.ts
-│   └── in-memory-packages-history-repository.ts
+│   ├── in-memory-packages-history-repository.ts
+│   └── in-memory-notifications-repository.ts
 ├── validation/             # Fake validation implementations
 │   └── fake-cpf-validator.ts
 └── utils/                  # Test utilities and helpers
@@ -350,16 +354,22 @@ test/
 Create a `.env` file in the root directory:
 
 ```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
-
-# JWT
-JWT_SECRET="your-secret-key"
-JWT_EXPIRES_IN="7d"
-
 # Server
 PORT=3333
-NODE_ENV="development"
+NODE_ENV="dev"  # Options: dev, test, production
+
+# JWT (RS256 - Public/Private Key Authentication)
+# Generate keys with:
+# Private: openssl genrsa -out private_key.pem 2048
+# Public: openssl rsa -in private_key.pem -pubout -out public_key.pem
+# Then encode to base64:
+# JWT_PRIVATE_KEY=$(cat private_key.pem | base64)
+# JWT_PUBLIC_KEY=$(cat public_key.pem | base64)
+JWT_PRIVATE_KEY="base64-encoded-private-key"
+JWT_PUBLIC_KEY="base64-encoded-public-key"
+
+# Database (optional - for production)
+DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 ```
 
 ## 🔍 Key Features
