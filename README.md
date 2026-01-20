@@ -167,6 +167,11 @@ src/
   - Can view assigned packages
   - Location-based package filtering
 
+- **RecipientPerson**: Package recipient
+  - Registered in the system to receive packages
+  - Associated with delivery addresses
+  - Can track their packages
+
 - **Package**: Delivery package with complete lifecycle
   - Unique ULID-based tracking code
   - Status management with state transitions
@@ -184,6 +189,11 @@ src/
 
 - **PackageAttachment**: Photo proof of delivery
 - **Attachments**: File attachments management
+
+- **Notification**: System notifications for recipients
+  - Sent when package events occur
+  - Tracks read/unread status
+  - Associated with recipient
 
 #### Value Objects
 
