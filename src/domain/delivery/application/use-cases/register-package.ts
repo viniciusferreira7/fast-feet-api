@@ -9,10 +9,11 @@ import type { InvalidatePackageStatusError } from '../../errors/invalidate-packa
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
+import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
-  recipientName: string;
+  recipientId: string;
   recipientAddress: string;
   deliveryPersonId: string | null;
   authorId: string;
@@ -31,20 +32,22 @@ export class RegisterPackage {
   constructor(
     private readonly packagesRepository: PackagesRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
-    private readonly adminPeopleRepository: AdminPeopleRepository
+    private readonly adminPeopleRepository: AdminPeopleRepository,
+    private readonly recipientPeopleRepository: RecipientPeopleRepository
   ) {}
 
   async execute({
     authorId,
     deliveryPersonId,
     recipientAddress,
-    recipientName,
+    recipientId,
   }: RegisterPackageUseCaseRequest): Promise<RegisterPackageUseCaseResponse> {
-    const [author, deliveryPerson] = await Promise.all([
+    const [author, deliveryPerson, recipientPerson] = await Promise.all([
       this.adminPeopleRepository.findById(authorId),
       deliveryPersonId
         ? this.deliveryPeopleRepository.findById(deliveryPersonId)
         : Promise.resolve(null),
+      this.recipientPeopleRepository.findById(recipientId),
     ]);
 
     if (!author) {
@@ -53,6 +56,10 @@ export class RegisterPackage {
 
     if (!deliveryPerson && deliveryPersonId) {
       return left(new ResourceNotFoundError('delivery'));
+    }
+
+    if (!recipientPerson) {
+      return left(new ResourceNotFoundError('recipient'));
     }
 
     const packageCode = PackageCode.create();
@@ -69,7 +76,7 @@ export class RegisterPackage {
 
     const packageCreated = Package.create({
       id: new UniqueEntityId(),
-      recipientName,
+      recipientId: recipientPerson.id,
       recipientAddress,
       status: packageStatus.value,
       code: packageCode.value,

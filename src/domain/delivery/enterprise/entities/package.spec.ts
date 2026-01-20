@@ -6,12 +6,14 @@ import { PackageStatus, type Status } from './value-object/package-status';
 
 describe('Package', () => {
   it('should be able to create a package', () => {
+    const recipientId = new UniqueEntityId();
+
     const packageEntity = makePackage({
-      recipientName: 'John Doe',
+      recipientId: recipientId,
       recipientAddress: '123 Main St',
     });
 
-    expect(packageEntity.recipientName).toBe('John Doe');
+    expect(packageEntity.recipientId).toBe(recipientId);
     expect(packageEntity.recipientAddress).toBe('123 Main St');
     expect(packageEntity.status.isPending()).toBe(true);
   });
