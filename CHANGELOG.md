@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.7.0...v1.8.0) (2026-01-20)
+
+
+### Features
+
+* add external CPF validation to registration use cases ([69986dc](https://github.com/viniciusferreira7/fast-feet-api/commit/69986dc37eed226297d6b7ff654d87eda59e3f4a))
+
 # [1.7.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.6.0...v1.7.0) (2026-01-20)
 
 
