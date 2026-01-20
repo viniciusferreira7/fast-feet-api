@@ -1,21 +1,29 @@
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
+import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
+import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterDeliveryPerson } from './register-delivery-person';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let hashGenerator: FakeHasher;
+let cpfValidator: FakeCpfValidator;
 let sut: RegisterDeliveryPerson;
 
 describe('Register Delivery Person', () => {
   beforeEach(() => {
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     hashGenerator = new FakeHasher();
-    sut = new RegisterDeliveryPerson(deliveryPeopleRepository, hashGenerator);
+    cpfValidator = new FakeCpfValidator();
+    sut = new RegisterDeliveryPerson(
+      deliveryPeopleRepository,
+      hashGenerator,
+      cpfValidator
+    );
   });
 
   it('should be able to register a new delivery person', async () => {
@@ -136,6 +144,22 @@ describe('Register Delivery Person', () => {
     if (result.isRight()) {
       expect(result.value.deliveryPerson.cpf).toBeInstanceOf(Cpf);
       expect(result.value.deliveryPerson.cpf.value).toBe(cpfRaw);
+    }
+  });
+
+  it('should not be able to register with CPF that fails external validation', async () => {
+    vi.spyOn(cpfValidator, 'validate').mockResolvedValueOnce(false);
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: generateCpf(),
+      email: 'john@example.com',
+      password: '123456',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ExternalCpfValidationError);
     }
   });
 });

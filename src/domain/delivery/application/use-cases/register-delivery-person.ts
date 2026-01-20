@@ -1,9 +1,11 @@
 import { type Either, left, right } from '@/core/either';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
+import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { CpfValidator } from '../validation/cpf-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterDeliveryPersonUseCaseRequest {
@@ -14,7 +16,7 @@ interface RegisterDeliveryPersonUseCaseRequest {
 }
 
 type RegisterDeliveryPersonUseCaseResponse = Either<
-  InvalidateCpfError | PersonAlreadyExistsError,
+  InvalidateCpfError | PersonAlreadyExistsError | ExternalCpfValidationError,
   {
     deliveryPerson: DeliveryPerson;
   }
@@ -23,7 +25,8 @@ type RegisterDeliveryPersonUseCaseResponse = Either<
 export class RegisterDeliveryPerson {
   constructor(
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
-    private readonly hashGenerator: HashGenerator
+    private readonly hashGenerator: HashGenerator,
+    private readonly cpfValidator: CpfValidator
   ) {}
 
   async execute({
@@ -44,6 +47,12 @@ export class RegisterDeliveryPerson {
 
     if (DeliveryPersonWithSameEmail) {
       return left(new PersonAlreadyExistsError(email));
+    }
+
+    const isCpfValid = await this.cpfValidator.validate(cpf);
+
+    if (!isCpfValid) {
+      return left(new ExternalCpfValidationError());
     }
 
     const DeliveryPersonCpf = Cpf.create(cpf);

@@ -1,21 +1,29 @@
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
+import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
+import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterAdminPerson } from './register-admin-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let hashGenerator: FakeHasher;
+let cpfValidator: FakeCpfValidator;
 let sut: RegisterAdminPerson;
 
 describe('Register Admin Person', () => {
   beforeEach(() => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     hashGenerator = new FakeHasher();
-    sut = new RegisterAdminPerson(adminPeopleRepository, hashGenerator);
+    cpfValidator = new FakeCpfValidator();
+    sut = new RegisterAdminPerson(
+      adminPeopleRepository,
+      hashGenerator,
+      cpfValidator
+    );
   });
 
   it('should be able to register a new admin person', async () => {
@@ -136,6 +144,22 @@ describe('Register Admin Person', () => {
     if (result.isRight()) {
       expect(result.value.adminPerson.cpf).toBeInstanceOf(Cpf);
       expect(result.value.adminPerson.cpf.value).toBe(cpfRaw);
+    }
+  });
+
+  it('should not be able to register with CPF that fails external validation', async () => {
+    vi.spyOn(cpfValidator, 'validate').mockResolvedValueOnce(false);
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: generateCpf(),
+      email: 'john@example.com',
+      password: '123456',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ExternalCpfValidationError);
     }
   });
 });
