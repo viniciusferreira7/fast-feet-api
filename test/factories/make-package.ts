@@ -45,7 +45,7 @@ export function makePackage(
     {
       id: packageId,
       code: packageCodeResult.value,
-      recipientName: faker.person.fullName(),
+      recipientId: faker.person.fullName(),
       authorId,
       recipientAddress: faker.location.streetAddress({ useFullAddress: true }),
       status: statusResult.value,
