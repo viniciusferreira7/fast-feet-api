@@ -15,7 +15,9 @@ export function makeAdminPerson(
   const cpfResult = Cpf.create(generateCpf());
 
   if (cpfResult.isLeft()) {
-    throw new Error('Failed to generate valid CPF for admin person factory');
+    throw new Error(
+      `Failed to generate valid CPF for admin person factory: ${cpfResult.value.message}`
+    );
   }
 
   const adminPerson = AdminPerson.create(

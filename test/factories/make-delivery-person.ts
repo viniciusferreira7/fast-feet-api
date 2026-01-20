@@ -15,7 +15,9 @@ export function makeDeliveryPerson(
   const cpfResult = Cpf.create(generateCpf());
 
   if (cpfResult.isLeft()) {
-    throw new Error('Failed to generate valid CPF for delivery person factory');
+    throw new Error(
+      `Failed to generate valid CPF for delivery person factory: ${cpfResult.value.message}`
+    );
   }
 
   const deliveryPerson = DeliveryPerson.create(

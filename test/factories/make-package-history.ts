@@ -15,7 +15,7 @@ export function makePackageHistory(
 
   if (toStatusResult.isLeft()) {
     throw new Error(
-      'Failed to create valid package status for package history factory'
+      `Failed to create valid package status for package history factory: ${toStatusResult.value.message}`
     );
   }
 

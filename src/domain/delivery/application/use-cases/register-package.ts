@@ -76,7 +76,7 @@ export class RegisterPackage {
       return left(packageStatus.value);
     }
 
-    const packageCreated = Package.create({
+    const packageCreatedResult = Package.create({
       id: new UniqueEntityId(),
       name: name,
       recipientId: recipientPerson.id,
@@ -87,6 +87,12 @@ export class RegisterPackage {
       authorId: author.id,
       histories: new PackageHistoryList(),
     });
+
+    if (packageCreatedResult.isLeft()) {
+      return left(packageCreatedResult.value);
+    }
+
+    const packageCreated = packageCreatedResult.value;
 
     await this.packagesRepository.register(packageCreated);
 

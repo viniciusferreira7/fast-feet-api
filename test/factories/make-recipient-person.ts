@@ -16,7 +16,7 @@ export function makeRecipientPerson(
 
   if (cpfResult.isLeft()) {
     throw new Error(
-      'Failed to generate valid CPF for recipient person factory'
+      `Failed to generate valid CPF for recipient person factory: ${cpfResult.value.message}`
     );
   }
 

@@ -147,14 +147,14 @@ export class Package extends AggregateRoot<PackageProps> {
   public static create(
     props: Optional<PackageProps, 'createdAt' | 'updatedAt' | 'deliveredAt'>,
     id?: UniqueEntityId
-  ) {
+  ): Either<InvalidatePackageStatusError, Package> {
     let code: PackageCode;
     if (props.code) {
       code = props.code;
     } else {
       const codeResult = PackageCode.generate();
       if (codeResult.isLeft()) {
-        throw new Error('Failed to generate package code');
+        return left(codeResult.value);
       }
       code = codeResult.value;
     }
@@ -165,24 +165,26 @@ export class Package extends AggregateRoot<PackageProps> {
     } else {
       const statusResult = PackageStatus.create('pending');
       if (statusResult.isLeft()) {
-        throw new Error('Failed to create default pending status');
+        return left(statusResult.value);
       }
       status = statusResult.value;
     }
 
-    return new Package(
-      {
-        ...props,
-        code,
-        status,
-        deliveryPersonId: props.deliveryPersonId ?? null,
-        attachment: props.attachment ?? null,
-        createdAt: props?.createdAt ?? new Date(),
-        updatedAt: props?.updatedAt ?? null,
-        deliveredAt: props?.deliveredAt ?? null,
-        histories: props.histories,
-      },
-      id
+    return right(
+      new Package(
+        {
+          ...props,
+          code,
+          status,
+          deliveryPersonId: props.deliveryPersonId ?? null,
+          attachment: props.attachment ?? null,
+          createdAt: props?.createdAt ?? new Date(),
+          updatedAt: props?.updatedAt ?? null,
+          deliveredAt: props?.deliveredAt ?? null,
+          histories: props.histories,
+        },
+        id
+      )
     );
   }
 }

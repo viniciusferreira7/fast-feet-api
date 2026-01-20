@@ -18,7 +18,7 @@ export function makePackage(
 
   if (packageCodeResult.isLeft()) {
     throw new Error(
-      'Failed to generate valid package code for package factory'
+      `Failed to generate valid package code for package factory: ${packageCodeResult.value.message}`
     );
   }
 
@@ -26,7 +26,7 @@ export function makePackage(
 
   if (statusResult.isLeft()) {
     throw new Error(
-      'Failed to create valid package status for package factory'
+      `Failed to create valid package status for package factory: ${statusResult.value.message}`
     );
   }
 
@@ -41,7 +41,7 @@ export function makePackage(
     description: 'Package registered',
   });
 
-  const packageEntity = Package.create(
+  const packageEntityResult = Package.create(
     {
       id: packageId,
       name: faker.lorem.words({ min: 3, max: 20 }),
@@ -58,5 +58,11 @@ export function makePackage(
     id
   );
 
-  return packageEntity;
+  if (packageEntityResult.isLeft()) {
+    throw new Error(
+      `Failed to create package entity: ${packageEntityResult.value.message}`
+    );
+  }
+
+  return packageEntityResult.value;
 }
