@@ -146,7 +146,8 @@ src/
 │       ├── application/            # Application business rules
 │       │   ├── use-cases/          # Use cases (application services)
 │       │   ├── repositories/       # Repository interfaces
-│       │   └── cryptography/       # Cryptography interfaces
+│       │   ├── cryptography/       # Cryptography interfaces
+│       │   └── validation/         # Validation interfaces (e.g., CPF validator)
 │       └── errors/                 # Domain-specific errors
 │
 └── infra/                          # Infrastructure layer
@@ -190,6 +191,7 @@ src/
   - Format validation (11 digits)
   - Check digit verification
   - Duplicate digit rejection
+  - External CPF validation through CpfValidator interface
   - Returns `Either<Error, CPF>` for functional error handling
 
 - **PackageCode**: ULID-based unique identifier
@@ -302,7 +304,7 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing)
+  - Fake implementations (FakeHasher for password hashing, FakeCpfValidator for CPF validation)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository)
   - Test data factories (makeAdminPerson, makeDeliveryPerson, makePackage, makePackageHistory)
   - Test data generators (CPF generator, ULID generator)
@@ -322,6 +324,8 @@ test/
 │   ├── in-memory-delivery-people-repository.ts
 │   ├── in-memory-packages-repository.ts
 │   └── in-memory-packages-history-repository.ts
+├── validation/             # Fake validation implementations
+│   └── fake-cpf-validator.ts
 └── utils/                  # Test utilities and helpers
 ```
 
@@ -356,13 +360,15 @@ NODE_ENV="development"
 - Package status state machine with transition rules
 - User registration (Admin and Delivery Person)
 - Password hashing with cryptography layer
+- External CPF validation with dependency injection pattern
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
 - Package history tracking with immutable audit trail
 - WatchedList pattern for tracking collection changes
 - Package assignment to delivery person use case
-- Comprehensive unit tests for domain logic
+- Comprehensive unit tests for domain logic (106 tests)
 - Test data factories for easy test setup
+- Functional error handling with Either monad pattern
 
 ### In Progress 🚧
 - JWT authentication
