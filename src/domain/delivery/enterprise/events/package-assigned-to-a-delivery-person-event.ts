@@ -2,7 +2,7 @@ import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-
 import type { DomainEvent } from '@/core/events/domain-event';
 import type { PackageHistory } from '../entities/package-history';
 
-export class PackageHistoryCreatedEvent implements DomainEvent {
+export class PackageAssignedToADeliveryPersonEvent implements DomainEvent {
   public occurredAt: Date;
   public packageHistory: PackageHistory;
   public packageId: UniqueEntityId;

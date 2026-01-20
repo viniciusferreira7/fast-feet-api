@@ -1,5 +1,4 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
-import { DomainEvents } from '@/core/events/domain-events';
 import type { PackagesHistoryRepository } from '@/domain/delivery/application/repositories/packages-history-repository';
 import type { PackageHistory } from '@/domain/delivery/enterprise/entities/package-history';
 
@@ -11,7 +10,6 @@ export class InMemoryPackagesHistoryRepository
   async register(data: PackageHistory): Promise<PackageHistory> {
     this.packagesHistory.push(data);
 
-    DomainEvents.dispatchEventsForEntity(data.id);
     return data;
   }
 

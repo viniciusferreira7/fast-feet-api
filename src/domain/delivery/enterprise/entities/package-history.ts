@@ -1,7 +1,6 @@
 import { Entity } from '@/core/entities/entity';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
-import { PackageHistoryCreatedEvent } from '../events/package-history-created-event.ts';
 import type { PackageStatus } from './value-object/package-status';
 
 export interface PackageHistoryProps {
@@ -54,12 +53,6 @@ export class PackageHistory extends Entity<PackageHistoryProps> {
       },
       id
     );
-
-    if (!id) {
-      packageHistory.addDomainEvent(
-        new PackageHistoryCreatedEvent(packageHistory, packageHistory.packageId)
-      );
-    }
 
     return packageHistory;
   }

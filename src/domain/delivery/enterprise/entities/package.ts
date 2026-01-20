@@ -4,6 +4,7 @@ import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-
 import type { Optional } from '@/core/types/optional';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
+import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
@@ -126,6 +127,10 @@ export class Package extends AggregateRoot<PackageProps> {
       fromStatus: previousStatus,
       toStatus: this.status,
     });
+
+    this.addDomainEvent(
+      new PackageAssignedToADeliveryPersonEvent(packageHistory, this.id)
+    );
 
     this.histories.add(packageHistory);
   }
