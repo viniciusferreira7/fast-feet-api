@@ -1,14 +1,12 @@
 import { DomainEvents } from '@/core/events/domain-events';
 import type { EventHandler } from '@/core/events/event-handler';
 import type { PackagesRepository } from '@/domain/delivery/application/repositories/packages-repository';
-import type { RegisterPackageHistoryUseCase } from '@/domain/delivery/application/use-cases/register-package-history';
 import { PackageAssignedToADeliveryPersonEvent } from '@/domain/delivery/enterprise/events/package-assigned-to-a-delivery-person-event';
 import type { SendNotificationUseCase } from '../application/use-cases/send-notification';
 
 export class OnPackageAssignedToADeliveryPerson implements EventHandler {
   constructor(
     private readonly packagesRepository: PackagesRepository,
-    private readonly registerPackageHistoryUseCase: RegisterPackageHistoryUseCase,
     private readonly sendNotificationUseCase: SendNotificationUseCase
   ) {}
 
@@ -29,25 +27,9 @@ export class OnPackageAssignedToADeliveryPerson implements EventHandler {
 
     if (!packageRecord) return;
 
-    const packageHistoryRecord =
-      await this.registerPackageHistoryUseCase.execute({
-        packageHistoryData: {
-          packageId: packageHistory.packageId,
-          authorId: packageHistory.authorId,
-          createdAt: packageHistory.createdAt,
-          deliveryPersonId: packageHistory.deliveryPersonId,
-          description: packageHistory.description,
-          fromStatus: packageHistory.fromStatus,
-          toStatus: packageHistory.toStatus,
-        },
-      });
-
-    if (packageHistoryRecord.isLeft()) return;
-
     await this.sendNotificationUseCase.execute({
       title:
-        packageHistoryRecord.value.packageHistory.description ??
-        'Package assigned to a delivery person',
+        packageHistory.description ?? 'Package assigned to a delivery person',
       content: `Delivery person was assigned to get a package: ${packageRecord.name.length > 10 ? packageRecord.name.substring(0, 10).concat('...') : packageRecord.name}, the package code is: ${packageRecord.code.value}`,
       recipientId: packageRecord.recipientId.toString(),
     });
