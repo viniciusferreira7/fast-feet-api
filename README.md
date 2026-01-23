@@ -127,28 +127,48 @@ src/
 │   └── types/                      # Core type definitions
 │
 ├── domain/                         # Domain layer
-│   └── delivery/                   # Delivery context (bounded context)
+│   ├── delivery/                   # Delivery context (bounded context)
+│   │   ├── enterprise/             # Enterprise business rules
+│   │   │   ├── entities/           # Domain entities and value objects
+│   │   │   │   ├── admin-person.ts
+│   │   │   │   ├── delivery-person.ts
+│   │   │   │   ├── recipient-person.ts
+│   │   │   │   ├── package.ts
+│   │   │   │   ├── package-history.ts
+│   │   │   │   ├── attachments.ts
+│   │   │   │   ├── package-attachment.ts
+│   │   │   │   └── value-object/   # Value objects
+│   │   │   │       ├── cpf.ts
+│   │   │   │       ├── package-code.ts
+│   │   │   │       ├── package-status.ts
+│   │   │   │       ├── post-code.ts
+│   │   │   │       └── package-history-list.ts
+│   │   │   └── events/             # Domain events
+│   │   │       ├── package-registered-event.ts
+│   │   │       └── package-assigned-to-a-delivery-person-event.ts
+│   │   ├── application/            # Application business rules
+│   │   │   ├── use-cases/          # Use cases (application services)
+│   │   │   │   ├── register-admin-person.ts
+│   │   │   │   ├── register-delivery-person.ts
+│   │   │   │   ├── register-recipient-person.ts
+│   │   │   │   ├── register-package.ts
+│   │   │   │   ├── assign-package-to-a-delivery-person.ts
+│   │   │   │   └── register-package-history.ts
+│   │   │   ├── repositories/       # Repository interfaces
+│   │   │   ├── cryptography/       # Cryptography interfaces
+│   │   │   └── validation/         # Validation interfaces (e.g., CPF validator)
+│   │   └── errors/                 # Domain-specific errors
+│   │
+│   └── notification/               # Notification context (bounded context)
 │       ├── enterprise/             # Enterprise business rules
-│       │   ├── entities/           # Domain entities and value objects
-│       │   │   ├── admin-person.ts
-│       │   │   ├── delivery-person.ts
-│       │   │   ├── package.ts
-│       │   │   ├── package-history.ts
-│       │   │   ├── attachments.ts
-│       │   │   ├── package-attachment.ts
-│       │   │   └── value-object/   # Value objects
-│       │   │       ├── cpf.ts
-│       │   │       ├── package-code.ts
-│       │   │       ├── package-status.ts
-│       │   │       └── package-history-list.ts
-│       │   └── events/             # Domain events
-│       │       └── package-history-created-event.ts
+│       │   └── entities/           # Domain entities
+│       │       └── notification.ts
 │       ├── application/            # Application business rules
-│       │   ├── use-cases/          # Use cases (application services)
-│       │   ├── repositories/       # Repository interfaces
-│       │   ├── cryptography/       # Cryptography interfaces
-│       │   └── validation/         # Validation interfaces (e.g., CPF validator)
-│       └── errors/                 # Domain-specific errors
+│       │   └── use-cases/          # Use cases
+│       │       └── send-notification.ts
+│       └── subscribers/            # Event subscribers (cross-boundary communication)
+│           ├── on-package-registered-send-notification.ts
+│           └── on-package-assigned-send-notification.ts
 │
 └── infra/                          # Infrastructure layer
     └── env/                        # Environment configuration
@@ -226,10 +246,59 @@ src/
   - **State Transitions**: Enforced valid transitions between states
   - **Final States**: `delivered`, `returned`, `canceled` (no transitions allowed)
 
+- **PostCode**: Brazilian postal code (CEP) validation
+  - Format validation (8 digits with optional hyphen: 12345-678 or 12345678)
+  - Regex-based pattern matching
+  - Returns `Either<Error, PostCode>` for functional error handling
+
 - **PackageHistoryList**: Collection of package history entries
   - Extends WatchedList for tracking changes
   - Detects new, removed, and current history entries
   - Enables domain event dispatching for new entries
+
+### Domain Events & Subscribers
+
+The application uses domain events for cross-bounded-context communication:
+
+#### Events
+
+- **PackageRegisteredEvent**: Dispatched when a package is registered
+  - Triggers notification to recipient about new package
+  - Contains package history and package ID
+
+- **PackageAssignedToADeliveryPersonEvent**: Dispatched when a package is assigned to a delivery person
+  - Triggers notification to recipient about assignment
+  - Contains package history and package ID
+
+#### Subscribers
+
+- **OnPackageRegisteredSendNotification**: Listens to `PackageRegisteredEvent`
+  - Sends notification to recipient when their package is registered
+  - Cross-boundary communication between delivery and notification contexts
+
+- **OnPackageAssignedSendNotification**: Listens to `PackageAssignedToADeliveryPersonEvent`
+  - Sends notification to recipient when delivery person is assigned
+  - Cross-boundary communication between delivery and notification contexts
+
+### Package History
+
+Package history is **automatically created** by the Package entity when state changes occur:
+
+- **Automatic Creation**: No manual use case calls needed
+  - `package.updateStatus()` → Creates history entry
+  - `package.assignDeliveryPerson()` → Creates history entry
+  - `package.markAsRegistered()` → Creates initial history entry
+
+- **Audit Trail**: Each history entry records:
+  - From/To status transition
+  - Author (who made the change)
+  - Delivery person (if applicable)
+  - Description of the change
+  - Timestamp
+
+- **Manual History**: `RegisterPackageHistoryUseCase` exists for administrative purposes
+  - Used for manual corrections or special audit entries
+  - Not used in normal package lifecycle
 
 ### Package Lifecycle Flow
 
@@ -301,10 +370,12 @@ http://localhost:3333/api/docs
 The project includes comprehensive testing with Vitest:
 
 - **Unit Tests**: Testing individual components, use cases, and domain logic
-  - Value object validation (CPF, PackageCode, PackageStatus)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson)
+  - Value object validation (CPF, PackageCode, PackageStatus, PostCode)
+  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterPackage, AssignPackageToADeliveryPerson)
   - Entity behavior and state management
+  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification)
   - In-memory repository implementations for isolated testing
+  - **142 passing tests** with comprehensive coverage
 
 - **E2E Tests**: Testing complete user flows and API endpoints
   - Full request/response cycles
@@ -375,18 +446,26 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 ## 🔍 Key Features
 
 ### Implemented ✅
-- Domain entities with DDD principles
-- Value objects with validation (CPF, PackageCode, PackageStatus)
+- Domain entities with DDD principles (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Notification)
+- Value objects with validation (CPF, PackageCode, PackageStatus, PostCode)
 - Package status state machine with transition rules
-- User registration (Admin and Delivery Person)
+- User registration (Admin, Delivery Person, and Recipient)
+- Package registration with postal code validation
+- Package assignment to delivery person with automatic status updates
 - Password hashing with cryptography layer
 - External CPF validation with dependency injection pattern
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
-- Package history tracking with immutable audit trail
+- Event subscribers for cross-boundary communication
+  - Package registered notification
+  - Package assigned notification
+- Package history tracking with automatic audit trail
+  - Automatic creation on status changes
+  - Automatic creation on delivery person assignment
+  - Manual use case for administrative entries
 - WatchedList pattern for tracking collection changes
-- Package assignment to delivery person use case
-- Comprehensive unit tests for domain logic (106 tests)
+- Notification system for recipients
+- Comprehensive unit tests for domain logic (142 passing tests)
 - Test data factories for easy test setup
 - Functional error handling with Either monad pattern
 
