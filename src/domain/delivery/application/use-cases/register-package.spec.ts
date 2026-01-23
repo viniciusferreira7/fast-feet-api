@@ -50,6 +50,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -79,6 +80,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -97,6 +99,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: 'non-existent-id',
     });
@@ -114,6 +117,7 @@ describe('Register Package', () => {
       recipientId: 'non-existent-id',
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -133,6 +137,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: 'non-existent-id',
       authorId: admin.id.toString(),
     });
@@ -153,6 +158,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -174,6 +180,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -195,6 +202,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -220,6 +228,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -228,6 +237,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson2.id.toString(),
       name: 'Package',
       recipientAddress: '456 Oak Ave, Town, State',
+      postalCode: '98765-432',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -254,6 +264,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });

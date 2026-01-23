@@ -8,8 +8,9 @@ import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigne
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
-import type { PackageHistoryList } from './value-object/package-history-list';
+import { PackageHistoryList } from './value-object/package-history-list';
 import { PackageStatus } from './value-object/package-status';
+import type { PostCode } from './value-object/post-code';
 
 export interface PackageProps {
   id: UniqueEntityId;
@@ -20,6 +21,7 @@ export interface PackageProps {
   deliveryPersonId: UniqueEntityId | null;
   authorId: UniqueEntityId;
   status: PackageStatus;
+  postalCode: PostCode;
   attachment?: PackageAttachment | null;
   createdAt: Date;
   updatedAt: Date | null;
@@ -59,6 +61,10 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.status;
   }
 
+  get postCode() {
+    return this.props.postalCode;
+  }
+
   get attachment() {
     return this.props.attachment;
   }
@@ -80,7 +86,8 @@ export class Package extends AggregateRoot<PackageProps> {
 
   public updateStatus(
     newStatus: PackageStatus,
-    authorId: UniqueEntityId
+    authorId: UniqueEntityId,
+    description?: string | null
   ): Either<MissingAttachmentError | InvalidatePackageStatusError, void> {
     if (newStatus.isDelivered() && !this.props.attachment) {
       return left(new MissingAttachmentError());
@@ -97,7 +104,7 @@ export class Package extends AggregateRoot<PackageProps> {
       authorId: authorId,
       createdAt: new Date(),
       deliveryPersonId: this.props.deliveryPersonId,
-      description: 'Package status changed',
+      description: description ?? 'Package status changed',
       fromStatus: this.props.status,
       toStatus: transitionResult.value,
     });
@@ -117,7 +124,8 @@ export class Package extends AggregateRoot<PackageProps> {
   public assignDeliveryPerson(
     deliveryPersonId: UniqueEntityId,
     authorId: UniqueEntityId,
-    previousStatus: PackageStatus
+    previousStatus: PackageStatus,
+    description?: string | null
   ): void {
     this.props.deliveryPersonId = deliveryPersonId;
     this.props.updatedAt = new Date();
@@ -127,7 +135,7 @@ export class Package extends AggregateRoot<PackageProps> {
       authorId: authorId,
       createdAt: new Date(),
       deliveryPersonId: this.props.deliveryPersonId,
-      description: 'Package assigned to a delivery person',
+      description: description ?? 'Package assigned to a delivery person',
       fromStatus: previousStatus,
       toStatus: this.status,
     });
