@@ -9,11 +9,11 @@ import type { PackagesHistoryRepository } from '../repositories/packages-history
 import type { PackagesRepository } from '../repositories/packages-repository';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
-interface RegisterPackageHistoryUseCaseRequest {
+export interface RegisterPackageHistoryUseCaseRequest {
   packageHistoryData: PackageHistoryProps;
 }
 
-type RegisterPackageHistoryUseCaseResponse = Either<
+export type RegisterPackageHistoryUseCaseResponse = Either<
   ResourceNotFoundError,
   { packageHistory: PackageHistory }
 >;

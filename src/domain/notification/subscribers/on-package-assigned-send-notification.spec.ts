@@ -11,7 +11,7 @@ import {
   SendNotificationUseCaseRequest,
   SendNotificationUseCaseResponse,
 } from '../application/use-cases/send-notification';
-import { OnPackageAssignedToADeliveryPerson } from './on-package-assigned-to-a-delivery-person';
+import { OnPackageAssignedSendNotification } from './on-package-assigned-send-notification';
 
 let packagesRepository: InMemoryPackagesRepository;
 let packagesHistoryRepository: InMemoryPackagesHistoryRepository;
@@ -40,8 +40,8 @@ describe('On package assigned to a delivery person', () => {
 
     sendNotificationSpy = vi.spyOn(sendNotificationUseCase, 'execute');
 
-    const _onPackageAssignedToADeliveryPerson =
-      new OnPackageAssignedToADeliveryPerson(
+    const _onPackageAssignedSendNotification =
+      new OnPackageAssignedSendNotification(
         packagesRepository,
         sendNotificationUseCase
       );
