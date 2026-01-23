@@ -20,4 +20,11 @@ export class InMemoryPackagesHistoryRepository
 
     return packageHistory ?? null;
   }
+  async findManyByPackageId(
+    packageId: string
+  ): Promise<PackageHistory[] | null> {
+    return this.packagesHistory.filter((item) =>
+      item.packageId.equals(new UniqueEntityId(packageId))
+    );
+  }
 }
