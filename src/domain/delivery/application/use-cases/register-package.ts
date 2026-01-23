@@ -106,6 +106,8 @@ export class RegisterPackage {
 
     const packageCreated = packageCreatedResult.value;
 
+    packageCreated.markAsRegistered(author.id);
+
     await this.packagesRepository.register(packageCreated);
 
     return right({ package: packageCreated });

@@ -5,6 +5,7 @@ import type { Optional } from '@/core/types/optional';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
+import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
@@ -150,6 +151,24 @@ export class Package extends AggregateRoot<PackageProps> {
   public addAttachment(attachment: PackageAttachment): void {
     this.props.attachment = attachment;
     this.props.updatedAt = new Date();
+  }
+
+  public markAsRegistered(authorId: UniqueEntityId): void {
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: authorId,
+      createdAt: new Date(),
+      deliveryPersonId: this.props.deliveryPersonId,
+      description: 'Package registered',
+      fromStatus: null,
+      toStatus: this.status,
+    });
+
+    this.addDomainEvent(
+      new PackageRegisteredEvent(packageHistory, this.id)
+    );
+
+    this.histories.add(packageHistory);
   }
 
   public static create(
