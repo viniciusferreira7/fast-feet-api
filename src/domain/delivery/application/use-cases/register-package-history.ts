@@ -45,7 +45,7 @@ export class RegisterPackageHistoryUseCase {
       return left(new ResourceNotFoundError('admin'));
     }
 
-    if (!deliveryPerson) {
+    if (packageHistoryData.deliveryPersonId && !deliveryPerson) {
       return left(new ResourceNotFoundError('delivery'));
     }
 

@@ -1,12 +1,9 @@
 import { type Either, left, right } from '@/core/either';
-import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { Package } from '../../enterprise/entities/package';
-import { PackageHistory } from '../../enterprise/entities/package-history';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackagesHistoryRepository } from '../repositories/packages-history-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
@@ -27,7 +24,6 @@ type AssignPackageToADeliveryPersonUseCaseResponse = Either<
 export class AssignPackageToADeliveryPerson {
   constructor(
     private readonly packagesRepository: PackagesRepository,
-    private readonly packagesHistoryRepository: PackagesHistoryRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository
   ) {}
@@ -82,21 +78,11 @@ export class AssignPackageToADeliveryPerson {
     packageRegistered.assignDeliveryPerson(
       deliveryPerson.id,
       author.id,
-      previousPackageStatus.value
+      previousPackageStatus.value,
+      description
     );
 
-    const newPackageHistory = PackageHistory.create({
-      packageId: packageRegistered.id,
-      authorId: new UniqueEntityId(authorId),
-      deliveryPersonId: new UniqueEntityId(deliveryPersonId),
-      description: description ?? null,
-      fromStatus: previousPackageStatus.value,
-      toStatus: newPackageStatus.value,
-    });
-
     await this.packagesRepository.update(packageRegistered);
-
-    await this.packagesHistoryRepository.register(newPackageHistory);
 
     return right({ package: packageRegistered });
   }

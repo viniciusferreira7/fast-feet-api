@@ -5,9 +5,9 @@ import { PackageCode } from '../../enterprise/entities/value-object/package-code
 import { PackageHistoryList } from '../../enterprise/entities/value-object/package-history-list';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { PostCode } from '../../enterprise/entities/value-object/post-code';
+import type { InvalidaPostCode } from '../../errors/invalid-post-code-error';
 import type { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
-import type { InvalidaPostCode } from '../../errors/invalid-post-code-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
