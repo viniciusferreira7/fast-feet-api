@@ -164,9 +164,7 @@ export class Package extends AggregateRoot<PackageProps> {
       toStatus: this.status,
     });
 
-    this.addDomainEvent(
-      new PackageRegisteredEvent(packageHistory, this.id)
-    );
+    this.addDomainEvent(new PackageRegisteredEvent(packageHistory, this.id));
 
     this.histories.add(packageHistory);
   }
