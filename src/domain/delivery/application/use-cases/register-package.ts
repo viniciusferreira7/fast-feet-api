@@ -5,6 +5,7 @@ import { PackageCode } from '../../enterprise/entities/value-object/package-code
 import { PackageHistoryList } from '../../enterprise/entities/value-object/package-history-list';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { PostCode } from '../../enterprise/entities/value-object/post-code';
+import { ExternalPostCodeError } from '../../errors/external-post-code-validation-error';
 import type { InvalidaPostCode } from '../../errors/invalid-post-code-error';
 import type { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
@@ -12,13 +13,14 @@ import type { AdminPeopleRepository } from '../repositories/admin-people-reposit
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import type { PostCodeValidator } from '../validation/post-code-validator';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
   recipientId: string;
   name: string;
   recipientAddress: string;
-  postalCode: string;
+  postCode: string;
   deliveryPersonId: string | null;
   authorId: string;
 }
@@ -27,7 +29,8 @@ type RegisterPackageUseCaseResponse = Either<
   | ResourceNotFoundError
   | InvalidatePackageCodeError
   | InvalidatePackageStatusError
-  | InvalidaPostCode,
+  | InvalidaPostCode
+  | ExternalPostCodeError,
   {
     package: Package;
   }
@@ -38,7 +41,8 @@ export class RegisterPackage {
     private readonly packagesRepository: PackagesRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository,
-    private readonly recipientPeopleRepository: RecipientPeopleRepository
+    private readonly recipientPeopleRepository: RecipientPeopleRepository,
+    private readonly postCodeValidator: PostCodeValidator
   ) {}
 
   async execute({
@@ -47,15 +51,17 @@ export class RegisterPackage {
     authorId,
     deliveryPersonId,
     recipientAddress,
-    postalCode,
+    postCode,
   }: RegisterPackageUseCaseRequest): Promise<RegisterPackageUseCaseResponse> {
-    const [author, deliveryPerson, recipientPerson] = await Promise.all([
-      this.adminPeopleRepository.findById(authorId),
-      deliveryPersonId
-        ? this.deliveryPeopleRepository.findById(deliveryPersonId)
-        : Promise.resolve(null),
-      this.recipientPeopleRepository.findById(recipientId),
-    ]);
+    const [author, deliveryPerson, recipientPerson, isPostCodeValid] =
+      await Promise.all([
+        this.adminPeopleRepository.findById(authorId),
+        deliveryPersonId
+          ? this.deliveryPeopleRepository.findById(deliveryPersonId)
+          : Promise.resolve(null),
+        this.recipientPeopleRepository.findById(recipientId),
+        this.postCodeValidator.validate(postCode),
+      ]);
 
     if (!author) {
       return left(new ResourceNotFoundError('admin'));
@@ -67,6 +73,10 @@ export class RegisterPackage {
 
     if (!recipientPerson) {
       return left(new ResourceNotFoundError('recipient'));
+    }
+
+    if (!isPostCodeValid) {
+      return left(new ExternalPostCodeError());
     }
 
     const packageCode = PackageCode.create();
@@ -81,7 +91,7 @@ export class RegisterPackage {
       return left(packageStatus.value);
     }
 
-    const postCodeResult = PostCode.create({ value: postalCode });
+    const postCodeResult = PostCode.create({ value: postCode });
 
     if (postCodeResult.isLeft()) {
       return left(postCodeResult.value);
