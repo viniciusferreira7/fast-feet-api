@@ -3,7 +3,7 @@
 ## 🚀 Application Features
 
 * [X] Two types of users: delivery person and admin
-* [ ] Login with CPF and password
+* [X] Login with CPF and password
 * [ ] CRUD for delivery persons
 * [ ] CRUD for packages
 * [ ] CRUD for recipients
