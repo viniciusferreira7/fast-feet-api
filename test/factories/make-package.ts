@@ -8,7 +8,7 @@ import {
 import { PackageCode } from '@/domain/delivery/enterprise/entities/value-object/package-code';
 import { PackageHistoryList } from '@/domain/delivery/enterprise/entities/value-object/package-history-list';
 import { PackageStatus } from '@/domain/delivery/enterprise/entities/value-object/package-status';
-import { PostCode } from '@/domain/delivery/enterprise/entities/value-object/post-code';
+import { PostalCode } from '@/domain/delivery/enterprise/entities/value-object/postal-code';
 import { makePackageHistory } from './make-package-history';
 
 export function makePackage(
@@ -31,11 +31,11 @@ export function makePackage(
     );
   }
 
-  const postCodeResult = PostCode.create({ value: '12345-678' });
+  const postalCodeResult = PostalCode.create({ value: '12345-678' });
 
-  if (postCodeResult.isLeft()) {
+  if (postalCodeResult.isLeft()) {
     throw new Error(
-      `Failed to create valid post code for package factory: ${postCodeResult.value.message}`
+      `Failed to create valid postal code for package factory: ${postalCodeResult.value.message}`
     );
   }
 
@@ -59,7 +59,7 @@ export function makePackage(
       authorId,
       recipientAddress: faker.location.streetAddress({ useFullAddress: true }),
       status: statusResult.value,
-      postalCode: postCodeResult.value,
+      postalCode: postalCodeResult.value,
       attachment: null,
       histories: new PackageHistoryList([initialHistory]),
       deliveryPersonId: new UniqueEntityId(),

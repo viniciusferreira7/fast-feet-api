@@ -11,7 +11,7 @@ import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
 import { PackageHistoryList } from './value-object/package-history-list';
 import { PackageStatus } from './value-object/package-status';
-import type { PostCode } from './value-object/post-code';
+import type { PostalCode } from './value-object/postal-code';
 
 export interface PackageProps {
   id: UniqueEntityId;
@@ -22,7 +22,7 @@ export interface PackageProps {
   deliveryPersonId: UniqueEntityId | null;
   authorId: UniqueEntityId;
   status: PackageStatus;
-  postalCode: PostCode;
+  postalCode: PostalCode;
   attachment?: PackageAttachment | null;
   createdAt: Date;
   updatedAt: Date | null;
@@ -62,7 +62,7 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.status;
   }
 
-  get postCode() {
+  get postalCode() {
     return this.props.postalCode;
   }
 

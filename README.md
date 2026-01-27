@@ -141,7 +141,7 @@ src/
 │   │   │   │       ├── cpf.ts
 │   │   │   │       ├── package-code.ts
 │   │   │   │       ├── package-status.ts
-│   │   │   │       ├── post-code.ts
+│   │   │   │       ├── postal-code.ts
 │   │   │   │       └── package-history-list.ts
 │   │   │   └── events/             # Domain events
 │   │   │       ├── package-registered-event.ts
@@ -249,11 +249,11 @@ src/
   - **State Transitions**: Enforced valid transitions between states
   - **Final States**: `delivered`, `returned`, `canceled` (no transitions allowed)
 
-- **PostCode**: Brazilian postal code (CEP) validation
+- **PostalCode**: Brazilian postal code (CEP) validation
   - Format validation (8 digits with optional hyphen: 12345-678 or 12345678)
   - Regex-based pattern matching
-  - External post code validation through PostCodeValidator interface
-  - Returns `Either<Error, PostCode>` for functional error handling
+  - External postal code validation through PostalCodeValidator interface
+  - Returns `Either<Error, PostalCode>` for functional error handling
 
 - **PackageHistoryList**: Collection of package history entries
   - Extends WatchedList for tracking changes
@@ -374,7 +374,7 @@ http://localhost:3333/api/docs
 The project includes comprehensive testing with Vitest:
 
 - **Unit Tests**: Testing individual components, use cases, and domain logic
-  - Value object validation (CPF, PackageCode, PackageStatus, PostCode)
+  - Value object validation (CPF, PackageCode, PackageStatus, PostalCode)
   - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, RegisterPackage, AssignPackageToADeliveryPerson)
   - Entity behavior and state management
   - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification)
@@ -389,7 +389,7 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostCodeValidator for post code validation)
+  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
   - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment)
   - Test data generators (CPF generator, ULID generator)
@@ -416,7 +416,7 @@ test/
 │   └── in-memory-notifications-repository.ts
 ├── validation/             # Fake validation implementations
 │   ├── fake-cpf-validator.ts
-│   └── fake-post-code-validator.ts
+│   └── fake-postal-code-validator.ts
 └── utils/                  # Test utilities and helpers
 ```
 
@@ -453,7 +453,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 
 ### Implemented ✅
 - Domain entities with DDD principles (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Notification)
-- Value objects with validation (CPF, PackageCode, PackageStatus, PostCode)
+- Value objects with validation (CPF, PackageCode, PackageStatus, PostalCode)
 - Package status state machine with transition rules
 - User registration (Admin, Delivery Person, and Recipient)
 - User authentication use cases (Admin, Delivery Person, and Recipient)
@@ -464,7 +464,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Package assignment to delivery person with automatic status updates
 - Password hashing with cryptography layer
 - External CPF validation with dependency injection pattern
-- External post code validation with dependency injection pattern
+- External postal code validation with dependency injection pattern
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
 - Event subscribers for cross-boundary communication

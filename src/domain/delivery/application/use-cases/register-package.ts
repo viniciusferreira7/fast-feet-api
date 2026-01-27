@@ -4,23 +4,23 @@ import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
 import { PackageHistoryList } from '../../enterprise/entities/value-object/package-history-list';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
-import { PostCode } from '../../enterprise/entities/value-object/post-code';
-import { ExternalPostCodeError } from '../../errors/external-post-code-validation-error';
-import type { InvalidaPostCode } from '../../errors/invalid-post-code-error';
+import { PostalCode } from '../../enterprise/entities/value-object/postal-code';
+import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
+import type { InvalidPostalCode } from '../../errors/invalid-postal-code-error';
 import type { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
-import type { PostCodeValidator } from '../validation/post-code-validator';
+import type { PostalCodeValidator } from '../validation/postal-code-validator';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
   recipientId: string;
   name: string;
   recipientAddress: string;
-  postCode: string;
+  postalCode: string;
   deliveryPersonId: string | null;
   authorId: string;
 }
@@ -29,8 +29,8 @@ type RegisterPackageUseCaseResponse = Either<
   | ResourceNotFoundError
   | InvalidatePackageCodeError
   | InvalidatePackageStatusError
-  | InvalidaPostCode
-  | ExternalPostCodeError,
+  | InvalidPostalCode
+  | ExternalPostalCodeError,
   {
     package: Package;
   }
@@ -42,7 +42,7 @@ export class RegisterPackage {
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly recipientPeopleRepository: RecipientPeopleRepository,
-    private readonly postCodeValidator: PostCodeValidator
+    private readonly postalCodeValidator: PostalCodeValidator
   ) {}
 
   async execute({
@@ -51,16 +51,16 @@ export class RegisterPackage {
     authorId,
     deliveryPersonId,
     recipientAddress,
-    postCode,
+    postalCode,
   }: RegisterPackageUseCaseRequest): Promise<RegisterPackageUseCaseResponse> {
-    const [author, deliveryPerson, recipientPerson, isPostCodeValid] =
+    const [author, deliveryPerson, recipientPerson, isPostalCodeValid] =
       await Promise.all([
         this.adminPeopleRepository.findById(authorId),
         deliveryPersonId
           ? this.deliveryPeopleRepository.findById(deliveryPersonId)
           : Promise.resolve(null),
         this.recipientPeopleRepository.findById(recipientId),
-        this.postCodeValidator.validate(postCode),
+        this.postalCodeValidator.validate(postalCode),
       ]);
 
     if (!author) {
@@ -75,8 +75,8 @@ export class RegisterPackage {
       return left(new ResourceNotFoundError('recipient'));
     }
 
-    if (!isPostCodeValid) {
-      return left(new ExternalPostCodeError());
+    if (!isPostalCodeValid) {
+      return left(new ExternalPostalCodeError());
     }
 
     const packageCode = PackageCode.create();
@@ -91,10 +91,10 @@ export class RegisterPackage {
       return left(packageStatus.value);
     }
 
-    const postCodeResult = PostCode.create({ value: postCode });
+    const postalCodeResult = PostalCode.create({ value: postalCode });
 
-    if (postCodeResult.isLeft()) {
-      return left(postCodeResult.value);
+    if (postalCodeResult.isLeft()) {
+      return left(postalCodeResult.value);
     }
 
     const packageCreatedResult = Package.create({
@@ -104,7 +104,7 @@ export class RegisterPackage {
       recipientAddress,
       status: packageStatus.value,
       code: packageCode.value,
-      postalCode: postCodeResult.value,
+      postalCode: postalCodeResult.value,
       deliveryPersonId: deliveryPerson?.id ?? null,
       authorId: author.id,
       histories: new PackageHistoryList(),

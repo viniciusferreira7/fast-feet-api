@@ -6,11 +6,11 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
-import { FakePostCodeValidator } from 'test/validation/fake-post-code-validator';
+import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
-import { ExternalPostCodeError } from '../../errors/external-post-code-validation-error';
+import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { RegisterPackage } from './register-package';
 
@@ -19,7 +19,7 @@ let packageHistoryRepository: InMemoryPackagesHistoryRepository;
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;
-let postCodeValidator: FakePostCodeValidator;
+let postalCodeValidator: FakePostalCodeValidator;
 let sut: RegisterPackage;
 
 describe('Register Package', () => {
@@ -32,13 +32,13 @@ describe('Register Package', () => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     recipientPeopleRepository = new InMemoryRecipientPeopleRepository();
-    postCodeValidator = new FakePostCodeValidator();
+    postalCodeValidator = new FakePostalCodeValidator();
     sut = new RegisterPackage(
       packagesRepository,
       deliveryPeopleRepository,
       adminPeopleRepository,
       recipientPeopleRepository,
-      postCodeValidator
+      postalCodeValidator
     );
   });
 
@@ -55,7 +55,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -85,7 +85,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -104,7 +104,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: 'non-existent-id',
     });
@@ -122,7 +122,7 @@ describe('Register Package', () => {
       recipientId: 'non-existent-id',
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -142,7 +142,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: 'non-existent-id',
       authorId: admin.id.toString(),
     });
@@ -163,7 +163,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -185,7 +185,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -207,7 +207,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
@@ -233,7 +233,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -242,7 +242,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson2.id.toString(),
       name: 'Package',
       recipientAddress: '456 Oak Ave, Town, State',
-      postCode: '98765-432',
+      postalCode: '98765-432',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -269,7 +269,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: '12345-678',
+      postalCode: '12345-678',
       deliveryPersonId: deliveryPerson.id.toString(),
       authorId: admin.id.toString(),
     });
@@ -283,35 +283,35 @@ describe('Register Package', () => {
     }
   });
 
-  it('should not be able to register a package with invalid post code', async () => {
+  it('should not be able to register a package with invalid postal code', async () => {
     const admin = makeAdminPerson();
     const recipientPerson = makeRecipientPerson();
     await adminPeopleRepository.register(admin);
     await recipientPeopleRepository.register(recipientPerson);
 
-    const invalidPostCodeValidator = new FakePostCodeValidator();
-    vi.spyOn(invalidPostCodeValidator, 'validate').mockResolvedValue(false);
+    const invalidPostalCodeValidator = new FakePostalCodeValidator();
+    vi.spyOn(invalidPostalCodeValidator, 'validate').mockResolvedValue(false);
 
     const registerPackageWithInvalidValidator = new RegisterPackage(
       packagesRepository,
       deliveryPeopleRepository,
       adminPeopleRepository,
       recipientPeopleRepository,
-      invalidPostCodeValidator
+      invalidPostalCodeValidator
     );
 
     const result = await registerPackageWithInvalidValidator.execute({
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postCode: 'invalid-post-code',
+      postalCode: 'invalid-postal-code',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPostCodeError);
+      expect(result.value).toBeInstanceOf(ExternalPostalCodeError);
     }
   });
 });

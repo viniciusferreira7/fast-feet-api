@@ -12,9 +12,9 @@
 
 ### Features
 
-* create abstract class for post code validator ([5bccdef](https://github.com/viniciusferreira7/fast-feet-api/commit/5bccdef7801f4e7de86decc0c163e2dc380c5a46))
-* create fake post code validator to use on unit tests ([c214c67](https://github.com/viniciusferreira7/fast-feet-api/commit/c214c67380df1c8d7f744501c3601b9ff43de46b))
-* implement post code validator on register package use case ([7a809e6](https://github.com/viniciusferreira7/fast-feet-api/commit/7a809e6f7aa85f937285ebc446aa566f511fe444))
+* create abstract class for postal code validator ([5bccdef](https://github.com/viniciusferreira7/fast-feet-api/commit/5bccdef7801f4e7de86decc0c163e2dc380c5a46))
+* create fake postal code validator to use on unit tests ([c214c67](https://github.com/viniciusferreira7/fast-feet-api/commit/c214c67380df1c8d7f744501c3601b9ff43de46b))
+* implement postal code validator on register package use case ([7a809e6](https://github.com/viniciusferreira7/fast-feet-api/commit/7a809e6f7aa85f937285ebc446aa566f511fe444))
 
 # [1.9.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.8.0...v1.9.0) (2026-01-23)
 
@@ -23,8 +23,8 @@
 
 * add method to find many by package id into packages history repository ([5629f3b](https://github.com/viniciusferreira7/fast-feet-api/commit/5629f3b9b25d50030f75bb86d18780316a22bbdd))
 * add notification sending when package is assigned to delivery person ([9928af7](https://github.com/viniciusferreira7/fast-feet-api/commit/9928af744fce2006ad388a286e8b7f58be2d079f))
-* add post code in use cases, tests and factories ([8b9f4ef](https://github.com/viniciusferreira7/fast-feet-api/commit/8b9f4efd1159b992ca304eea679ef373cc6255c7))
-* create new value object for package, it is post code ([779796c](https://github.com/viniciusferreira7/fast-feet-api/commit/779796c402923b42dfaa8de616c85cebf01ea16e))
+* add postal code in use cases, tests and factories ([8b9f4ef](https://github.com/viniciusferreira7/fast-feet-api/commit/8b9f4efd1159b992ca304eea679ef373cc6255c7))
+* create new value object for package, it is postal code ([779796c](https://github.com/viniciusferreira7/fast-feet-api/commit/779796c402923b42dfaa8de616c85cebf01ea16e))
 * create subscriber when package registered send notification ([e81e309](https://github.com/viniciusferreira7/fast-feet-api/commit/e81e3097d0416b6e9fb8484f1324f5c55aad82aa))
 * wait for function to use on tests of subscribers ([619d8f8](https://github.com/viniciusferreira7/fast-feet-api/commit/619d8f81e994d8ddb09747378f951767b309fcad))
 
