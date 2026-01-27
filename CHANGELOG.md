@@ -1,3 +1,12 @@
+# [1.11.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.10.0...v1.11.0) (2026-01-27)
+
+
+### Features
+
+* create use case to authenticate admin person ([f9c8220](https://github.com/viniciusferreira7/fast-feet-api/commit/f9c82206a98431bcf1084930d0b159e2e84a1b33))
+* create use case to authenticate delivery person ([1c1b927](https://github.com/viniciusferreira7/fast-feet-api/commit/1c1b927c298b2b3537c3ee10b5db28a7c61074b4))
+* create use case to authenticate recipient ([1bdd110](https://github.com/viniciusferreira7/fast-feet-api/commit/1bdd1105bf3662248d0063be77d98725457188c2))
+
 # [1.10.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.9.0...v1.10.0) (2026-01-27)
 
 
