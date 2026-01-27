@@ -249,6 +249,7 @@ src/
 - **PostCode**: Brazilian postal code (CEP) validation
   - Format validation (8 digits with optional hyphen: 12345-678 or 12345678)
   - Regex-based pattern matching
+  - External post code validation through PostCodeValidator interface
   - Returns `Either<Error, PostCode>` for functional error handling
 
 - **PackageHistoryList**: Collection of package history entries
@@ -385,7 +386,7 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeCpfValidator for CPF validation)
+  - Fake implementations (FakeHasher for password hashing, FakeCpfValidator for CPF validation, FakePostCodeValidator for post code validation)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
   - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment)
   - Test data generators (CPF generator, ULID generator)
@@ -410,7 +411,8 @@ test/
 │   ├── in-memory-packages-history-repository.ts
 │   └── in-memory-notifications-repository.ts
 ├── validation/             # Fake validation implementations
-│   └── fake-cpf-validator.ts
+│   ├── fake-cpf-validator.ts
+│   └── fake-post-code-validator.ts
 └── utils/                  # Test utilities and helpers
 ```
 
@@ -454,6 +456,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Package assignment to delivery person with automatic status updates
 - Password hashing with cryptography layer
 - External CPF validation with dependency injection pattern
+- External post code validation with dependency injection pattern
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
 - Event subscribers for cross-boundary communication
