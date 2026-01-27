@@ -1,3 +1,12 @@
+# [1.10.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.9.0...v1.10.0) (2026-01-27)
+
+
+### Features
+
+* create abstract class for post code validator ([5bccdef](https://github.com/viniciusferreira7/fast-feet-api/commit/5bccdef7801f4e7de86decc0c163e2dc380c5a46))
+* create fake post code validator to use on unit tests ([c214c67](https://github.com/viniciusferreira7/fast-feet-api/commit/c214c67380df1c8d7f744501c3601b9ff43de46b))
+* implement post code validator on register package use case ([7a809e6](https://github.com/viniciusferreira7/fast-feet-api/commit/7a809e6f7aa85f937285ebc446aa566f511fe444))
+
 # [1.9.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.8.0...v1.9.0) (2026-01-23)
 
 
