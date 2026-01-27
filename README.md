@@ -151,6 +151,9 @@ src/
 │   │   │   │   ├── register-admin-person.ts
 │   │   │   │   ├── register-delivery-person.ts
 │   │   │   │   ├── register-recipient-person.ts
+│   │   │   │   ├── authenticate-admin-person.ts
+│   │   │   │   ├── authenticate-delivery-person.ts
+│   │   │   │   ├── authenticate-recipient-person.ts
 │   │   │   │   ├── register-package.ts
 │   │   │   │   ├── assign-package-to-a-delivery-person.ts
 │   │   │   │   └── register-package-history.ts
@@ -372,11 +375,11 @@ The project includes comprehensive testing with Vitest:
 
 - **Unit Tests**: Testing individual components, use cases, and domain logic
   - Value object validation (CPF, PackageCode, PackageStatus, PostCode)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterPackage, AssignPackageToADeliveryPerson)
+  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, RegisterPackage, AssignPackageToADeliveryPerson)
   - Entity behavior and state management
   - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification)
   - In-memory repository implementations for isolated testing
-  - **142 passing tests** with comprehensive coverage
+  - Comprehensive test coverage with 142+ passing tests
 
 - **E2E Tests**: Testing complete user flows and API endpoints
   - Full request/response cycles
@@ -386,7 +389,7 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeCpfValidator for CPF validation, FakePostCodeValidator for post code validation)
+  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostCodeValidator for post code validation)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
   - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment)
   - Test data generators (CPF generator, ULID generator)
@@ -395,7 +398,8 @@ The project includes comprehensive testing with Vitest:
 ```
 test/
 ├── cryptography/           # Fake cryptography implementations
-│   └── fake-hasher.ts
+│   ├── fake-hasher.ts
+│   └── faker-encrypter.ts
 ├── factories/              # Test data factories
 │   ├── make-admin-person.ts
 │   ├── make-delivery-person.ts
@@ -452,6 +456,10 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Value objects with validation (CPF, PackageCode, PackageStatus, PostCode)
 - Package status state machine with transition rules
 - User registration (Admin, Delivery Person, and Recipient)
+- User authentication use cases (Admin, Delivery Person, and Recipient)
+  - JWT token generation with encryption layer
+  - Password comparison with hash comparer
+  - Credential validation with wrong credentials error handling
 - Package registration with postal code validation
 - Package assignment to delivery person with automatic status updates
 - Password hashing with cryptography layer
@@ -473,12 +481,12 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Functional error handling with Either monad pattern
 
 ### In Progress 🚧
-- JWT authentication
-- Package CRUD operations
-- Recipient management
+- HTTP/REST API endpoints with NestJS controllers
+- JWT authentication middleware and guards
+- Package CRUD operations API
+- Recipient management API
 - Photo upload for delivery proof
 - Location-based package filtering
-- Notification system
 - E2E tests
 
 ## 🤝 Contributing
