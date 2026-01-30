@@ -80,6 +80,7 @@ export class RegisterAdminPerson {
       cpf: adminPersonCpf.value,
       email,
       password: hashedPassword,
+      emailVerification: null,
     });
 
     await this.adminPeopleRepository.register(adminPerson);
