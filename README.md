@@ -133,12 +133,14 @@ src/
 │   │   │   │   ├── admin-person.ts
 │   │   │   │   ├── delivery-person.ts
 │   │   │   │   ├── recipient-person.ts
+│   │   │   │   ├── email-verification.ts
 │   │   │   │   ├── package.ts
 │   │   │   │   ├── package-history.ts
 │   │   │   │   ├── attachments.ts
 │   │   │   │   ├── package-attachment.ts
 │   │   │   │   └── value-object/   # Value objects
 │   │   │   │       ├── cpf.ts
+│   │   │   │       ├── verification-code.ts
 │   │   │   │       ├── package-code.ts
 │   │   │   │       ├── package-status.ts
 │   │   │   │       ├── postal-code.ts
@@ -156,11 +158,24 @@ src/
 │   │   │   │   ├── authenticate-recipient-person.ts
 │   │   │   │   ├── register-package.ts
 │   │   │   │   ├── assign-package-to-a-delivery-person.ts
-│   │   │   │   └── register-package-history.ts
+│   │   │   │   ├── register-package-history.ts
+│   │   │   │   └── errors/         # Use case errors
+│   │   │   │       ├── person-already-exists-error.ts
+│   │   │   │       ├── wrong-credentials-error.ts
+│   │   │   │       └── email-code-has-not-been-verified-error.ts
 │   │   │   ├── repositories/       # Repository interfaces
 │   │   │   ├── cryptography/       # Cryptography interfaces
-│   │   │   └── validation/         # Validation interfaces (e.g., CPF validator)
+│   │   │   └── validation/         # Validation interfaces
+│   │   │       ├── cpf-validator.ts
+│   │   │       ├── password-validator.ts
+│   │   │       └── postal-code-validator.ts
 │   │   └── errors/                 # Domain-specific errors
+│   │       ├── invalid-cpf-error.ts
+│   │       ├── invalidate-cpf-error.ts
+│   │       ├── external-cpf-validation-error.ts
+│   │       ├── external-password-validation-error.ts
+│   │       ├── email-code-expired-error.ts
+│   │       └── invalid-email-code-error.ts
 │   │
 │   └── notification/               # Notification context (bounded context)
 │       ├── enterprise/             # Enterprise business rules
