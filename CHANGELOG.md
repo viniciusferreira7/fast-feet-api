@@ -1,3 +1,21 @@
+# [1.12.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.11.0...v1.12.0) (2026-01-30)
+
+
+### Bug Fixes
+
+* correct email verification logic and types ([657b345](https://github.com/viniciusferreira7/fast-feet-api/commit/657b3459f8031fa777f7f8e0738bc670509b5784))
+* correct password validation logic in registration ([10e1d0a](https://github.com/viniciusferreira7/fast-feet-api/commit/10e1d0acf0f84cf36c282825cba90b069663911a))
+
+
+### Features
+
+* add email verification requirement to authentication ([265e541](https://github.com/viniciusferreira7/fast-feet-api/commit/265e541b2ff338900d6e3912e798e517ebecd33a))
+* add email verification to person entities ([565e7da](https://github.com/viniciusferreira7/fast-feet-api/commit/565e7da4b3c3f7299511bd446cca8e360e89ae5c))
+* add validation of password on use cases ([378a5b1](https://github.com/viniciusferreira7/fast-feet-api/commit/378a5b1fc32369971f4d7fde89c374af3bfd68fd))
+* create entity email verification ([a0245bd](https://github.com/viniciusferreira7/fast-feet-api/commit/a0245bd6d6e59870ff85e6895047a9f6bb2afedd))
+* create error for unverified email authentication ([7d605b9](https://github.com/viniciusferreira7/fast-feet-api/commit/7d605b95fcfd52f5b5d17dcffa00f68dd1c393e6))
+* create verification code value object ([af82c06](https://github.com/viniciusferreira7/fast-feet-api/commit/af82c069758321ad7887ed061b9e9b089e9b6682))
+
 # [1.11.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.10.0...v1.11.0) (2026-01-27)
 
 
