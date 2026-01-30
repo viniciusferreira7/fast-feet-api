@@ -3,8 +3,10 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { FakeEncrypter } from 'test/cryptography/faker-encrypter';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
+import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { AuthenticateRecipientPerson } from './authenticate-recipient-person';
+import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;
@@ -168,5 +170,40 @@ describe('Authenticate Recipient Person', () => {
     expect(encryptSpy).toHaveBeenCalledWith({
       sub: recipientPerson.id.toString(),
     });
+  });
+
+  it('should not be able to authenticate if email has not been verified', async () => {
+    const cpfString = generateCpf();
+    const cpfResult = Cpf.create(cpfString);
+
+    if (cpfResult.isLeft()) {
+      throw new Error('Failed to create CPF');
+    }
+
+    const emailVerificationResult = EmailVerification.create({
+      validatedAt: null,
+    });
+
+    if (emailVerificationResult.isLeft()) {
+      throw new Error('Failed to create email verification');
+    }
+
+    const recipientPerson = makeRecipientPerson({
+      cpf: cpfResult.value,
+      password: await fakeHasher.hash('123456'),
+      emailVerification: emailVerificationResult.value,
+    });
+
+    await recipientPeopleRepository.register(recipientPerson);
+
+    const result = await sut.execute({
+      cpf: cpfString,
+      password: '123456',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(EmailCodeHasNotBeenVerifiedError);
+    }
   });
 });
