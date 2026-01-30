@@ -2,6 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import type { Encrypter } from '../cryptography/encrypter';
 import type { HashComparer } from '../cryptography/hash-comparer';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
 export interface AuthenticateAdminPersonUseCaseRequest {
@@ -10,7 +11,7 @@ export interface AuthenticateAdminPersonUseCaseRequest {
 }
 
 export type AuthenticateAdminPersonUseCaseResponse = Either<
-  WrongCredentialsError,
+  WrongCredentialsError | EmailCodeHasNotBeenVerifiedError,
   { accessToken: string }
 >;
 
@@ -38,6 +39,12 @@ export class AuthenticateAdminPerson {
 
     if (!doesPasswordMatches) {
       return left(new WrongCredentialsError());
+    }
+
+    const hasTheEmailBeenVerified = adminPerson.isEmailValidated;
+
+    if (!hasTheEmailBeenVerified) {
+      return left(new EmailCodeHasNotBeenVerifiedError());
     }
 
     const accessToken = await this.encrypter.encrypt({
