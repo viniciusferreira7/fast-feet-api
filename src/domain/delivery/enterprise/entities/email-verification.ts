@@ -65,8 +65,8 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
     return right(
       new EmailVerification({
         code: verificationCode.value,
-        createdAt: new Date(),
-        validatedAt: null,
+        createdAt: props.createdAt ?? new Date(),
+        validatedAt: props.validatedAt ?? null,
       })
     );
   }
