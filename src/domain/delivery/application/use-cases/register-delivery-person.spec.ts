@@ -2,14 +2,17 @@ import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
+import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterDeliveryPerson } from './register-delivery-person';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
+let passwordValidator: FakePasswordValidator;
 let hashGenerator: FakeHasher;
 let cpfValidator: FakeCpfValidator;
 let sut: RegisterDeliveryPerson;
@@ -17,10 +20,12 @@ let sut: RegisterDeliveryPerson;
 describe('Register Delivery Person', () => {
   beforeEach(() => {
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
+    passwordValidator = new FakePasswordValidator();
     hashGenerator = new FakeHasher();
     cpfValidator = new FakeCpfValidator();
     sut = new RegisterDeliveryPerson(
       deliveryPeopleRepository,
+      passwordValidator,
       hashGenerator,
       cpfValidator
     );
@@ -161,5 +166,34 @@ describe('Register Delivery Person', () => {
     if (result.isLeft()) {
       expect(result.value).toBeInstanceOf(ExternalCpfValidationError);
     }
+  });
+
+  it('should not be able to register with weak password', async () => {
+    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: generateCpf(),
+      email: 'john@example.com',
+      password: 'weak',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+    }
+  });
+
+  it('should validate password strength before registration', async () => {
+    const validateSpy = vi.spyOn(passwordValidator, 'validate');
+
+    await sut.execute({
+      name: 'John Doe',
+      cpf: generateCpf(),
+      email: 'john@example.com',
+      password: 'strongPassword123',
+    });
+
+    expect(validateSpy).toHaveBeenCalledWith('strongPassword123');
   });
 });
