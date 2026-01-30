@@ -2,10 +2,12 @@ import { type Either, left, right } from '@/core/either';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { CpfValidator } from '../validation/cpf-validator';
+import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterAdminPersonUseCaseRequest {
@@ -16,7 +18,10 @@ interface RegisterAdminPersonUseCaseRequest {
 }
 
 type RegisterAdminPersonUseCaseResponse = Either<
-  InvalidateCpfError | PersonAlreadyExistsError | ExternalCpfValidationError,
+  | InvalidateCpfError
+  | PersonAlreadyExistsError
+  | ExternalCpfValidationError
+  | ExternalPasswordValidationError,
   {
     adminPerson: AdminPerson;
   }
@@ -25,6 +30,7 @@ type RegisterAdminPersonUseCaseResponse = Either<
 export class RegisterAdminPerson {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
+    private readonly passwordValidator: PasswordValidator,
     private readonly hashGenerator: HashGenerator,
     private readonly cpfValidator: CpfValidator
   ) {}
@@ -59,6 +65,12 @@ export class RegisterAdminPerson {
 
     if (adminPersonCpf.isLeft()) {
       return left(adminPersonCpf.value);
+    }
+
+    const isPasswordValid = await this.passwordValidator.validate(password);
+
+    if (!isPasswordValid) {
+      return left(new ExternalPasswordValidationError());
     }
 
     const hashedPassword = await this.hashGenerator.hash(password);

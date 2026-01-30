@@ -2,10 +2,12 @@ import { type Either, left, right } from '@/core/either';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import { CpfValidator } from '../validation/cpf-validator';
+import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterDeliveryPersonUseCaseRequest {
@@ -16,7 +18,10 @@ interface RegisterDeliveryPersonUseCaseRequest {
 }
 
 type RegisterDeliveryPersonUseCaseResponse = Either<
-  InvalidateCpfError | PersonAlreadyExistsError | ExternalCpfValidationError,
+  | InvalidateCpfError
+  | PersonAlreadyExistsError
+  | ExternalCpfValidationError
+  | ExternalPasswordValidationError,
   {
     deliveryPerson: DeliveryPerson;
   }
@@ -25,6 +30,7 @@ type RegisterDeliveryPersonUseCaseResponse = Either<
 export class RegisterDeliveryPerson {
   constructor(
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
+    private readonly passwordValidator: PasswordValidator,
     private readonly hashGenerator: HashGenerator,
     private readonly cpfValidator: CpfValidator
   ) {}
@@ -59,6 +65,12 @@ export class RegisterDeliveryPerson {
 
     if (DeliveryPersonCpf.isLeft()) {
       return left(DeliveryPersonCpf.value);
+    }
+
+    const isPasswordValid = await this.passwordValidator.validate(password);
+
+    if (!isPasswordValid) {
+      return left(new ExternalPasswordValidationError());
     }
 
     const hashedPassword = await this.hashGenerator.hash(password);

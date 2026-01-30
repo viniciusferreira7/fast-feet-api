@@ -2,10 +2,12 @@ import { type Either, left, right } from '@/core/either';
 import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { CpfValidator } from '../validation/cpf-validator';
+import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterRecipientPersonUseCaseRequest {
@@ -16,7 +18,10 @@ interface RegisterRecipientPersonUseCaseRequest {
 }
 
 type RegisterRecipientPersonUseCaseResponse = Either<
-  InvalidateCpfError | PersonAlreadyExistsError | ExternalCpfValidationError,
+  | InvalidateCpfError
+  | PersonAlreadyExistsError
+  | ExternalCpfValidationError
+  | ExternalPasswordValidationError,
   {
     recipientPerson: RecipientPerson;
   }
@@ -25,6 +30,7 @@ type RegisterRecipientPersonUseCaseResponse = Either<
 export class RegisterRecipientPerson {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,
+    private readonly passwordValidator: PasswordValidator,
     private readonly hashGenerator: HashGenerator,
     private readonly cpfValidator: CpfValidator
   ) {}
@@ -59,6 +65,12 @@ export class RegisterRecipientPerson {
 
     if (recipientPersonCpf.isLeft()) {
       return left(recipientPersonCpf.value);
+    }
+
+    const isPasswordValid = await this.passwordValidator.validate(password);
+
+    if (!isPasswordValid) {
+      return left(new ExternalPasswordValidationError());
     }
 
     const hashedPassword = await this.hashGenerator.hash(password);
