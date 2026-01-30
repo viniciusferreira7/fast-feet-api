@@ -218,6 +218,12 @@ src/
   - Tracks read/unread status
   - Associated with recipient
 
+- **EmailVerification**: Email verification management for user authentication
+  - Generates unique 8-digit verification codes
+  - 5-minute expiration window for security
+  - Tracks validation status (validated/pending)
+  - Immutable verification tracking
+
 #### Value Objects
 
 - **CPF**: Brazilian tax ID validation
@@ -259,6 +265,12 @@ src/
   - Extends WatchedList for tracking changes
   - Detects new, removed, and current history entries
   - Enables domain event dispatching for new entries
+
+- **VerificationCode**: 8-digit email verification code value object
+  - Auto-generated using cryptographically secure random integers
+  - Format validation (exactly 8 digits)
+  - Lexicographically comparable
+  - Leading zero preservation
 
 ### Domain Events & Subscribers
 
@@ -328,9 +340,11 @@ delivered   failed_delivery   │
 
 - **JWT-based authentication**: Secure token-based auth
 - **Role-Based Access Control (RBAC)**: Permission management
-- **Two user roles**: Admin and Delivery Person with different permissions
+- **Three user roles**: Admin, Delivery Person, and Recipient with different permissions
 - **Login with CPF and password**: Brazilian tax ID authentication
 - **Password hashing**: Secure password storage using cryptography layer
+- **Email verification requirement**: Users must verify their email before authentication
+- **Time-limited verification codes**: 5-minute expiration window for security
 
 ### User Roles & Permissions
 
@@ -374,12 +388,14 @@ http://localhost:3333/api/docs
 The project includes comprehensive testing with Vitest:
 
 - **Unit Tests**: Testing individual components, use cases, and domain logic
-  - Value object validation (CPF, PackageCode, PackageStatus, PostalCode)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, RegisterPackage, AssignPackageToADeliveryPerson)
+  - Value object validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
+  - Entity logic (EmailVerification expiration, validation status)
+  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, AssignPackageToADeliveryPerson)
+  - Email verification requirement in authentication flow
   - Entity behavior and state management
   - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification)
   - In-memory repository implementations for isolated testing
-  - Comprehensive test coverage with 142+ passing tests
+  - Comprehensive test coverage with 190+ passing tests
 
 - **E2E Tests**: Testing complete user flows and API endpoints
   - Full request/response cycles
@@ -389,10 +405,10 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation)
+  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
-  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment)
-  - Test data generators (CPF generator, ULID generator)
+  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment) with automatic email verification creation
+  - Test data generators (CPF generator, ULID generator, verification code generator)
 
 ### Test Structure
 ```
@@ -416,6 +432,7 @@ test/
 │   └── in-memory-notifications-repository.ts
 ├── validation/             # Fake validation implementations
 │   ├── fake-cpf-validator.ts
+│   ├── fake-password-validator.ts
 │   └── fake-postal-code-validator.ts
 └── utils/                  # Test utilities and helpers
 ```
@@ -452,19 +469,24 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 ## 🔍 Key Features
 
 ### Implemented ✅
-- Domain entities with DDD principles (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Notification)
-- Value objects with validation (CPF, PackageCode, PackageStatus, PostalCode)
+- Domain entities with DDD principles (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Notification, EmailVerification)
+- Value objects with validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
 - Package status state machine with transition rules
 - User registration (Admin, Delivery Person, and Recipient)
+  - Password validation with external validator interface
+  - Automatic email verification creation
 - User authentication use cases (Admin, Delivery Person, and Recipient)
   - JWT token generation with encryption layer
   - Password comparison with hash comparer
   - Credential validation with wrong credentials error handling
+  - Email verification requirement before authentication
+  - Time-limited verification codes (5-minute expiration)
 - Package registration with postal code validation
 - Package assignment to delivery person with automatic status updates
 - Password hashing with cryptography layer
 - External CPF validation with dependency injection pattern
 - External postal code validation with dependency injection pattern
+- External password strength validation with dependency injection pattern
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
 - Event subscribers for cross-boundary communication
@@ -476,8 +498,15 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
   - Manual use case for administrative entries
 - WatchedList pattern for tracking collection changes
 - Notification system for recipients
-- Comprehensive unit tests for domain logic (142 passing tests)
-- Test data factories for easy test setup
+- Email verification system with time-limited codes
+  - 8-digit cryptographically secure verification codes
+  - 5-minute expiration window
+  - Validation status tracking
+- Comprehensive unit tests for domain logic (190 passing tests)
+  - Email verification expiration logic tests
+  - Authentication with unverified email rejection tests
+  - Verification code format validation tests
+- Test data factories for easy test setup with automatic email verification
 - Functional error handling with Either monad pattern
 
 ### In Progress 🚧
