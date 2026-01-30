@@ -1,6 +1,7 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import type { EmailVerification } from './email-verification';
 import type { Cpf } from './value-object/cpf';
 
 export interface AdminPersonProps {
@@ -8,6 +9,7 @@ export interface AdminPersonProps {
   cpf: Cpf;
   email: string;
   password: string;
+  emailVerification: EmailVerification | null;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -30,6 +32,10 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
   }
   get updatedAt() {
     return this.props.updatedAt;
+  }
+
+  get isEmailValidated() {
+    return !!this.props?.emailVerification?.validatedAt;
   }
 
   public static create(
