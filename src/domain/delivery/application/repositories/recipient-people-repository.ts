@@ -5,4 +5,5 @@ export abstract class RecipientPeopleRepository {
   abstract findByCpf(cpf: string): Promise<RecipientPerson | null>;
   abstract findByEmail(email: string): Promise<RecipientPerson | null>;
   abstract findById(email: string): Promise<RecipientPerson | null>;
+  abstract update(data: RecipientPerson): Promise<null>;
 }
