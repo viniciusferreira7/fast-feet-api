@@ -1,6 +1,6 @@
 import type { ErrorImplementation } from '@/core/errors/error-implementation';
 
-export class InvalidEmailCodeError
+export class InvalidEmailCodeExpiredError
   extends Error
   implements ErrorImplementation
 {

@@ -1,5 +1,5 @@
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
-import { EmailCodeError } from '../../errors/email-code-expired-error';
+import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { EmailVerification } from './email-verification';
 import { VerificationCode } from './value-object/verification-code';
 
@@ -78,7 +78,7 @@ describe('EmailVerification', () => {
 
         expect(result.isLeft()).toBe(true);
         if (result.isLeft()) {
-          expect(result.value).toBeInstanceOf(EmailCodeError);
+          expect(result.value).toBeInstanceOf(EmailCodeExpiredError);
         }
       }
     });

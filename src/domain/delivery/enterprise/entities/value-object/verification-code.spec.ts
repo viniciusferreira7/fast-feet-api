@@ -1,4 +1,4 @@
-import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
+import { InvalidEmailCodeExpiredError } from '@/domain/delivery/errors/invalid-email-code-error';
 import { VerificationCode } from './verification-code';
 
 describe('VerificationCode', () => {
@@ -77,7 +77,7 @@ describe('VerificationCode', () => {
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {
-        expect(result.value).toBeInstanceOf(InvalidEmailCodeError);
+        expect(result.value).toBeInstanceOf(InvalidEmailCodeExpiredError);
       }
     });
 
@@ -86,7 +86,7 @@ describe('VerificationCode', () => {
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {
-        expect(result.value).toBeInstanceOf(InvalidEmailCodeError);
+        expect(result.value).toBeInstanceOf(InvalidEmailCodeExpiredError);
       }
     });
 
