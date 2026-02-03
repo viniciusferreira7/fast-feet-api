@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
-import type { EmailVerification } from './email-verification';
+import { EmailVerification } from './email-verification';
 import type { Cpf } from './value-object/cpf';
 
 export interface RecipientPersonProps {
@@ -34,8 +34,24 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
     return this.props.updatedAt;
   }
 
+  get emailVerification() {
+    return this.props.emailVerification;
+  }
+
   get isEmailValidated() {
     return !!this.props?.emailVerification?.validatedAt;
+  }
+
+  public createNewEmailVerification(): boolean {
+    const emailVerification = EmailVerification.create({});
+
+    if (emailVerification.isRight()) {
+      this.props.emailVerification = emailVerification.value;
+
+      return true;
+    }
+
+    return false;
   }
 
   public static create(
