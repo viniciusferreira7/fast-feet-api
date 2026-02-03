@@ -1,3 +1,18 @@
+# [1.13.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.12.0...v1.13.0) (2026-02-03)
+
+
+### Features
+
+* add email verification methods to admin and recipient entities ([e4e2865](https://github.com/viniciusferreira7/fast-feet-api/commit/e4e28650adb3fffb8224073cd603b95de045b7be))
+* add email verification methods to delivery person entity ([8af6c8a](https://github.com/viniciusferreira7/fast-feet-api/commit/8af6c8a3778de028725618a7c020a1cd9be4a0ce))
+* add email verifications repository interface ([f000d0e](https://github.com/viniciusferreira7/fast-feet-api/commit/f000d0e88aa7f44aa35d94731cc28e79460421cf))
+* add expiration time tracking methods to email verification ([ea191d1](https://github.com/viniciusferreira7/fast-feet-api/commit/ea191d14e46c28279450cc24cc06f1f652c5021a))
+* add send admin person code use case ([389cd33](https://github.com/viniciusferreira7/fast-feet-api/commit/389cd33cc88040be64236da6eaa91e247b386c12))
+* add send delivery person code use case ([747fc41](https://github.com/viniciusferreira7/fast-feet-api/commit/747fc41db09efa8edbb061a49ecd407e4ff77acb))
+* add send recipient person code use case ([7c5314e](https://github.com/viniciusferreira7/fast-feet-api/commit/7c5314e91ebfebd9a5ac4e14990681998d4835ce))
+* add update method to admin and recipient repository interfaces ([09d4b79](https://github.com/viniciusferreira7/fast-feet-api/commit/09d4b793bd7465dd398885768620040d5850d774))
+* add update method to delivery people repository interface ([c2f1c85](https://github.com/viniciusferreira7/fast-feet-api/commit/c2f1c85c1f2e35c59539a410fd05428bde072709))
+
 # [1.12.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.11.0...v1.12.0) (2026-01-30)
 
 
