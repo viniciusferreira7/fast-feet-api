@@ -156,14 +156,20 @@ src/
 │   │   │   │   ├── authenticate-admin-person.ts
 │   │   │   │   ├── authenticate-delivery-person.ts
 │   │   │   │   ├── authenticate-recipient-person.ts
+│   │   │   │   ├── send-admin-person-code.ts
+│   │   │   │   ├── send-delivery-person-code.ts
+│   │   │   │   ├── send-recipient-person-code.ts
 │   │   │   │   ├── register-package.ts
 │   │   │   │   ├── assign-package-to-a-delivery-person.ts
 │   │   │   │   ├── register-package-history.ts
 │   │   │   │   └── errors/         # Use case errors
 │   │   │   │       ├── person-already-exists-error.ts
 │   │   │   │       ├── wrong-credentials-error.ts
-│   │   │   │       └── email-code-has-not-been-verified-error.ts
+│   │   │   │       ├── email-code-has-not-been-verified-error.ts
+│   │   │   │       └── time-to-send-new-email-code-error.ts
 │   │   │   ├── repositories/       # Repository interfaces
+│   │   │   ├── email/              # Email service interfaces
+│   │   │   │   └── email-sender.ts
 │   │   │   ├── cryptography/       # Cryptography interfaces
 │   │   │   └── validation/         # Validation interfaces
 │   │   │       ├── cpf-validator.ts
@@ -420,7 +426,7 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation)
+  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation, FakeEmailSender for email delivery)
   - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
   - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment) with automatic email verification creation
   - Test data generators (CPF generator, ULID generator, verification code generator)
@@ -431,6 +437,8 @@ test/
 ├── cryptography/           # Fake cryptography implementations
 │   ├── fake-hasher.ts
 │   └── faker-encrypter.ts
+├── email/                  # Fake email implementations
+│   └── fake-email-sender.ts
 ├── factories/              # Test data factories
 │   ├── make-admin-person.ts
 │   ├── make-delivery-person.ts
@@ -517,6 +525,9 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
   - 8-digit cryptographically secure verification codes
   - 5-minute expiration window
   - Validation status tracking
+  - Send verification code use cases for all user types (Admin, Delivery Person, Recipient)
+  - Rate limiting to prevent code spam (can't request new code until current expires)
+  - Email service abstraction with EmailSender interface
 - Comprehensive unit tests for domain logic (190 passing tests)
   - Email verification expiration logic tests
   - Authentication with unverified email rejection tests
