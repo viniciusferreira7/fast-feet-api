@@ -2,8 +2,8 @@ import { type Either, left, right } from '@/core/either';
 import { Entity } from '@/core/entities/entity';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
-import { EmailCodeError } from '../../errors/email-code-expired-error';
-import type { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
+import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
+import type { InvalidEmailCodeExpiredError } from '../../errors/invalid-email-code-error';
 import { VerificationCode } from './value-object/verification-code';
 
 interface EmailVerificationProps {
@@ -25,11 +25,23 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
     return this.props.validatedAt;
   }
 
-  private isCodeExpired() {
+  public isCodeExpired() {
     const differenceInMilliseconds =
       Date.now() - this.props.createdAt.getTime();
     const FIVE_MINUTES = 1000 * 60 * 5;
     return differenceInMilliseconds > FIVE_MINUTES;
+  }
+
+  public timeInMinutesToExpireCode() {
+    const differenceInMilliseconds =
+      Date.now() - this.props.createdAt.getTime();
+    const FIVE_MINUTES = 1000 * 60 * 5;
+
+    const time = Math.round(
+      Math.ceil(differenceInMilliseconds - FIVE_MINUTES) / 60 / 60
+    );
+
+    return time;
   }
 
   static create(
@@ -38,7 +50,10 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
       'code' | 'createdAt' | 'validatedAt'
     >,
     id?: UniqueEntityId
-  ): Either<EmailCodeError | InvalidEmailCodeError, EmailVerification> {
+  ): Either<
+    EmailCodeExpiredError | InvalidEmailCodeExpiredError,
+    EmailVerification
+  > {
     if (id && props.code) {
       const emailVerification = new EmailVerification(
         {
@@ -50,7 +65,7 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
       );
 
       if (emailVerification.isCodeExpired()) {
-        return left(new EmailCodeError());
+        return left(new EmailCodeExpiredError());
       }
 
       return right(emailVerification);
