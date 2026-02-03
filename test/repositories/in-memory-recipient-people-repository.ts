@@ -35,4 +35,16 @@ export class InMemoryRecipientPeopleRepository
 
     return recipientPerson ?? null;
   }
+
+  async update(data: RecipientPerson): Promise<null> {
+    const index = this.recipientPeople.findIndex((person) =>
+      person.id.equals(data.id)
+    );
+
+    if (index !== -1) {
+      this.recipientPeople[index] = data;
+    }
+
+    return null;
+  }
 }

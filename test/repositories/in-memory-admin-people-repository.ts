@@ -33,4 +33,16 @@ export class InMemoryAdminPeopleRepository implements AdminPeopleRepository {
 
     return adminPerson ?? null;
   }
+
+  async update(data: AdminPerson): Promise<null> {
+    const index = this.adminPeople.findIndex((person) =>
+      person.id.equals(data.id)
+    );
+
+    if (index !== -1) {
+      this.adminPeople[index] = data;
+    }
+
+    return null;
+  }
 }
