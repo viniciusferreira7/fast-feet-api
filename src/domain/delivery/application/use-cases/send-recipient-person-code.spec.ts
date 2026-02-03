@@ -72,8 +72,9 @@ describe('Send Recipient Person Code', () => {
       email: 'recipient@example.com',
     });
 
-    const updatedRecipientPerson =
-      await recipientPeopleRepository.findByEmail('recipient@example.com');
+    const updatedRecipientPerson = await recipientPeopleRepository.findByEmail(
+      'recipient@example.com'
+    );
 
     expect(updatedRecipientPerson?.emailVerification).toBeTruthy();
     expect(updatedRecipientPerson?.emailVerification?.code).toBeTruthy();
@@ -205,8 +206,9 @@ describe('Send Recipient Person Code', () => {
     expect(result.isRight()).toBe(true);
     expect(emailSender.sentEmails).toHaveLength(1);
 
-    const updatedRecipientPerson =
-      await recipientPeopleRepository.findByEmail('recipient@example.com');
+    const updatedRecipientPerson = await recipientPeopleRepository.findByEmail(
+      'recipient@example.com'
+    );
 
     expect(updatedRecipientPerson?.emailVerification).toBeTruthy();
   });

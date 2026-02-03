@@ -45,7 +45,7 @@ trap 'print_error "Verification failed at step: $CURRENT_STEP"; exit 1' ERR
 
 echo ""
 echo -e "${MAGENTA}╔════════════════════════════════════════╗${NC}"
-echo -e "${MAGENTA}║     🚀 VERIFICATION PIPELINE 🚀       ║${NC}"
+echo -e "${MAGENTA}║     🚀  VERIFICATION PIPELINE 🚀       ║${NC}"
 echo -e "${MAGENTA}╚════════════════════════════════════════╝${NC}"
 
 # Step 1: Git Pull

@@ -1,10 +1,10 @@
+import { FakeEmailSender } from 'test/email/fake-email-sender';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
-import { FakeEmailSender } from 'test/email/fake-email-sender';
-import { SendDeliveryPersonCodeUseCase } from './send-delivery-person-code';
-import { WrongCredentialsError } from './errors/wrong-credentials-error';
-import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
 import { EmailVerification } from '../../enterprise/entities/email-verification';
+import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
+import { WrongCredentialsError } from './errors/wrong-credentials-error';
+import { SendDeliveryPersonCodeUseCase } from './send-delivery-person-code';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let emailSender: FakeEmailSender;
@@ -91,7 +91,9 @@ describe('Send Delivery Person Code', () => {
   });
 
   it('should send a new code if the existing code has expired', async () => {
-    const fiveMinutesAndOneSecondAgo = new Date(Date.now() - 5 * 60 * 1000 - 1000);
+    const fiveMinutesAndOneSecondAgo = new Date(
+      Date.now() - 5 * 60 * 1000 - 1000
+    );
 
     const emailVerificationResult = EmailVerification.create({
       createdAt: fiveMinutesAndOneSecondAgo,
@@ -117,7 +119,9 @@ describe('Send Delivery Person Code', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value.deliveryPerson.emailVerification?.code.code).not.toBe(oldCode);
+      expect(result.value.deliveryPerson.emailVerification?.code.code).not.toBe(
+        oldCode
+      );
     }
     expect(emailSender.sentEmails).toHaveLength(1);
   });
@@ -176,8 +180,13 @@ describe('Send Delivery Person Code', () => {
     });
 
     expect(result.isLeft()).toBe(true);
-    if (result.isLeft() && result.value instanceof TimeToSendNewEmailCodeError) {
-      expect(result.value.message).toContain('Wait until existing e-mail code expired');
+    if (
+      result.isLeft() &&
+      result.value instanceof TimeToSendNewEmailCodeError
+    ) {
+      expect(result.value.message).toContain(
+        'Wait until existing e-mail code expired'
+      );
     }
   });
 
