@@ -1,6 +1,8 @@
+import { type Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { SamePasswordError } from '../../application/use-cases/errors/same-password-error';
 import { EmailVerification } from './email-verification';
 import type { Cpf } from './value-object/cpf';
 
@@ -45,6 +47,20 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
 
   get isEmailValidated() {
     return !!this.props?.emailVerification?.validatedAt;
+  }
+
+  public updatePassword(
+    newPassword: string
+  ): Either<SamePasswordError, string> {
+    if (this.password === newPassword) {
+      return left(new SamePasswordError());
+    }
+
+    this.props.password = newPassword;
+
+    this.props.emailVerification = null;
+
+    return right(this.password);
   }
 
   public createNewEmailVerification(): boolean {
