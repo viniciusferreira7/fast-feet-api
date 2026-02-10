@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.13.0...v1.14.0) (2026-02-10)
+
+
+### Features
+
+* add reset password use cases for admin and recipient ([4615642](https://github.com/viniciusferreira7/fast-feet-api/commit/46156426698f83f5184be4a5f13947b6866050bf))
+* create use case to reset delivery person password ([8a847bc](https://github.com/viniciusferreira7/fast-feet-api/commit/8a847bcae12019a82450ab3974a458bc8faea13f))
+
 # [1.13.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.12.0...v1.13.0) (2026-02-03)
 
 
