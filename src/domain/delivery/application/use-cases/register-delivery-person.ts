@@ -2,7 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
-import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';

@@ -6,7 +6,7 @@ import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
-import { ExternalPasswordValidationError } from '../../errors/external-passwor-validation-error';
+import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterRecipientPerson } from './register-recipient-person';
