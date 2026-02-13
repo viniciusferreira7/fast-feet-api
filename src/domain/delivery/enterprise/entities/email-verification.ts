@@ -3,18 +3,22 @@ import { Entity } from '@/core/entities/entity';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
-import type { InvalidEmailCodeExpiredError } from '../../errors/invalid-email-code-error';
+import type { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import { VerificationCode } from './value-object/verification-code';
 
 interface EmailVerificationProps {
-  code: VerificationCode;
+  verificationCode: VerificationCode;
   createdAt: Date;
   validatedAt: Date | null;
 }
 
 export class EmailVerification extends Entity<EmailVerificationProps> {
+  get verificationCode() {
+    return this.props.verificationCode;
+  }
+
   get code() {
-    return this.props.code;
+    return this.props.verificationCode.code;
   }
 
   get createdAt() {
@@ -25,7 +29,16 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
     return this.props.validatedAt;
   }
 
-  public isCodeExpired() {
+  public validateCode(code: string): boolean {
+    if (this.props.verificationCode.validateCode(code)) {
+      this.props.validatedAt = new Date();
+      return true;
+    }
+
+    return false;
+  }
+
+  public isCodeExpired(): boolean {
     const differenceInMilliseconds =
       Date.now() - this.props.createdAt.getTime();
     const FIVE_MINUTES = 1000 * 60 * 5;
@@ -47,17 +60,14 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
   static create(
     props: Optional<
       EmailVerificationProps,
-      'code' | 'createdAt' | 'validatedAt'
+      'verificationCode' | 'createdAt' | 'validatedAt'
     >,
     id?: UniqueEntityId
-  ): Either<
-    EmailCodeExpiredError | InvalidEmailCodeExpiredError,
-    EmailVerification
-  > {
-    if (id && props.code) {
+  ): Either<EmailCodeExpiredError | InvalidEmailCodeError, EmailVerification> {
+    if (id && props.verificationCode) {
       const emailVerification = new EmailVerification(
         {
-          code: props.code,
+          verificationCode: props.verificationCode,
           createdAt: props.createdAt ?? new Date(),
           validatedAt: props.validatedAt ?? null,
         },
@@ -79,7 +89,7 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
 
     return right(
       new EmailVerification({
-        code: verificationCode.value,
+        verificationCode: verificationCode.value,
         createdAt: props.createdAt ?? new Date(),
         validatedAt: props.validatedAt ?? null,
       })

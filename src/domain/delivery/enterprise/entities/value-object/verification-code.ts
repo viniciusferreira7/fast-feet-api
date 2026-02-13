@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto';
 import { type Either, left, right } from '@/core/either';
 import { ValueObject } from '@/core/entities/value-object/value-object';
-import { InvalidEmailCodeExpiredError } from '@/domain/delivery/errors/invalid-email-code-error';
+import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
 
 interface VerificationCodeProps {
   code: string;
@@ -12,6 +12,14 @@ export class VerificationCode extends ValueObject<VerificationCodeProps> {
 
   get code() {
     return this.props.code;
+  }
+
+  public validateCode(code: string): boolean {
+    if (VerificationCode.isValidFormatOfCode(code)) {
+      return this.props.code === code;
+    }
+
+    return false;
   }
 
   static generateCode() {
@@ -35,11 +43,11 @@ export class VerificationCode extends ValueObject<VerificationCodeProps> {
 
   static create(
     value?: string
-  ): Either<InvalidEmailCodeExpiredError, VerificationCode> {
+  ): Either<InvalidEmailCodeError, VerificationCode> {
     const verificationCode = value ?? VerificationCode.generateCode();
 
     if (!VerificationCode.isValidFormatOfCode(verificationCode)) {
-      return left(new InvalidEmailCodeExpiredError());
+      return left(new InvalidEmailCodeError());
     }
 
     return right(new VerificationCode({ code: verificationCode }));

@@ -1,6 +1,6 @@
 import type { ErrorImplementation } from '@/core/errors/error-implementation';
 
-export class InvalidEmailCodeExpiredError
+export class InvalidEmailCodeError
   extends Error
   implements ErrorImplementation
 {
@@ -8,3 +8,6 @@ export class InvalidEmailCodeExpiredError
     super('Invalid e-mail code');
   }
 }
+
+/** @deprecated Use InvalidEmailCodeError instead */
+export const InvalidEmailCodeExpiredError = InvalidEmailCodeError;
