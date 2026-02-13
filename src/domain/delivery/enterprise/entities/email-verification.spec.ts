@@ -11,7 +11,7 @@ describe('EmailVerification', () => {
       expect(result.isRight()).toBe(true);
       if (result.isRight()) {
         expect(result.value).toBeInstanceOf(EmailVerification);
-        expect(result.value.code).toBeInstanceOf(VerificationCode);
+        expect(result.value.verificationCode).toBeInstanceOf(VerificationCode);
         expect(result.value.createdAt).toBeInstanceOf(Date);
         expect(result.value.validatedAt).toBeNull();
       }
@@ -42,7 +42,7 @@ describe('EmailVerification', () => {
 
         const result = EmailVerification.create(
           {
-            code: code.value,
+            verificationCode: code.value,
             createdAt,
             validatedAt: null,
           },
@@ -52,7 +52,7 @@ describe('EmailVerification', () => {
         expect(result.isRight()).toBe(true);
         if (result.isRight()) {
           expect(result.value.id).toBe(id);
-          expect(result.value.code).toBe(code.value);
+          expect(result.value.verificationCode).toBe(code.value);
           expect(result.value.createdAt).toBe(createdAt);
           expect(result.value.validatedAt).toBeNull();
         }
@@ -69,7 +69,7 @@ describe('EmailVerification', () => {
 
         const result = EmailVerification.create(
           {
-            code: code.value,
+            verificationCode: code.value,
             createdAt,
             validatedAt: null,
           },
@@ -93,7 +93,7 @@ describe('EmailVerification', () => {
 
         const result = EmailVerification.create(
           {
-            code: code.value,
+            verificationCode: code.value,
             createdAt,
             validatedAt: null,
           },
@@ -114,7 +114,7 @@ describe('EmailVerification', () => {
 
         const result = EmailVerification.create(
           {
-            code: code.value,
+            verificationCode: code.value,
             createdAt,
             validatedAt: null,
           },
@@ -138,7 +138,7 @@ describe('EmailVerification', () => {
 
         const result = EmailVerification.create(
           {
-            code: code.value,
+            verificationCode: code.value,
             createdAt,
             validatedAt,
           },
@@ -148,6 +148,60 @@ describe('EmailVerification', () => {
         expect(result.isRight()).toBe(true);
         if (result.isRight()) {
           expect(result.value.validatedAt).toBe(validatedAt);
+        }
+      }
+    });
+  });
+
+  describe('validateCode', () => {
+    it('should return true and set validatedAt when code is valid', () => {
+      const result = EmailVerification.create({});
+
+      expect(result.isRight()).toBe(true);
+      if (result.isRight()) {
+        const verification = result.value;
+        const codeValue = verification.verificationCode.code;
+
+        expect(verification.validatedAt).toBeNull();
+
+        const isValid = verification.validateCode(codeValue);
+
+        expect(isValid).toBe(true);
+        expect(verification.validatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should return false when code is invalid', () => {
+      const result = EmailVerification.create({});
+
+      expect(result.isRight()).toBe(true);
+      if (result.isRight()) {
+        const verification = result.value;
+
+        const isValid = verification.validateCode('wrongcode');
+
+        expect(isValid).toBe(false);
+        expect(verification.validatedAt).toBeNull();
+      }
+    });
+
+    it('should set validatedAt to current timestamp when validation succeeds', () => {
+      const result = EmailVerification.create({});
+
+      expect(result.isRight()).toBe(true);
+      if (result.isRight()) {
+        const verification = result.value;
+        const codeValue = verification.verificationCode.code;
+
+        const before = Date.now();
+        verification.validateCode(codeValue);
+        const after = Date.now();
+
+        expect(verification.validatedAt).not.toBeNull();
+        if (verification.validatedAt) {
+          const validatedTime = verification.validatedAt.getTime();
+          expect(validatedTime).toBeGreaterThanOrEqual(before);
+          expect(validatedTime).toBeLessThanOrEqual(after);
         }
       }
     });

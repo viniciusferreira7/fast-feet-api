@@ -106,7 +106,7 @@ describe('Send Admin Person Code', () => {
       emailVerification: emailVerificationResult.value,
     });
 
-    const oldCode = adminPerson.emailVerification?.code.code;
+    const oldCode = adminPerson.emailVerification?.code;
 
     await adminPeopleRepository.register(adminPerson);
 
@@ -116,7 +116,7 @@ describe('Send Admin Person Code', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value.adminPerson.emailVerification?.code.code).not.toBe(
+      expect(result.value.adminPerson.emailVerification?.code).not.toBe(
         oldCode
       );
     }

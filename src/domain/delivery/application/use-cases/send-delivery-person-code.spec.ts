@@ -109,7 +109,7 @@ describe('Send Delivery Person Code', () => {
       emailVerification: emailVerificationResult.value,
     });
 
-    const oldCode = deliveryPerson.emailVerification?.code.code;
+    const oldCode = deliveryPerson.emailVerification?.code;
 
     await deliveryPeopleRepository.register(deliveryPerson);
 
@@ -119,7 +119,7 @@ describe('Send Delivery Person Code', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value.deliveryPerson.emailVerification?.code.code).not.toBe(
+      expect(result.value.deliveryPerson.emailVerification?.code).not.toBe(
         oldCode
       );
     }

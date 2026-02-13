@@ -110,7 +110,7 @@ describe('Send Recipient Person Code', () => {
       emailVerification: emailVerificationResult.value,
     });
 
-    const oldCode = recipientPerson.emailVerification?.code.code;
+    const oldCode = recipientPerson.emailVerification?.verificationCode.code;
 
     await recipientPeopleRepository.register(recipientPerson);
 
@@ -121,7 +121,7 @@ describe('Send Recipient Person Code', () => {
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
       expect(
-        result.value.recipientPerson.emailVerification?.code.code
+        result.value.recipientPerson.emailVerification?.verificationCode.code
       ).not.toBe(oldCode);
     }
     expect(emailSender.sentEmails).toHaveLength(1);
