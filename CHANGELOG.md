@@ -1,3 +1,18 @@
+# [1.15.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.14.0...v1.15.0) (2026-02-13)
+
+
+### Bug Fixes
+
+* correct unit tests ([bb6ee0d](https://github.com/viniciusferreira7/fast-feet-api/commit/bb6ee0d67f99030a4b1bf5a094af0a30caeb974b))
+
+
+### Features
+
+* add new methods for code ([ad18373](https://github.com/viniciusferreira7/fast-feet-api/commit/ad18373e5b6775ecafb61cc852e7d8770b03d689))
+* create use case to validate admin person code ([5cc62c7](https://github.com/viniciusferreira7/fast-feet-api/commit/5cc62c73b8bf760babe9a5ffb33ec9f530bc662b))
+* create use case to validate delivery person code ([f002a48](https://github.com/viniciusferreira7/fast-feet-api/commit/f002a48795255f3e16d9c41b3b88257c73a9ade9))
+* create use case to validate recipient person code ([1e11d34](https://github.com/viniciusferreira7/fast-feet-api/commit/1e11d34aff8b7d06209f56d5ada155a25b5045e9))
+
 # [1.14.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.13.0...v1.14.0) (2026-02-10)
 
 
