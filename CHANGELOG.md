@@ -1,3 +1,13 @@
+# [1.16.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.15.0...v1.16.0) (2026-02-17)
+
+
+### Features
+
+* create use case to update admin person data ([a2a5828](https://github.com/viniciusferreira7/fast-feet-api/commit/a2a58287f8978ff7812b09bf3bc2709bbbeaf562))
+* create use case to update delivery person data ([bfc58f3](https://github.com/viniciusferreira7/fast-feet-api/commit/bfc58f3740138903dfec0293737de23fbb075df5))
+* create use case to update recipient person data ([f6ea1d0](https://github.com/viniciusferreira7/fast-feet-api/commit/f6ea1d0bf8aa3616b9231ae7c19d948268398976))
+* only admin can register a delivery person ([72d2c17](https://github.com/viniciusferreira7/fast-feet-api/commit/72d2c17d65ba0abe9a1b6cdb3dad19421345ca8a))
+
 # [1.15.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.14.0...v1.15.0) (2026-02-13)
 
 
