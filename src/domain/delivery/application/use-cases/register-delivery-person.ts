@@ -5,23 +5,27 @@ import { ExternalCpfValidationError } from '../../errors/external-cpf-validation
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
+import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import { CpfValidator } from '../validation/cpf-validator';
 import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
+import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterDeliveryPersonUseCaseRequest {
   name: string;
   cpf: string;
   email: string;
   password: string;
+  authorId: string;
 }
 
 type RegisterDeliveryPersonUseCaseResponse = Either<
   | InvalidateCpfError
   | PersonAlreadyExistsError
   | ExternalCpfValidationError
-  | ExternalPasswordValidationError,
+  | ExternalPasswordValidationError
+  | ResourceNotFoundError,
   {
     deliveryPerson: DeliveryPerson;
   }
@@ -30,6 +34,7 @@ type RegisterDeliveryPersonUseCaseResponse = Either<
 export class RegisterDeliveryPerson {
   constructor(
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
+    private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly passwordValidator: PasswordValidator,
     private readonly hashGenerator: HashGenerator,
     private readonly cpfValidator: CpfValidator
@@ -40,19 +45,28 @@ export class RegisterDeliveryPerson {
     cpf,
     email,
     password,
+    authorId,
   }: RegisterDeliveryPersonUseCaseRequest): Promise<RegisterDeliveryPersonUseCaseResponse> {
-    const [DeliveryPersonWithSameCpf, DeliveryPersonWithSameEmail] =
-      await Promise.all([
-        this.deliveryPeopleRepository.findByCpf(cpf),
-        this.deliveryPeopleRepository.findByEmail(email),
-      ]);
+    const [
+      deliveryPersonWithSameCpf,
+      deliveryPersonWithSameEmail,
+      adminPerson,
+    ] = await Promise.all([
+      this.deliveryPeopleRepository.findByCpf(cpf),
+      this.deliveryPeopleRepository.findByEmail(email),
+      this.adminPeopleRepository.findById(authorId),
+    ]);
 
-    if (DeliveryPersonWithSameCpf) {
+    if (deliveryPersonWithSameCpf) {
       return left(new PersonAlreadyExistsError(cpf));
     }
 
-    if (DeliveryPersonWithSameEmail) {
+    if (deliveryPersonWithSameEmail) {
       return left(new PersonAlreadyExistsError(email));
+    }
+
+    if (!adminPerson) {
+      return left(new ResourceNotFoundError('admin'));
     }
 
     const isCpfValid = await this.cpfValidator.validate(cpf);
