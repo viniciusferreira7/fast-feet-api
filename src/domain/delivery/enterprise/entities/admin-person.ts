@@ -2,6 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { SameEmailError } from '../../application/use-cases/errors/same-email-error';
 import { SamePasswordError } from '../../application/use-cases/errors/same-password-error';
 import { EmailVerification } from './email-verification';
 import type { Cpf } from './value-object/cpf';
@@ -42,6 +43,32 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
 
   get isEmailValidated() {
     return !!this.props?.emailVerification?.validatedAt;
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
+  public updateName(name: string): Either<null, string> {
+    this.props.name = name;
+    this.props.emailVerification = null;
+
+    this.touch();
+
+    return right(this.name);
+  }
+
+  public updateEmail(newEmail: string): Either<SameEmailError, string> {
+    if (this.email === newEmail) {
+      return left(new SameEmailError());
+    }
+
+    this.props.email = newEmail;
+    this.props.emailVerification = null;
+
+    this.touch();
+
+    return right(this.email);
   }
 
   public updatePassword(
