@@ -2,6 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import type { EmailSender } from '../email/email-sender';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -10,7 +11,9 @@ export interface SendDeliveryPersonCodeUseCaseRequest {
 }
 
 export type SendDeliveryPersonCodeUseCaseResponse = Either<
-  WrongCredentialsError | TimeToSendNewEmailCodeError,
+  | WrongCredentialsError
+  | TimeToSendNewEmailCodeError
+  | DeliveryPersonProfileIsDisableError,
   { deliveryPerson: DeliveryPerson }
 >;
 
@@ -28,6 +31,10 @@ export class SendDeliveryPersonCodeUseCase {
 
     if (!deliveryPerson) {
       return left(new WrongCredentialsError());
+    }
+
+    if (!deliveryPerson?.isActive) {
+      return left(new DeliveryPersonProfileIsDisableError());
     }
 
     if (deliveryPerson?.emailVerification?.code) {
