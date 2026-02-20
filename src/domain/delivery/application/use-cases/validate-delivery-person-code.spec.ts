@@ -3,6 +3,7 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { ValidDeliveryPersonUseCase } from './validate-delivery-person-code';
@@ -44,6 +45,36 @@ describe('Validate Delivery Person Code', () => {
       expect(result.value.deliveryPerson).toBeTruthy();
       expect(result.value.deliveryPerson.email).toBe('delivery@example.com');
       expect(result.value.deliveryPerson.isEmailValidated).toBe(true);
+    }
+  });
+
+  it('should return error when delivery person profile is disabled', async () => {
+    const emailVerificationResult = EmailVerification.create({
+      validatedAt: null,
+    });
+
+    if (emailVerificationResult.isLeft()) {
+      throw new Error('Failed to create email verification');
+    }
+
+    const deliveryPerson = makeDeliveryPerson({
+      email: 'delivery@example.com',
+      emailVerification: emailVerificationResult.value,
+      isActive: false,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+
+    const code = emailVerificationResult.value.verificationCode.code;
+
+    const result = await sut.execute({
+      email: 'delivery@example.com',
+      code,
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(DeliveryPersonProfileIsDisableError);
     }
   });
 
