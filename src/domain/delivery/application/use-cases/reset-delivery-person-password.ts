@@ -5,6 +5,7 @@ import type { HashComparer } from '../cryptography/hash-comparer';
 import type { HashGenerator } from '../cryptography/hash-generator';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PasswordValidator } from '../validation/password-validator';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -17,7 +18,8 @@ interface ResetDeliveryPersonPasswordUseCaseRequest {
 type ResetDeliveryPersonPasswordUseCaseResponse = Either<
   | WrongCredentialsError
   | EmailCodeHasNotBeenVerifiedError
-  | ExternalPasswordValidationError,
+  | ExternalPasswordValidationError
+  | DeliveryPersonProfileIsDisableError,
   { deliveryPerson: DeliveryPerson }
 >;
 
@@ -39,6 +41,10 @@ export class ResetDeliveryPersonPassword {
 
     if (!deliveryPerson) {
       return left(new WrongCredentialsError());
+    }
+
+    if (!deliveryPerson?.isActive) {
+      return left(new DeliveryPersonProfileIsDisableError());
     }
 
     const doesPasswordMatches = await this.hashComparer.compare(
