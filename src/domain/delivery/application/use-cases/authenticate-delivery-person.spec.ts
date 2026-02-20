@@ -6,6 +6,7 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { AuthenticateDeliveryPerson } from './authenticate-delivery-person';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -170,6 +171,33 @@ describe('Authenticate Delivery Person', () => {
     expect(encryptSpy).toHaveBeenCalledWith({
       sub: deliveryPerson.id.toString(),
     });
+  });
+
+  it('should not be able to authenticate if profile is disabled', async () => {
+    const cpfString = generateCpf();
+    const cpfResult = Cpf.create(cpfString);
+
+    if (cpfResult.isLeft()) {
+      throw new Error('Failed to create CPF');
+    }
+
+    const deliveryPerson = makeDeliveryPerson({
+      cpf: cpfResult.value,
+      password: await fakeHasher.hash('123456'),
+      isActive: false,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+
+    const result = await sut.execute({
+      cpf: cpfString,
+      password: '123456',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(DeliveryPersonProfileIsDisableError);
+    }
   });
 
   it('should not be able to authenticate if email has not been verified', async () => {
