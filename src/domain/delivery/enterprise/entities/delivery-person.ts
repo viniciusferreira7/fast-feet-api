@@ -15,6 +15,7 @@ export interface DeliveryPersonProps {
   createdAt: Date;
   emailVerification: EmailVerification | null;
   updatedAt: Date | null;
+  isActive: boolean;
 }
 
 export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
@@ -50,8 +51,19 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
     return !!this.props?.emailVerification?.validatedAt;
   }
 
+  get isActive() {
+    return this.props.isActive;
+  }
+
   private touch() {
     this.props.updatedAt = new Date();
+  }
+
+  public disableProfile() {
+    if (this.props.isActive) {
+      this.props.isActive = false;
+      this.touch();
+    }
   }
 
   public updateName(name: string): Either<null, string> {
@@ -106,7 +118,10 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
   }
 
   public static create(
-    props: Optional<DeliveryPersonProps, 'createdAt' | 'updatedAt'>,
+    props: Optional<
+      DeliveryPersonProps,
+      'createdAt' | 'updatedAt' | 'isActive'
+    >,
     id?: UniqueEntityId
   ) {
     return new DeliveryPerson(
@@ -114,6 +129,7 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
         ...props,
         createdAt: props?.createdAt ?? new Date(),
         updatedAt: props?.updatedAt ?? null,
+        isActive: props.isActive ?? true,
       },
       id
     );
