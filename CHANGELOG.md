@@ -1,3 +1,17 @@
+# [1.17.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.16.0...v1.17.0) (2026-02-20)
+
+
+### Features
+
+* add disableProfile method to delivery person entity ([d2fab14](https://github.com/viniciusferreira7/fast-feet-api/commit/d2fab1483bee3cae79ac37eeee0356571699548f))
+* add isActive property to delivery person entity ([699414f](https://github.com/viniciusferreira7/fast-feet-api/commit/699414fa47820adc7576da28d0b10c5d8800438a))
+* block disabled delivery person from authenticating ([5ff1919](https://github.com/viniciusferreira7/fast-feet-api/commit/5ff1919c159dffd7adb214cc8c1be168376caf48))
+* block disabled delivery person from resetting password ([fc2438b](https://github.com/viniciusferreira7/fast-feet-api/commit/fc2438b250934d6aa9f9d3abff73c654361e5821))
+* block disabled delivery person from sending email code ([d3924e2](https://github.com/viniciusferreira7/fast-feet-api/commit/d3924e25769ad0109931b272f893cbd8b774da15))
+* block disabled delivery person from updating profile ([d1428ce](https://github.com/viniciusferreira7/fast-feet-api/commit/d1428cead86988f4043106e2a301ee36d38a4b63))
+* block disabled delivery person from validating email code ([bf45caa](https://github.com/viniciusferreira7/fast-feet-api/commit/bf45caa9ba7b1933f0b9c53c44cd0c4b79ea8d7e))
+* create use case to delete delivery person ([bdc37b7](https://github.com/viniciusferreira7/fast-feet-api/commit/bdc37b733e134125568bb1e2ea47bd4c21a8f220))
+
 # [1.16.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.15.0...v1.16.0) (2026-02-17)
 
 
