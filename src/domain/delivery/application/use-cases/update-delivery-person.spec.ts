@@ -4,6 +4,7 @@ import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailAlreadyInUseError } from './errors/email-already-in-use-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { UpdateDeliveryPersonUseCase } from './update-delivery-person';
@@ -88,6 +89,21 @@ describe('Update Delivery Person', () => {
     expect(deliveryPeopleRepository.deliveryPeople[0].email).toBe(
       'persisted@example.com'
     );
+  });
+
+  it('should return DeliveryPersonProfileIsDisableError if profile is disabled', async () => {
+    const deliveryPerson = makeDeliveryPerson({ isActive: false });
+    await deliveryPeopleRepository.register(deliveryPerson);
+
+    const result = await sut.execute({
+      id: deliveryPerson.id.toString(),
+      name: 'New Name',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(DeliveryPersonProfileIsDisableError);
+    }
   });
 
   it('should return ResourceNotFoundError if delivery person does not exist', async () => {
