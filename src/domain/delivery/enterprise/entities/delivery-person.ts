@@ -4,6 +4,7 @@ import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-
 import type { Optional } from '@/core/types/optional';
 import { SameEmailError } from '../../application/use-cases/errors/same-email-error';
 import { SamePasswordError } from '../../application/use-cases/errors/same-password-error';
+import { DeliveryPersonAlreadyDisabledError } from '../../errors/delivery-person-already-disabled-error';
 import { EmailVerification } from './email-verification';
 import type { Cpf } from './value-object/cpf';
 
@@ -59,11 +60,15 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
     this.props.updatedAt = new Date();
   }
 
-  public disableProfile() {
+  public disableProfile(): Either<DeliveryPersonAlreadyDisabledError, boolean> {
     if (this.props.isActive) {
       this.props.isActive = false;
       this.touch();
+
+      return right(this.props.isActive);
     }
+
+    return left(new DeliveryPersonAlreadyDisabledError());
   }
 
   public updateName(name: string): Either<null, string> {
