@@ -2,6 +2,7 @@ import { FakeEmailSender } from 'test/email/fake-email-sender';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { EmailVerification } from '../../enterprise/entities/email-verification';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 import { SendDeliveryPersonCodeUseCase } from './send-delivery-person-code';
@@ -77,6 +78,25 @@ describe('Send Delivery Person Code', () => {
 
     expect(updatedDeliveryPerson?.emailVerification).toBeTruthy();
     expect(updatedDeliveryPerson?.emailVerification?.code).toBeTruthy();
+  });
+
+  it('should not be able to send code when profile is disabled', async () => {
+    const deliveryPerson = makeDeliveryPerson({
+      email: 'john@example.com',
+      emailVerification: null,
+      isActive: false,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+
+    const result = await sut.execute({
+      email: 'john@example.com',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(DeliveryPersonProfileIsDisableError);
+    }
   });
 
   it('should not be able to send code to non-existent email', async () => {
