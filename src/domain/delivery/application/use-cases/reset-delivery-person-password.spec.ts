@@ -3,6 +3,7 @@ import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 import { ResetDeliveryPersonPassword } from './reset-delivery-person-password';
@@ -66,6 +67,27 @@ describe('Reset Delivery Person Password', () => {
       expect(result.value.deliveryPerson.password).toBe(
         'new-strong-password-hashed'
       );
+    }
+  });
+
+  it('should not be able to reset password when profile is disabled', async () => {
+    const deliveryPerson = makeDeliveryPerson({
+      email: 'john@example.com',
+      password: 'old-password-hashed',
+      isActive: false,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+
+    const result = await sut.execute({
+      email: 'john@example.com',
+      password: 'old-password',
+      newPassword: 'new-password',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(DeliveryPersonProfileIsDisableError);
     }
   });
 
