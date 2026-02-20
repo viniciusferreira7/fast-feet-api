@@ -2,6 +2,7 @@ import { type Either, left, right } from '@/core/either';
 import type { Encrypter } from '../cryptography/encrypter';
 import type { HashComparer } from '../cryptography/hash-comparer';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -11,7 +12,9 @@ export interface AuthenticateDeliveryPersonUseCaseRequest {
 }
 
 export type AuthenticateDeliveryPersonUseCaseResponse = Either<
-  WrongCredentialsError | EmailCodeHasNotBeenVerifiedError,
+  | WrongCredentialsError
+  | EmailCodeHasNotBeenVerifiedError
+  | DeliveryPersonProfileIsDisableError,
   { accessToken: string }
 >;
 
@@ -30,6 +33,10 @@ export class AuthenticateDeliveryPerson {
 
     if (!deliveryPerson) {
       return left(new WrongCredentialsError());
+    }
+
+    if (!deliveryPerson?.isActive) {
+      return left(new DeliveryPersonProfileIsDisableError());
     }
 
     const doesPasswordMatches = await this.hashComparer.compare(
