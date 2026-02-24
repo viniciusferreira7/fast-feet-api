@@ -5,6 +5,7 @@ import type { Optional } from '@/core/types/optional';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
+import { PackageCanceledEvent } from '../events/package-canceled-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
@@ -85,6 +86,10 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.histories;
   }
 
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
+
   public updateStatus(
     newStatus: PackageStatus,
     authorId: UniqueEntityId,
@@ -111,7 +116,7 @@ export class Package extends AggregateRoot<PackageProps> {
     });
 
     this.props.status = transitionResult.value;
-    this.props.updatedAt = new Date();
+    this.touch();
 
     if (newStatus.isDelivered()) {
       this.props.deliveredAt = new Date();
@@ -129,7 +134,7 @@ export class Package extends AggregateRoot<PackageProps> {
     description?: string | null
   ): void {
     this.props.deliveryPersonId = deliveryPersonId;
-    this.props.updatedAt = new Date();
+    this.touch();
 
     const packageHistory = PackageHistory.create({
       packageId: this.props.id,
@@ -148,9 +153,46 @@ export class Package extends AggregateRoot<PackageProps> {
     this.histories.add(packageHistory);
   }
 
+  public cancelPackage(
+    authorId: UniqueEntityId,
+    description?: string
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: authorId,
+      createdAt: new Date(),
+      deliveryPersonId: this.props.deliveryPersonId,
+      description: description ?? 'Package was canceled',
+      fromStatus: this.status,
+      toStatus: this.status,
+    });
+
+    const canceledStatus = PackageStatus.create('canceled');
+
+    if (canceledStatus.isLeft()) {
+      return left(canceledStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(canceledStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    this.props.status = canceledStatus.value;
+
+    this.addDomainEvent(new PackageCanceledEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+
+    this.touch();
+
+    return right(this.props.status);
+  }
+
   public addAttachment(attachment: PackageAttachment): void {
     this.props.attachment = attachment;
-    this.props.updatedAt = new Date();
+    this.touch();
   }
 
   public markAsRegistered(authorId: UniqueEntityId): void {
