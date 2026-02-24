@@ -1,3 +1,12 @@
+# [1.18.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.17.0...v1.18.0) (2026-02-24)
+
+
+### Features
+
+* add cancelPackage method to package entity ([66d3ccb](https://github.com/viniciusferreira7/fast-feet-api/commit/66d3ccb841d6cef0f60055d9c0560a9569dd26ce))
+* create pagination value object ([582ce6c](https://github.com/viniciusferreira7/fast-feet-api/commit/582ce6c6851410a62ec9efc2cf73be9ccf571c72))
+* implement cancel package use case ([75178d7](https://github.com/viniciusferreira7/fast-feet-api/commit/75178d7249940832c3dbe2f4e9115f319a18b018))
+
 # [1.17.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.16.0...v1.17.0) (2026-02-20)
 
 
