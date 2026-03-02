@@ -14,6 +14,8 @@ interface FetchPackagesNearByDeliveryPersonUseCaseRequest {
   authorId: string;
   deliveryPersonId: string;
   deliveryPersonPostalCodeLocation: string;
+  page?: number;
+  perPage?: number;
 }
 
 type FetchPackagesNearByDeliveryPersonUseCaseResponse = Either<
@@ -33,6 +35,8 @@ export class FetchPackagesNearByDeliveryPersonUseCase {
     authorId,
     deliveryPersonId,
     deliveryPersonPostalCodeLocation,
+    page,
+    perPage,
   }: FetchPackagesNearByDeliveryPersonUseCaseRequest): Promise<FetchPackagesNearByDeliveryPersonUseCaseResponse> {
     const [author, deliveryPerson, isDeliveryPersonPostalCodeLocationValid] =
       await Promise.all([
@@ -61,7 +65,11 @@ export class FetchPackagesNearByDeliveryPersonUseCase {
       return left(postalCode.value);
     }
 
-    const packages = await this.packagesRepository.findNearBy(postalCode.value);
+    const packages = await this.packagesRepository.findNearBy({
+      postalCode: postalCode.value,
+      page,
+      perPage,
+    });
 
     return right({ packages });
   }
