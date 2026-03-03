@@ -153,7 +153,7 @@ export class Package extends AggregateRoot<PackageProps> {
     this.histories.add(packageHistory);
   }
 
-  public cancelPackage(
+  public markAsCanceled(
     authorId: UniqueEntityId,
     description?: string
   ): Either<InvalidatePackageStatusError, PackageStatus> {
@@ -162,7 +162,7 @@ export class Package extends AggregateRoot<PackageProps> {
       authorId: authorId,
       createdAt: new Date(),
       deliveryPersonId: this.props.deliveryPersonId,
-      description: description ?? 'Package was canceled',
+      description: description ?? 'Package canceled',
       fromStatus: this.status,
       toStatus: this.status,
     });

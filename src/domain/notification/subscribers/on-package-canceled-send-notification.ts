@@ -31,7 +31,7 @@ export class OnPackageCanceledSendNotification implements EventHandler {
 
     await this.sendNotificationUseCase.execute({
       title: packageHistory.description ?? 'Package canceled',
-      content: `Package was canceled: ${
+      content: `Your Package was canceled: ${
         packageRecord.name.length > 10
           ? packageRecord.name.substring(0, 10).concat('...')
           : packageRecord.name
