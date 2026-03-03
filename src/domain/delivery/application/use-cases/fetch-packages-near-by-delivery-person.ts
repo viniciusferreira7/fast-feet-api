@@ -49,7 +49,7 @@ export class FetchPackagesNearByDeliveryPersonUseCase {
       return left(new ResourceNotFoundError('admin'));
     }
 
-    if (deliveryPerson) {
+    if (!deliveryPerson) {
       return left(new ResourceNotFoundError('delivery'));
     }
 
