@@ -1,3 +1,15 @@
+# [1.19.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.18.0...v1.19.0) (2026-03-03)
+
+
+### Features
+
+* add new params on use case ([72e50fd](https://github.com/viniciusferreira7/fast-feet-api/commit/72e50fdebe3deb002b0e7ec272949acc4fec4f8b))
+* add pagination params interface ([da1a503](https://github.com/viniciusferreira7/fast-feet-api/commit/da1a50370ca50b9fc32d8015ee3758169f1c1ce2))
+* create get by id delivery person use case ([494bec3](https://github.com/viniciusferreira7/fast-feet-api/commit/494bec34f586c3c52f1c96a2184df9e736abd4d1))
+* create get by id use cases for admin and recipient person ([bb3652f](https://github.com/viniciusferreira7/fast-feet-api/commit/bb3652f18c002d1b050f81a388d9e435548990bf))
+* create method to find near by ([bb05687](https://github.com/viniciusferreira7/fast-feet-api/commit/bb056872e7f9441aa4862b15ec700d36e3c87326))
+* create use case to fetch packages near by delivery person ([7de8e65](https://github.com/viniciusferreira7/fast-feet-api/commit/7de8e65eb3ee8deb196ae840b9aadad5194edd8c))
+
 # [1.18.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.17.0...v1.18.0) (2026-02-24)
 
 
