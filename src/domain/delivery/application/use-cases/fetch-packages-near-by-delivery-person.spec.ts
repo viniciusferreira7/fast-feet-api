@@ -23,7 +23,9 @@ let sut: FetchPackagesNearByDeliveryPersonUseCase;
 describe('Fetch Packages Near By Delivery Person', () => {
   beforeEach(() => {
     packageHistoryRepository = new InMemoryPackagesHistoryRepository();
-    packagesRepository = new InMemoryPackagesRepository(packageHistoryRepository);
+    packagesRepository = new InMemoryPackagesRepository(
+      packageHistoryRepository
+    );
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     postalCodeValidator = new FakePostalCodeValidator();
@@ -83,7 +85,9 @@ describe('Fetch Packages Near By Delivery Person', () => {
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
       expect(result.value.packages.result).toHaveLength(1);
-      expect(result.value.packages.result[0].id.equals(nearByPkg.id)).toBe(true);
+      expect(result.value.packages.result[0].id.equals(nearByPkg.id)).toBe(
+        true
+      );
     }
   });
 

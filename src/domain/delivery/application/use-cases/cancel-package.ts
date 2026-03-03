@@ -55,7 +55,7 @@ export class CancelPackageUseCase {
       return left(new PackageAlreadyCanceledErrorError());
     }
 
-    const cancelPackageResult = packageRegister.cancelPackage(
+    const cancelPackageResult = packageRegister.markAsCanceled(
       adminPerson.id,
       description
     );
