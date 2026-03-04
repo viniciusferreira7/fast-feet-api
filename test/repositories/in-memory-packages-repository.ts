@@ -5,7 +5,8 @@ import type {
   FIndNearByParams,
   PackagesRepository,
 } from '@/domain/delivery/application/repositories/packages-repository';
-import type { Package } from '@/domain/delivery/enterprise/entities/package';
+import { Package } from '@/domain/delivery/enterprise/entities/package';
+import { PackageCode } from '@/domain/delivery/enterprise/entities/value-object/package-code';
 import type { InMemoryPackagesHistoryRepository } from './in-memory-packages-history-repository';
 
 export class InMemoryPackagesRepository implements PackagesRepository {
@@ -31,6 +32,26 @@ export class InMemoryPackagesRepository implements PackagesRepository {
 
     this.packagesHistoryRepository.packagesHistory.forEach((history) => {
       if (history.packageId.equals(new UniqueEntityId(id))) {
+        packageItem?.histories.add(history);
+      }
+    });
+
+    return packageItem;
+  }
+
+  async findByCode(code: string): Promise<Package | null> {
+    const packageItem = this.packages.find((pkg) =>
+      pkg.code.equals(
+        new PackageCode({
+          value: code,
+        })
+      )
+    );
+
+    if (!packageItem) return null;
+
+    this.packagesHistoryRepository.packagesHistory.forEach((history) => {
+      if (history.id.equals(packageItem.id)) {
         packageItem?.histories.add(history);
       }
     });

@@ -11,6 +11,7 @@ export interface FIndNearByParams {
 export abstract class PackagesRepository {
   abstract register(data: Package): Promise<Package>;
   abstract findById(id: string): Promise<Package | null>;
+  abstract findByCode(code: string): Promise<Package | null>;
   abstract update(data: Package): Promise<Package | null>;
   abstract findNearBy(params: FIndNearByParams): Promise<Pagination<Package>>;
 }
