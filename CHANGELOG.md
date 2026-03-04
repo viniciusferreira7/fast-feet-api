@@ -1,3 +1,11 @@
+# [1.20.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.19.0...v1.20.0) (2026-03-04)
+
+
+### Features
+
+* create use case to get package by id ([0f32418](https://github.com/viniciusferreira7/fast-feet-api/commit/0f3241802511bf07e0a4f3cbc57a90bd1feb1b0b))
+* create use to get package by code ([e1a17d3](https://github.com/viniciusferreira7/fast-feet-api/commit/e1a17d34fe9d55379fdd4142977fe31c56daaee5))
+
 # [1.19.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.18.0...v1.19.0) (2026-03-03)
 
 
