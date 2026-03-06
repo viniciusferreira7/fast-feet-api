@@ -42,4 +42,7 @@ export abstract class PackagesRepository {
   abstract findByCode(code: string): Promise<Package | null>;
   abstract update(data: Package): Promise<Package | null>;
   abstract findNearBy(params: FindNearByParams): Promise<Pagination<Package>>;
+  abstract findManyPackages(
+    params: FindManyPackagesParams
+  ): Promise<Pagination<Package>>;
 }
