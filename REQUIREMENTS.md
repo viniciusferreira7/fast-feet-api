@@ -21,7 +21,7 @@
 ## ⚖️ Business Rules
 
 * [ ] Only admins can perform CRUD operations on packages
-* [ ] Only admins can perform CRUD operations on delivery persons
+* [X] Only admins can perform CRUD operations on delivery persons
 * [X] Only admins can perform CRUD operations on recipients
 * [ ] Delivered packages must have a **mandatory photo**
 * [ ] Only the delivery person who picked up the package can mark it as delivered
