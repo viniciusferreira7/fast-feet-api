@@ -1,3 +1,14 @@
+# [1.21.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.20.0...v1.21.0) (2026-03-06)
+
+
+### Features
+
+* add filter params to fetch many delivery person ([589194a](https://github.com/viniciusferreira7/fast-feet-api/commit/589194a6700254a226ecbeae529a6fceb39268ba))
+* add findManyPackages abstract method to packages repository ([3324e08](https://github.com/viniciusferreira7/fast-feet-api/commit/3324e080552df1dd9b15a5e40b2c57f3676e5ff5))
+* create use case to fetch many delivery people ([32cf3db](https://github.com/viniciusferreira7/fast-feet-api/commit/32cf3dba90267fc4e1f7f11f4c5bc795a1aafc33))
+* create use case to fetch many packages ([2b13e10](https://github.com/viniciusferreira7/fast-feet-api/commit/2b13e1005c1a2cd04034dabae2d6cf017981290f))
+* implement findManyPackages on in-memory packages repository ([44a3aea](https://github.com/viniciusferreira7/fast-feet-api/commit/44a3aea98f1077c931c5873d14c121decd148484))
+
 # [1.20.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.19.0...v1.20.0) (2026-03-04)
 
 
