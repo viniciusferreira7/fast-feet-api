@@ -2,6 +2,7 @@ import { Pagination } from '@/core/entities/value-object/pagination';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { DomainEvents } from '@/core/events/domain-events';
 import type {
+  FindManyPackagesParams,
   FindNearByParams,
   PackagesRepository,
 } from '@/domain/delivery/application/repositories/packages-repository';
@@ -79,6 +80,87 @@ export class InMemoryPackagesRepository implements PackagesRepository {
     DomainEvents.dispatchEventsForEntity(data.id);
 
     return data;
+  }
+
+  async findManyPackages(
+    params: FindManyPackagesParams
+  ): Promise<Pagination<Package>> {
+    const page = params.page ?? 1;
+    const perPage = params.perPage ?? 10;
+
+    let filtered = this.packages;
+
+    if (params.search) {
+      const search = params.search.toLowerCase();
+      filtered = filtered.filter(
+        (pkg) =>
+          pkg.name.toLowerCase().includes(search) ||
+          pkg.code.value.toLowerCase().includes(search) ||
+          pkg.recipientAddress.toLowerCase().includes(search)
+      );
+    }
+
+    if (params.name) {
+      const name = params.name.toLowerCase();
+      filtered = filtered.filter((pkg) =>
+        pkg.name.toLowerCase().includes(name)
+      );
+    }
+
+    if (params.code) {
+      const code = params.code.toLowerCase();
+      filtered = filtered.filter((pkg) =>
+        pkg.code.value.toLowerCase().includes(code)
+      );
+    }
+
+    if (params.recipientAddress) {
+      const address = params.recipientAddress.toLowerCase();
+      filtered = filtered.filter((pkg) =>
+        pkg.recipientAddress.toLowerCase().includes(address)
+      );
+    }
+
+    if (params.status) {
+      filtered = filtered.filter((pkg) => pkg.status.value === params.status);
+    }
+
+    if (params.postalCode) {
+      const postalCode = params.postalCode;
+      filtered = filtered.filter((pkg) =>
+        pkg.postalCode.value.includes(postalCode)
+      );
+    }
+
+    if (params.createdAtGte) {
+      const createdAtGte = params.createdAtGte;
+      filtered = filtered.filter((pkg) => pkg.createdAt >= createdAtGte);
+    }
+
+    if (params.updatedAtGte) {
+      const updatedAtGte = params.updatedAtGte;
+      filtered = filtered.filter(
+        (pkg) => pkg.updatedAt != null && pkg.updatedAt >= updatedAtGte
+      );
+    }
+
+    if (params.deliveredAtGte) {
+      const deliveredAtGte = params.deliveredAtGte;
+      filtered = filtered.filter(
+        (pkg) => pkg.deliveredAt != null && pkg.deliveredAt >= deliveredAtGte
+      );
+    }
+
+    const startIndex = (page - 1) * perPage;
+    const paginated = filtered.slice(startIndex, startIndex + perPage);
+    const totalPages = Math.ceil(filtered.length / perPage);
+
+    return Pagination.create<Package>({
+      page,
+      perPage,
+      totalPages,
+      result: paginated,
+    });
   }
 
   async findNearBy(params: FindNearByParams): Promise<Pagination<Package>> {
