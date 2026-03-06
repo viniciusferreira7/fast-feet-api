@@ -1,47 +1,52 @@
 import { type Either, left, right } from '@/core/either';
 import type { Pagination } from '@/core/entities/value-object/pagination';
-import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
+import type { Package } from '../../enterprise/entities/package';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type {
-  DeliveryPeopleRepository,
-  FindManyDeliveryPersonParams,
-} from '../repositories/delivery-people-repository';
+  FindManyPackagesParams,
+  PackagesRepository,
+} from '../repositories/packages-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
 
-interface FetchManyDeliveryPersonUseCaseRequest {
+interface FetchManyPackagesUseCaseRequest {
   authorId: string;
   search?: string;
+  name?: string;
+  code?: string;
+  recipientAddress?: string;
+  status?: string;
+  postalCode?: string;
+  deliveredAtGte?: Date;
   page?: number;
   perPage?: number;
-  order?: FindManyDeliveryPersonParams['order'];
+  order?: FindManyPackagesParams['order'];
   createdAtGte?: Date;
   updatedAtGte?: Date;
 }
 
-type FetchManyDeliveryPersonUseCaseResponse = Either<
+type FetchManyPackagesUseCaseResponse = Either<
   OnlyAdminCanPerformThisActionError,
-  { deliveryPeople: Pagination<DeliveryPerson> }
+  { packages: Pagination<Package> }
 >;
 
-export class FetchManyDeliveryPersonUseCase {
+export class FetchManyPackagesUseCase {
   constructor(
-    private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
+    private readonly packagesRepository: PackagesRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository
   ) {}
 
   async execute({
     authorId,
     ...params
-  }: FetchManyDeliveryPersonUseCaseRequest): Promise<FetchManyDeliveryPersonUseCaseResponse> {
+  }: FetchManyPackagesUseCaseRequest): Promise<FetchManyPackagesUseCaseResponse> {
     const adminPerson = await this.adminPeopleRepository.findById(authorId);
 
     if (!adminPerson) {
       return left(new OnlyAdminCanPerformThisActionError());
     }
 
-    const deliveryPeople =
-      await this.deliveryPeopleRepository.findManyDeliveryPerson(params);
+    const packages = await this.packagesRepository.findManyPackages(params);
 
-    return right({ deliveryPeople });
+    return right({ packages });
   }
 }
