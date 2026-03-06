@@ -13,7 +13,7 @@
 * [ ] Mark package as **returned**
 * [X] List packages near the delivery person's location
 * [X] Change a user's password
-* [ ] List a user's deliveries
+* [X] List a user's deliveries
 * [ ] Notify the recipient on each status change
 
 ---
@@ -25,8 +25,8 @@
 * [X] Only admins can perform CRUD operations on recipients
 * [ ] Delivered packages must have a **mandatory photo**
 * [ ] Only the delivery person who picked up the package can mark it as delivered
-* [ ] Only admins can change a user's password
-* [ ] Delivery persons cannot list deliveries from other delivery persons
+* [X] Only admins can change a user's password
+* [X] Delivery persons cannot list deliveries from other delivery persons
 
 ---
 
