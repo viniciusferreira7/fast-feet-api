@@ -4,20 +4,25 @@ import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 
 export interface FindManyDeliveryPersonParams extends PaginationParams {
   search?: string;
-  isPublic?: boolean;
   createdAtGte?: Date;
+  email?: string;
+  name?: string;
+  cpf?: string;
+  isActive?: boolean;
   updatedAtGte?: Date;
   order?:
     | 'created_at'
     | 'updated_at'
-    | 'title'
-    | 'description'
-    | 'destinationUrl'
+    | 'name'
+    | '-name'
+    | 'cpf'
+    | '-cpf'
+    | 'email'
+    | '-email'
+    | 'is_active'
+    | '-is_active'
     | '-created_at'
-    | '-updated_at'
-    | '-title'
-    | '-description'
-    | '-destinationUrl';
+    | '-updated_at';
 }
 
 export abstract class DeliveryPeopleRepository {

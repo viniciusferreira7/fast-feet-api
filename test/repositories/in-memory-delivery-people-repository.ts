@@ -57,6 +57,31 @@ export class InMemoryDeliveryPeopleRepository
       );
     }
 
+    if (params.email) {
+      const email = params.email.toLowerCase();
+      filtered = filtered.filter((person) =>
+        person.email.toLowerCase().includes(email)
+      );
+    }
+
+    if (params.name) {
+      const name = params.name.toLowerCase();
+      filtered = filtered.filter((person) =>
+        person.name.toLowerCase().includes(name)
+      );
+    }
+
+    if (params.cpf) {
+      const cpf = params.cpf;
+      filtered = filtered.filter((person) => person.cpf.value.includes(cpf));
+    }
+
+    if (params.isActive !== undefined) {
+      filtered = filtered.filter(
+        (person) => person.isActive === params.isActive
+      );
+    }
+
     if (params.createdAtGte) {
       const createdAtGte = params.createdAtGte;
       filtered = filtered.filter((person) => person.createdAt >= createdAtGte);

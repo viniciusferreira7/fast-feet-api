@@ -11,6 +11,10 @@ import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perf
 interface FetchManyDeliveryPersonUseCaseRequest {
   authorId: string;
   search?: string;
+  email?: string;
+  name?: string;
+  cpf?: string;
+  isActive?: boolean;
   page?: number;
   perPage?: number;
   order?: FindManyDeliveryPersonParams['order'];
