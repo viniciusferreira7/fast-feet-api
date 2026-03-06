@@ -2,7 +2,7 @@ import { Pagination } from '@/core/entities/value-object/pagination';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { DomainEvents } from '@/core/events/domain-events';
 import type {
-  FIndNearByParams,
+  FindNearByParams,
   PackagesRepository,
 } from '@/domain/delivery/application/repositories/packages-repository';
 import { Package } from '@/domain/delivery/enterprise/entities/package';
@@ -81,7 +81,7 @@ export class InMemoryPackagesRepository implements PackagesRepository {
     return data;
   }
 
-  async findNearBy(params: FIndNearByParams): Promise<Pagination<Package>> {
+  async findNearBy(params: FindNearByParams): Promise<Pagination<Package>> {
     const page = params.page ?? 1;
     const perPage = params.perPage ?? 10;
     const startIndex = (page - 1) * perPage;
