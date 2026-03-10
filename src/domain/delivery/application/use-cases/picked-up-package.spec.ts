@@ -22,7 +22,10 @@ describe('Pick Up Package', () => {
       packageHistoryRepository
     );
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
-    sut = new PickUpPackageUseCase(packagesRepository, deliveryPeopleRepository);
+    sut = new PickUpPackageUseCase(
+      packagesRepository,
+      deliveryPeopleRepository
+    );
   });
 
   it('should be able to pick up a package', async () => {
@@ -201,7 +204,9 @@ describe('Pick Up Package', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(PackageNotAssignedToDeliveryPersonError);
+      expect(result.value).toBeInstanceOf(
+        PackageNotAssignedToDeliveryPersonError
+      );
     }
   });
 
