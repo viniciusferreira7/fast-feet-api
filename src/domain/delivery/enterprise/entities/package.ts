@@ -2,10 +2,13 @@ import { Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { PackageAlreadyAssignedError } from '../../application/use-cases/errors/package-already-assined-erro';
+import { PackageNotAssignedToDeliveryPersonError } from '../../application/use-cases/errors/package-not-assigned-to-delivery-person-error';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
+import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
@@ -157,16 +160,6 @@ export class Package extends AggregateRoot<PackageProps> {
     authorId: UniqueEntityId,
     description?: string
   ): Either<InvalidatePackageStatusError, PackageStatus> {
-    const packageHistory = PackageHistory.create({
-      packageId: this.props.id,
-      authorId: authorId,
-      createdAt: new Date(),
-      deliveryPersonId: this.props.deliveryPersonId,
-      description: description ?? 'Package canceled',
-      fromStatus: this.status,
-      toStatus: this.status,
-    });
-
     const canceledStatus = PackageStatus.create('canceled');
 
     if (canceledStatus.isLeft()) {
@@ -179,13 +172,22 @@ export class Package extends AggregateRoot<PackageProps> {
       return left(transitionResult.value);
     }
 
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: authorId,
+      createdAt: new Date(),
+      deliveryPersonId: this.props.deliveryPersonId,
+      description: description ?? 'Package canceled',
+      fromStatus: this.status,
+      toStatus: canceledStatus.value,
+    });
+
     this.props.status = canceledStatus.value;
+    this.touch();
 
     this.addDomainEvent(new PackageCanceledEvent(packageHistory, this.id));
 
     this.histories.add(packageHistory);
-
-    this.touch();
 
     return right(this.props.status);
   }
@@ -209,6 +211,54 @@ export class Package extends AggregateRoot<PackageProps> {
     this.addDomainEvent(new PackageRegisteredEvent(packageHistory, this.id));
 
     this.histories.add(packageHistory);
+  }
+
+  public markAsPickedUp(
+    deliveryPersonId: UniqueEntityId
+  ): Either<
+    | PackageNotAssignedToDeliveryPersonError
+    | PackageAlreadyAssignedError
+    | InvalidatePackageStatusError,
+    PackageStatus
+  > {
+    if (!this.props.deliveryPersonId) {
+      return left(new PackageNotAssignedToDeliveryPersonError());
+    }
+
+    if (!this.props.deliveryPersonId.equals(deliveryPersonId)) {
+      return left(new PackageAlreadyAssignedError());
+    }
+
+    const pickedUpStatus = PackageStatus.create('picked_up');
+
+    if (pickedUpStatus.isLeft()) {
+      return left(pickedUpStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(pickedUpStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: 'Package picked up',
+      fromStatus: this.status,
+      toStatus: pickedUpStatus.value,
+    });
+
+    this.props.status = pickedUpStatus.value;
+    this.touch();
+
+    this.addDomainEvent(new PackagePickedUpEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+
+    return right(this.status);
   }
 
   public static create(
