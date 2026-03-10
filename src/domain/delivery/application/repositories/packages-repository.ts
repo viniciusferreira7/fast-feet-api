@@ -1,6 +1,7 @@
 import type { Pagination } from '@/core/entities/value-object/pagination';
 import type { PaginationParams } from '@/core/repositories/pagination-params';
 import type { Package } from '../../enterprise/entities/package';
+import { Status } from '../../enterprise/entities/value-object/package-status';
 import type { PostalCode } from '../../enterprise/entities/value-object/postal-code';
 
 export interface FindNearByParams {
@@ -45,4 +46,8 @@ export abstract class PackagesRepository {
   abstract findManyPackages(
     params: FindManyPackagesParams
   ): Promise<Pagination<Package>>;
+  abstract findByDeliveryPersonId(
+    deliveryPersonId: string,
+    status: Status[]
+  ): Promise<Package[]>;
 }

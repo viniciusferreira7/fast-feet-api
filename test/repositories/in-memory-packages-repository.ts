@@ -8,6 +8,7 @@ import type {
 } from '@/domain/delivery/application/repositories/packages-repository';
 import { Package } from '@/domain/delivery/enterprise/entities/package';
 import { PackageCode } from '@/domain/delivery/enterprise/entities/value-object/package-code';
+import type { Status } from '@/domain/delivery/enterprise/entities/value-object/package-status';
 import type { InMemoryPackagesHistoryRepository } from './in-memory-packages-history-repository';
 
 export class InMemoryPackagesRepository implements PackagesRepository {
@@ -161,6 +162,17 @@ export class InMemoryPackagesRepository implements PackagesRepository {
       totalPages,
       result: paginated,
     });
+  }
+
+  async findByDeliveryPersonId(
+    deliveryPersonId: string,
+    status: Status[]
+  ): Promise<Package[]> {
+    return this.packages.filter(
+      (pkg) =>
+        pkg.deliveryPersonId?.equals(new UniqueEntityId(deliveryPersonId)) &&
+        status.includes(pkg.status.value)
+    );
   }
 
   async findNearBy(params: FindNearByParams): Promise<Pagination<Package>> {
