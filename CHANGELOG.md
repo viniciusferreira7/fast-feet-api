@@ -1,3 +1,16 @@
+# [1.22.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.21.0...v1.22.0) (2026-03-10)
+
+
+### Features
+
+* add findByDeliveryPersonId abstract method and in-memory implementation ([d04cfb6](https://github.com/viniciusferreira7/fast-feet-api/commit/d04cfb63df4929b9053232860a61ce2b230fcf0f))
+* add on package picked up notification subscriber ([89e7d2c](https://github.com/viniciusferreira7/fast-feet-api/commit/89e7d2cfe34fc7fa272fd1bccf932e7a159428fa))
+* add PackagePickedUpEvent domain event ([0cf4080](https://github.com/viniciusferreira7/fast-feet-api/commit/0cf408067a0b6a12f250e6ef3ac695a7c0eaefb2))
+* add pick up package error classes ([5f7264b](https://github.com/viniciusferreira7/fast-feet-api/commit/5f7264b1e0a3c95aeab9cb490000ba39b323dd70))
+* block disabling delivery person with active packages ([4961124](https://github.com/viniciusferreira7/fast-feet-api/commit/4961124c9a8f903cb11043952d111af42d3b25a7))
+* create pick up package use case ([075288e](https://github.com/viniciusferreira7/fast-feet-api/commit/075288e8fcb8945361881b436050b36676f06201))
+* implement markAsPickedUp method on Package entity ([63d6639](https://github.com/viniciusferreira7/fast-feet-api/commit/63d663928b286f29351fe1621352e42285a73b4f))
+
 # [1.21.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.20.0...v1.21.0) (2026-03-06)
 
 
