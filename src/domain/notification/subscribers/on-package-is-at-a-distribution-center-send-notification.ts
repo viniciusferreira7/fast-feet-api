@@ -1,7 +1,7 @@
 import { DomainEvents } from '@/core/events/domain-events';
 import type { EventHandler } from '@/core/events/event-handler';
 import type { PackagesRepository } from '@/domain/delivery/application/repositories/packages-repository';
-import { PackageAssignedToADeliveryPersonEvent } from '@/domain/delivery/enterprise/events/package-assigned-to-a-delivery-person-event';
+import { PackageAtDistributionCenterEvent } from '@/domain/delivery/enterprise/events/package-at-distribution-center-event';
 import type { SendNotificationUseCase } from '../application/use-cases/send-notification';
 
 export class OnPackageIsAtADistributionCenterSendNotification
@@ -17,14 +17,14 @@ export class OnPackageIsAtADistributionCenterSendNotification
   setupSubscriptions(): void {
     DomainEvents.register(
       this.sendNewPackageNotification.bind(this),
-      PackageAssignedToADeliveryPersonEvent.name
+      PackageAtDistributionCenterEvent.name
     );
   }
 
   private async sendNewPackageNotification({
     packageHistory,
     packageId,
-  }: PackageAssignedToADeliveryPersonEvent) {
+  }: PackageAtDistributionCenterEvent) {
     const packageRecord = await this.packagesRepository.findById(
       packageId.toString()
     );
