@@ -98,7 +98,7 @@ describe('Assign Package to a Delivery Person', () => {
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
       expect(result.value.package.histories.getItems().length).toBe(
-        initialHistoryCount + 2
+        initialHistoryCount + 1
       );
     }
   });

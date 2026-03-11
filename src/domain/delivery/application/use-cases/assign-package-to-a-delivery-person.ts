@@ -1,6 +1,5 @@
 import { type Either, left, right } from '@/core/either';
 import { Package } from '../../enterprise/entities/package';
-import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
@@ -52,33 +51,9 @@ export class AssignPackageToADeliveryPerson {
       return left(new ResourceNotFoundError('package'));
     }
 
-    const previousPackageStatus = PackageStatus.create(
-      packageRegistered.status.value
-    );
-
-    if (previousPackageStatus.isLeft()) {
-      return left(previousPackageStatus.value);
-    }
-
-    const newPackageStatus = PackageStatus.create('awaiting_pickup');
-
-    if (newPackageStatus.isLeft()) {
-      return left(newPackageStatus.value);
-    }
-
-    const updateStatusResult = packageRegistered.updateStatus(
-      newPackageStatus.value,
-      author.id
-    );
-
-    if (updateStatusResult.isLeft()) {
-      return left(updateStatusResult.value);
-    }
-
     packageRegistered.assignDeliveryPerson(
       deliveryPerson.id,
       author.id,
-      previousPackageStatus.value,
       description
     );
 

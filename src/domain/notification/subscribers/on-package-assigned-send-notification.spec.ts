@@ -60,7 +60,6 @@ describe('On package assigned to a delivery person', () => {
     packageRecord.assignDeliveryPerson(
       deliveryPerson.id,
       adminPerson.id,
-      packageRecord.status,
       'On package assigned to a delivery person'
     );
 
