@@ -2,11 +2,13 @@ import { Either, left, right } from '@/core/either';
 import { AggregateRoot } from '@/core/entities/aggregate-root';
 import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import type { Optional } from '@/core/types/optional';
+import { DeliveryPersonNotAssignedToPackageError } from '../../application/use-cases/errors/delivery-person-not-assigned-to-package-error';
 import { PackageAlreadyAssignedError } from '../../application/use-cases/errors/package-already-assined-erro';
 import { PackageNotAssignedToDeliveryPersonError } from '../../application/use-cases/errors/package-not-assigned-to-delivery-person-error';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { MissingAttachmentError } from '../../errors/missing-attachment-error';
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
+import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
@@ -93,16 +95,23 @@ export class Package extends AggregateRoot<PackageProps> {
     this.props.updatedAt = new Date();
   }
 
-  public updateStatus(
-    newStatus: PackageStatus,
+  public assignDeliveryPerson(
+    deliveryPersonId: UniqueEntityId,
     authorId: UniqueEntityId,
     description?: string | null
-  ): Either<MissingAttachmentError | InvalidatePackageStatusError, void> {
-    if (newStatus.isDelivered() && !this.props.attachment) {
-      return left(new MissingAttachmentError());
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
+    this.props.deliveryPersonId = deliveryPersonId;
+    this.touch();
+
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      return left(awaitingPickupStatus.value);
     }
 
-    const transitionResult = this.props.status.transitionTo(newStatus);
+    const transitionResult = this.status.transitionTo(
+      awaitingPickupStatus.value
+    );
 
     if (transitionResult.isLeft()) {
       return left(transitionResult.value);
@@ -113,47 +122,21 @@ export class Package extends AggregateRoot<PackageProps> {
       authorId: authorId,
       createdAt: new Date(),
       deliveryPersonId: this.props.deliveryPersonId,
-      description: description ?? 'Package status changed',
-      fromStatus: this.props.status,
-      toStatus: transitionResult.value,
-    });
-
-    this.props.status = transitionResult.value;
-    this.touch();
-
-    if (newStatus.isDelivered()) {
-      this.props.deliveredAt = new Date();
-    }
-
-    this.histories.add(packageHistory);
-
-    return right(undefined);
-  }
-
-  public assignDeliveryPerson(
-    deliveryPersonId: UniqueEntityId,
-    authorId: UniqueEntityId,
-    previousStatus: PackageStatus,
-    description?: string | null
-  ): void {
-    this.props.deliveryPersonId = deliveryPersonId;
-    this.touch();
-
-    const packageHistory = PackageHistory.create({
-      packageId: this.props.id,
-      authorId: authorId,
-      createdAt: new Date(),
-      deliveryPersonId: this.props.deliveryPersonId,
       description: description ?? 'Package assigned to a delivery person',
-      fromStatus: previousStatus,
-      toStatus: this.status,
+      fromStatus: this.status,
+      toStatus: awaitingPickupStatus.value,
     });
+
+    this.props.status = awaitingPickupStatus.value;
+    this.touch();
 
     this.addDomainEvent(
       new PackageAssignedToADeliveryPersonEvent(packageHistory, this.id)
     );
 
     this.histories.add(packageHistory);
+
+    return right(awaitingPickupStatus.value);
   }
 
   public markAsCanceled(
@@ -214,7 +197,8 @@ export class Package extends AggregateRoot<PackageProps> {
   }
 
   public markAsPickedUp(
-    deliveryPersonId: UniqueEntityId
+    deliveryPersonId: UniqueEntityId,
+    description?: string
   ): Either<
     | PackageNotAssignedToDeliveryPersonError
     | PackageAlreadyAssignedError
@@ -246,15 +230,71 @@ export class Package extends AggregateRoot<PackageProps> {
       authorId: deliveryPersonId,
       createdAt: new Date(),
       deliveryPersonId: deliveryPersonId,
-      description: 'Package picked up',
+      description: description ?? 'Package picked up',
       fromStatus: this.status,
       toStatus: pickedUpStatus.value,
     });
 
     this.props.status = pickedUpStatus.value;
+    this.props.deliveryPersonId = null;
     this.touch();
 
     this.addDomainEvent(new PackagePickedUpEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+
+    return right(this.status);
+  }
+
+  public markAtDistributionCenter(
+    deliveryPersonId: UniqueEntityId,
+    description?: string
+  ): Either<
+    | PackageNotAssignedToDeliveryPersonError
+    | DeliveryPersonNotAssignedToPackageError
+    | InvalidatePackageStatusError,
+    PackageStatus
+  > {
+    if (!this.props.deliveryPersonId) {
+      return left(new PackageNotAssignedToDeliveryPersonError());
+    }
+
+    if (!this.props.deliveryPersonId.equals(deliveryPersonId)) {
+      return left(new DeliveryPersonNotAssignedToPackageError());
+    }
+
+    const atDistributionCenterStatus = PackageStatus.create(
+      'at_distribution_center'
+    );
+
+    if (atDistributionCenterStatus.isLeft()) {
+      return left(atDistributionCenterStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(
+      atDistributionCenterStatus.value
+    );
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package marked at distribution center',
+      fromStatus: this.status,
+      toStatus: atDistributionCenterStatus.value,
+    });
+
+    this.props.status = atDistributionCenterStatus.value;
+    this.touch();
+
+    this.addDomainEvent(
+      new PackageAtDistributionCenterEvent(packageHistory, this.id)
+    );
 
     this.histories.add(packageHistory);
 
