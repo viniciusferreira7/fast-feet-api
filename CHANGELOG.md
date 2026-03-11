@@ -1,3 +1,21 @@
+# [1.23.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.22.0...v1.23.0) (2026-03-11)
+
+
+### Bug Fixes
+
+* correct event subscription in OnPackageIsAtADistributionCenter subscriber ([ef327dd](https://github.com/viniciusferreira7/fast-feet-api/commit/ef327dd14c239e933563213cc96d7d90822b6b86))
+* update callsites to new assignDeliveryPerson signature ([31d8592](https://github.com/viniciusferreira7/fast-feet-api/commit/31d85926837c23304479dc9f97d9e26c953ed542))
+
+
+### Features
+
+* add DeliveryPersonNotAssignedToPackageError ([281432a](https://github.com/viniciusferreira7/fast-feet-api/commit/281432ab8a0c3c65e1226d0582dbdefe2e301980))
+* add description field to pick up package use case ([1e5a3d5](https://github.com/viniciusferreira7/fast-feet-api/commit/1e5a3d55a15f818c56e471b13db9ca9e82d3b5c0))
+* add on package at distribution center notification subscriber ([268129c](https://github.com/viniciusferreira7/fast-feet-api/commit/268129c78156ad823cd2b92d9c17fae59eca2d89))
+* add PackageAtDistributionCenterEvent domain event ([885cbc0](https://github.com/viniciusferreira7/fast-feet-api/commit/885cbc00c341c573a6eec2f330eb7e153aa37994))
+* create drop off package at distribution center use case ([fac9246](https://github.com/viniciusferreira7/fast-feet-api/commit/fac92467af5edeb3106d78919281736ae092dc81))
+* refactor Package entity methods and add markAtDistributionCenter ([58da86d](https://github.com/viniciusferreira7/fast-feet-api/commit/58da86dd0224827e2b1c03428f969fdb702e14d6))
+
 # [1.22.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.21.0...v1.22.0) (2026-03-10)
 
 
