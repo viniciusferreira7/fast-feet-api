@@ -238,6 +238,67 @@ describe('Pick Up Package', () => {
     }
   });
 
+  it('should use custom description in package history when provided', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      throw new Error('Failed to create awaiting_pickup status');
+    }
+
+    const packageEntity = makePackage({
+      status: awaitingPickupStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+    await packagesRepository.register(packageEntity);
+
+    const customDescription = 'Picked up at the front desk';
+
+    const result = await sut.execute({
+      packageId: packageEntity.id.toString(),
+      deliveryPersonId: deliveryPerson.id.toString(),
+      description: customDescription,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      const histories = result.value.package.histories.getItems();
+      const lastHistory = histories[histories.length - 1];
+      expect(lastHistory.description).toBe(customDescription);
+    }
+  });
+
+  it('should use default description in package history when not provided', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      throw new Error('Failed to create awaiting_pickup status');
+    }
+
+    const packageEntity = makePackage({
+      status: awaitingPickupStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    await deliveryPeopleRepository.register(deliveryPerson);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      packageId: packageEntity.id.toString(),
+      deliveryPersonId: deliveryPerson.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      const histories = result.value.package.histories.getItems();
+      const lastHistory = histories[histories.length - 1];
+      expect(lastHistory.description).toBe('Package picked up');
+    }
+  });
+
   it('should not be able to pick up a package in invalid status', async () => {
     const deliveryPerson = makeDeliveryPerson();
     const packageEntity = makePackage({
