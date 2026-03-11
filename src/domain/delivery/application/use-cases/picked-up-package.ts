@@ -10,6 +10,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error';
 interface PickUpPackageUseCaseRequest {
   packageId: string;
   deliveryPersonId: string;
+  description?: string;
 }
 
 type PickUpPackageUseCaseResponse = Either<
@@ -23,16 +24,17 @@ type PickUpPackageUseCaseResponse = Either<
 export class PickUpPackageUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,
-    private readonly deliveryPersonsRepository: DeliveryPeopleRepository
+    private readonly deliveryPeopleRepository: DeliveryPeopleRepository
   ) {}
 
   async execute({
     packageId,
     deliveryPersonId,
+    description,
   }: PickUpPackageUseCaseRequest): Promise<PickUpPackageUseCaseResponse> {
     const [packageRecord, deliveryPersonRecord] = await Promise.all([
       this.packagesRepository.findById(packageId),
-      this.deliveryPersonsRepository.findById(deliveryPersonId),
+      this.deliveryPeopleRepository.findById(deliveryPersonId),
     ]);
 
     if (!packageRecord) {
@@ -44,7 +46,8 @@ export class PickUpPackageUseCase {
     }
 
     const transitionResult = packageRecord.markAsPickedUp(
-      deliveryPersonRecord.id
+      deliveryPersonRecord.id,
+      description
     );
 
     if (transitionResult.isLeft()) {
