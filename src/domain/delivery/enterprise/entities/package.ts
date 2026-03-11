@@ -6,7 +6,7 @@ import { DeliveryPersonNotAssignedToPackageError } from '../../application/use-c
 import { PackageAlreadyAssignedError } from '../../application/use-cases/errors/package-already-assined-erro';
 import { PackageNotAssignedToDeliveryPersonError } from '../../application/use-cases/errors/package-not-assigned-to-delivery-person-error';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
-import { MissingAttachmentError } from '../../errors/missing-attachment-error';
+
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';

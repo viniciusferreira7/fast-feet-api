@@ -5,10 +5,10 @@ import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-p
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
+import { DropOffPackageAtDistributionCenterUseCase } from './drop-off-package-at-distribution-center';
 import { DeliveryPersonNotAssignedToPackageError } from './errors/delivery-person-not-assigned-to-package-error';
 import { PackageNotAssignedToDeliveryPersonError } from './errors/package-not-assigned-to-delivery-person-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
-import { DropOffPackageAtDistributionCenterUseCase } from './drop-off-package-at-distribution-center';
 
 let packagesRepository: InMemoryPackagesRepository;
 let packageHistoryRepository: InMemoryPackagesHistoryRepository;
@@ -199,7 +199,9 @@ describe('Drop Off Package At Distribution Center', () => {
     if (result.isRight()) {
       const histories = result.value.package.histories.getItems();
       const lastHistory = histories[histories.length - 1];
-      expect(lastHistory.description).toBe('Package marked at distribution center');
+      expect(lastHistory.description).toBe(
+        'Package marked at distribution center'
+      );
     }
   });
 
@@ -264,7 +266,9 @@ describe('Drop Off Package At Distribution Center', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(PackageNotAssignedToDeliveryPersonError);
+      expect(result.value).toBeInstanceOf(
+        PackageNotAssignedToDeliveryPersonError
+      );
     }
   });
 
@@ -292,7 +296,9 @@ describe('Drop Off Package At Distribution Center', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(DeliveryPersonNotAssignedToPackageError);
+      expect(result.value).toBeInstanceOf(
+        DeliveryPersonNotAssignedToPackageError
+      );
     }
   });
 

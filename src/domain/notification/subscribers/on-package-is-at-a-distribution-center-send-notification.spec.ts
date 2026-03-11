@@ -114,7 +114,10 @@ describe('On package is at a distribution center', () => {
 
     const customDescription = 'Arrived at central hub';
 
-    packageRecord.markAtDistributionCenter(deliveryPerson.id, customDescription);
+    packageRecord.markAtDistributionCenter(
+      deliveryPerson.id,
+      customDescription
+    );
 
     await packagesRepository.update(packageRecord);
 
