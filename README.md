@@ -119,10 +119,17 @@ src/
 │   │   ├── aggregate-root.ts      # Base class for aggregates
 │   │   ├── entity.ts              # Base entity class
 │   │   └── value-object/          # Value object base classes
+│   │       ├── pagination.ts      # Pagination value object
+│   │       ├── unique-entity-id.ts
+│   │       └── value-object.ts
 │   ├── events/                     # Domain events infrastructure
 │   │   ├── domain-event.ts        # Domain event interface
-│   │   └── domain-events.ts       # Domain events dispatcher
+│   │   ├── domain-events.ts       # Domain events dispatcher
+│   │   └── event-handler.ts       # Event handler interface
+│   ├── repositories/               # Core repository abstractions
+│   │   └── pagination-params.ts
 │   ├── watched-list.ts            # Watched list for tracking collection changes
+│   ├── either.ts                  # Either monad for functional error handling
 │   ├── errors/                     # Core error classes
 │   └── types/                      # Core type definitions
 │
@@ -147,55 +154,119 @@ src/
 │   │   │   │       └── package-history-list.ts
 │   │   │   └── events/             # Domain events
 │   │   │       ├── package-registered-event.ts
-│   │   │       └── package-assigned-to-a-delivery-person-event.ts
+│   │   │       ├── package-assigned-to-a-delivery-person-event.ts
+│   │   │       ├── package-picked-up-event.ts
+│   │   │       ├── package-at-distribution-center-event.ts
+│   │   │       └── package-canceled-event.ts
 │   │   ├── application/            # Application business rules
 │   │   │   ├── use-cases/          # Use cases (application services)
+│   │   │   │   ├── # Authentication & Registration
 │   │   │   │   ├── register-admin-person.ts
 │   │   │   │   ├── register-delivery-person.ts
 │   │   │   │   ├── register-recipient-person.ts
 │   │   │   │   ├── authenticate-admin-person.ts
 │   │   │   │   ├── authenticate-delivery-person.ts
 │   │   │   │   ├── authenticate-recipient-person.ts
+│   │   │   │   ├── # Email Verification
 │   │   │   │   ├── send-admin-person-code.ts
 │   │   │   │   ├── send-delivery-person-code.ts
 │   │   │   │   ├── send-recipient-person-code.ts
+│   │   │   │   ├── validate-admin-person-code.ts
+│   │   │   │   ├── validate-delivery-person-code.ts
+│   │   │   │   ├── validate-recipient-person-code.ts
+│   │   │   │   ├── # Password Management
+│   │   │   │   ├── reset-admin-person-password.ts
+│   │   │   │   ├── reset-delivery-person-password.ts
+│   │   │   │   ├── reset-recipient-person-password.ts
+│   │   │   │   ├── # Person Management
+│   │   │   │   ├── update-admin-person.ts
+│   │   │   │   ├── update-delivery-person.ts
+│   │   │   │   ├── update-recipient-person.ts
+│   │   │   │   ├── get-by-id-admin-person.ts
+│   │   │   │   ├── get-by-id-delivery-person.ts
+│   │   │   │   ├── get-by-id-recipient-person.ts
+│   │   │   │   ├── fetch-many-delivery-person.ts
+│   │   │   │   ├── delete-delivery-person.ts
+│   │   │   │   ├── # Package Management
 │   │   │   │   ├── register-package.ts
+│   │   │   │   ├── get-package-by-id.ts
+│   │   │   │   ├── get-package-by-code.ts
+│   │   │   │   ├── fetch-many-packages.ts
+│   │   │   │   ├── fetch-packages-near-by-delivery-person.ts
 │   │   │   │   ├── assign-package-to-a-delivery-person.ts
+│   │   │   │   ├── picked-up-package.ts
+│   │   │   │   ├── drop-off-package-at-distribution-center.ts
+│   │   │   │   ├── package-is-in-transit.ts
+│   │   │   │   ├── cancel-package.ts
+│   │   │   │   ├── # Package History
 │   │   │   │   ├── register-package-history.ts
 │   │   │   │   └── errors/         # Use case errors
 │   │   │   │       ├── person-already-exists-error.ts
 │   │   │   │       ├── wrong-credentials-error.ts
 │   │   │   │       ├── email-code-has-not-been-verified-error.ts
-│   │   │   │       └── time-to-send-new-email-code-error.ts
+│   │   │   │       ├── time-to-send-new-email-code-error.ts
+│   │   │   │       ├── resource-not-found-error.ts
+│   │   │   │       ├── email-already-in-use-error.ts
+│   │   │   │       ├── same-email-error.ts
+│   │   │   │       ├── same-password-error.ts
+│   │   │   │       ├── only-admin-can-perform-this-action-error.ts
+│   │   │   │       ├── delivery-person-profile-is-disable-error.ts
+│   │   │   │       ├── delivery-person-not-assigned-to-package-error.ts
+│   │   │   │       ├── cannot-disable-delivery-person-with-active-packages-error.ts
+│   │   │   │       ├── package-already-assigned-error.ts
+│   │   │   │       ├── package-already-canceled-error.ts
+│   │   │   │       └── package-not-assigned-to-delivery-person-error.ts
 │   │   │   ├── repositories/       # Repository interfaces
+│   │   │   │   ├── admin-people-repository.ts
+│   │   │   │   ├── delivery-people-repository.ts
+│   │   │   │   ├── recipient-people-repository.ts
+│   │   │   │   ├── packages-repository.ts
+│   │   │   │   ├── packages-history-repository.ts
+│   │   │   │   └── email-verifications-repository.ts
 │   │   │   ├── email/              # Email service interfaces
 │   │   │   │   └── email-sender.ts
 │   │   │   ├── cryptography/       # Cryptography interfaces
+│   │   │   │   ├── hash-generator.ts
+│   │   │   │   ├── hash-comparer.ts
+│   │   │   │   └── encrypter.ts
 │   │   │   └── validation/         # Validation interfaces
 │   │   │       ├── cpf-validator.ts
 │   │   │       ├── password-validator.ts
 │   │   │       └── postal-code-validator.ts
 │   │   └── errors/                 # Domain-specific errors
-│   │       ├── invalid-cpf-error.ts
 │   │       ├── invalidate-cpf-error.ts
 │   │       ├── external-cpf-validation-error.ts
+│   │       ├── invalidate-package-code-error.ts
+│   │       ├── invalidate-package-status-error.ts
+│   │       ├── invalid-postal-code-error.ts
+│   │       ├── external-postal-code-validation-error.ts
 │   │       ├── external-password-validation-error.ts
 │   │       ├── email-code-expired-error.ts
-│   │       └── invalid-email-code-error.ts
+│   │       ├── invalid-email-code-error.ts
+│   │       ├── delivery-person-already-disabled-error.ts
+│   │       └── missing-attachment-error.ts
 │   │
 │   └── notification/               # Notification context (bounded context)
 │       ├── enterprise/             # Enterprise business rules
 │       │   └── entities/           # Domain entities
 │       │       └── notification.ts
 │       ├── application/            # Application business rules
+│       │   ├── repositories/
+│       │   │   └── notifications-repository.ts
 │       │   └── use-cases/          # Use cases
 │       │       └── send-notification.ts
 │       └── subscribers/            # Event subscribers (cross-boundary communication)
 │           ├── on-package-registered-send-notification.ts
-│           └── on-package-assigned-send-notification.ts
+│           ├── on-package-assigned-send-notification.ts
+│           ├── on-package-picked-up-send-notification.ts
+│           ├── on-package-is-at-a-distribution-center-send-notification.ts
+│           └── on-package-canceled-send-notification.ts
 │
 └── infra/                          # Infrastructure layer
-    └── env/                        # Environment configuration
+    ├── env/                        # Environment configuration
+    │   └── env.ts
+    ├── app.module.ts
+    └── main.ts
 ```
 
 ### Domain Model
@@ -307,6 +378,15 @@ The application uses domain events for cross-bounded-context communication:
   - Triggers notification to recipient about assignment
   - Contains package history and package ID
 
+- **PackagePickedUpEvent**: Dispatched when a delivery person picks up a package
+  - Triggers notification to recipient about pickup
+
+- **PackageAtDistributionCenterEvent**: Dispatched when a package arrives at a distribution center
+  - Triggers notification to recipient about current location
+
+- **PackageCanceledEvent**: Dispatched when a package is canceled
+  - Triggers notification to recipient about cancellation
+
 #### Subscribers
 
 - **OnPackageRegisteredSendNotification**: Listens to `PackageRegisteredEvent`
@@ -316,6 +396,15 @@ The application uses domain events for cross-bounded-context communication:
 - **OnPackageAssignedSendNotification**: Listens to `PackageAssignedToADeliveryPersonEvent`
   - Sends notification to recipient when delivery person is assigned
   - Cross-boundary communication between delivery and notification contexts
+
+- **OnPackagePickedUpSendNotification**: Listens to `PackagePickedUpEvent`
+  - Sends notification to recipient when package is picked up
+
+- **OnPackageIsAtADistributionCenterSendNotification**: Listens to `PackageAtDistributionCenterEvent`
+  - Sends notification to recipient when package reaches a distribution center
+
+- **OnPackageCanceledSendNotification**: Listens to `PackageCanceledEvent`
+  - Sends notification to recipient when package is canceled
 
 ### Package History
 
@@ -411,12 +500,12 @@ The project includes comprehensive testing with Vitest:
 - **Unit Tests**: Testing individual components, use cases, and domain logic
   - Value object validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
   - Entity logic (EmailVerification expiration, validation status)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, AssignPackageToADeliveryPerson)
+  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson)
   - Email verification requirement in authentication flow
   - Entity behavior and state management
-  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification)
+  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageCanceledSendNotification)
   - In-memory repository implementations for isolated testing
-  - Comprehensive test coverage with 190+ passing tests
+  - Comprehensive test coverage with 200+ passing tests
 
 - **E2E Tests**: Testing complete user flows and API endpoints
   - Full request/response cycles
@@ -504,8 +593,19 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
   - Credential validation with wrong credentials error handling
   - Email verification requirement before authentication
   - Time-limited verification codes (5-minute expiration)
-- Package registration with postal code validation
-- Package assignment to delivery person with automatic status updates
+- Person management use cases (update, get by ID, fetch many, delete)
+  - Admin person management
+  - Delivery person management (with active packages guard on delete)
+  - Recipient person management
+- Password reset use cases for all user types
+- Package management use cases
+  - Package registration with postal code validation
+  - Package retrieval (by ID and by code)
+  - Package listing with pagination and filtering
+  - Location-based package filtering for delivery persons
+  - Package assignment to delivery person with automatic status updates
+  - Package pickup, drop-off at distribution center, and cancellation
+  - Package in-transit status transition
 - Password hashing with cryptography layer
 - External CPF validation with dependency injection pattern
 - External postal code validation with dependency injection pattern
@@ -515,6 +615,9 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Event subscribers for cross-boundary communication
   - Package registered notification
   - Package assigned notification
+  - Package picked up notification
+  - Package at distribution center notification
+  - Package canceled notification
 - Package history tracking with automatic audit trail
   - Automatic creation on status changes
   - Automatic creation on delivery person assignment
@@ -528,7 +631,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
   - Send verification code use cases for all user types (Admin, Delivery Person, Recipient)
   - Rate limiting to prevent code spam (can't request new code until current expires)
   - Email service abstraction with EmailSender interface
-- Comprehensive unit tests for domain logic (190 passing tests)
+- Comprehensive unit tests for domain logic (200+ passing tests)
   - Email verification expiration logic tests
   - Authentication with unverified email rejection tests
   - Verification code format validation tests
