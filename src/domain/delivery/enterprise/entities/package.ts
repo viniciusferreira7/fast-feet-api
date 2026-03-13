@@ -10,7 +10,7 @@ import { InvalidatePackageStatusError } from '../../errors/invalidate-package-st
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
-import { PackageIsInTransitEvent } from '../events/package-is-in-transit';
+import { PackageIsInTransitEvent } from '../events/package-is-in-transit-event';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
@@ -303,6 +303,7 @@ export class Package extends AggregateRoot<PackageProps> {
   }
 
   public markAsInTransit(
+    authorId: UniqueEntityId,
     deliveryPersonId: UniqueEntityId,
     description?: string
   ): Either<
@@ -333,7 +334,7 @@ export class Package extends AggregateRoot<PackageProps> {
 
     const packageHistory = PackageHistory.create({
       packageId: this.props.id,
-      authorId: deliveryPersonId,
+      authorId: authorId,
       createdAt: new Date(),
       deliveryPersonId: deliveryPersonId,
       description: description ?? 'Package is in transit',
