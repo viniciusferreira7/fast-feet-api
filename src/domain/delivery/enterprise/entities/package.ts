@@ -10,6 +10,7 @@ import { InvalidatePackageStatusError } from '../../errors/invalidate-package-st
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
+import { PackageIsInTransitEvent } from '../events/package-is-in-transit';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
@@ -139,6 +140,27 @@ export class Package extends AggregateRoot<PackageProps> {
     return right(awaitingPickupStatus.value);
   }
 
+  public addAttachment(attachment: PackageAttachment): void {
+    this.props.attachment = attachment;
+    this.touch();
+  }
+
+  public markAsRegistered(authorId: UniqueEntityId): void {
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: authorId,
+      createdAt: new Date(),
+      deliveryPersonId: this.props.deliveryPersonId,
+      description: 'Package registered',
+      fromStatus: null,
+      toStatus: this.status,
+    });
+
+    this.addDomainEvent(new PackageRegisteredEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+  }
+
   public markAsCanceled(
     authorId: UniqueEntityId,
     description?: string
@@ -173,27 +195,6 @@ export class Package extends AggregateRoot<PackageProps> {
     this.histories.add(packageHistory);
 
     return right(this.props.status);
-  }
-
-  public addAttachment(attachment: PackageAttachment): void {
-    this.props.attachment = attachment;
-    this.touch();
-  }
-
-  public markAsRegistered(authorId: UniqueEntityId): void {
-    const packageHistory = PackageHistory.create({
-      packageId: this.props.id,
-      authorId: authorId,
-      createdAt: new Date(),
-      deliveryPersonId: this.props.deliveryPersonId,
-      description: 'Package registered',
-      fromStatus: null,
-      toStatus: this.status,
-    });
-
-    this.addDomainEvent(new PackageRegisteredEvent(packageHistory, this.id));
-
-    this.histories.add(packageHistory);
   }
 
   public markAsPickedUp(
@@ -295,6 +296,56 @@ export class Package extends AggregateRoot<PackageProps> {
     this.addDomainEvent(
       new PackageAtDistributionCenterEvent(packageHistory, this.id)
     );
+
+    this.histories.add(packageHistory);
+
+    return right(this.status);
+  }
+
+  public markAsInTransit(
+    deliveryPersonId: UniqueEntityId,
+    description?: string
+  ): Either<
+    | PackageNotAssignedToDeliveryPersonError
+    | PackageAlreadyAssignedError
+    | InvalidatePackageStatusError,
+    PackageStatus
+  > {
+    if (!this.props.deliveryPersonId) {
+      return left(new PackageNotAssignedToDeliveryPersonError());
+    }
+
+    if (!this.props.deliveryPersonId.equals(deliveryPersonId)) {
+      return left(new PackageAlreadyAssignedError());
+    }
+
+    const inTransitStatus = PackageStatus.create('in_transit');
+
+    if (inTransitStatus.isLeft()) {
+      return left(inTransitStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(inTransitStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package is in transit',
+      fromStatus: this.status,
+      toStatus: inTransitStatus.value,
+    });
+
+    this.props.status = inTransitStatus.value;
+    this.props.deliveryPersonId = null;
+    this.touch();
+
+    this.addDomainEvent(new PackageIsInTransitEvent(packageHistory, this.id));
 
     this.histories.add(packageHistory);
 
