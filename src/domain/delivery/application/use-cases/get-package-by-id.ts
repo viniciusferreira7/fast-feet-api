@@ -35,7 +35,7 @@ export class GetByPackageByIdUseCase {
     }
 
     if (!packageRegister) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('package'));
     }
 
     return right({ package: packageRegister });

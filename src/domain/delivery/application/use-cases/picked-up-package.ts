@@ -38,11 +38,11 @@ export class PickUpPackageUseCase {
     ]);
 
     if (!packageRecord) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('package'));
     }
 
     if (!deliveryPersonRecord) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('delivery person'));
     }
 
     const transitionResult = packageRecord.markAsPickedUp(

@@ -35,7 +35,7 @@ export class GetByIdRecipientPersonUseCase {
     ]);
 
     if (!recipientPerson) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('recipient person'));
     }
 
     if (!isSamePersonLookingForThisPerson && !author) {

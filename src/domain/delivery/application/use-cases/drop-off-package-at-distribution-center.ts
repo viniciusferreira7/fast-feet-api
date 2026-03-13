@@ -38,11 +38,11 @@ export class DropOffPackageAtDistributionCenterUseCase {
     ]);
 
     if (!packageRecord) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('package'));
     }
 
     if (!deliveryPersonRecord) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('delivery person'));
     }
 
     const transitionResult = packageRecord.markAtDistributionCenter(

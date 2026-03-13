@@ -31,7 +31,7 @@ export class GetByIdAdminPersonUseCase {
     ]);
 
     if (!adminPerson) {
-      return left(new ResourceNotFoundError());
+      return left(new ResourceNotFoundError('admin'));
     }
 
     if (!isSamePersonLookingForThisPerson && !author) {
