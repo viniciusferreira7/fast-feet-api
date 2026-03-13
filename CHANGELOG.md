@@ -1,3 +1,17 @@
+# [1.24.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.23.0...v1.24.0) (2026-03-13)
+
+
+### Bug Fixes
+
+* apply correction on use case, subscriber and package entity ([2b8c25c](https://github.com/viniciusferreira7/fast-feet-api/commit/2b8c25c174c43979b13f3034f01f855f156cf3c6))
+
+
+### Features
+
+* create event for package is in transit ([8fcb6a3](https://github.com/viniciusferreira7/fast-feet-api/commit/8fcb6a34027d27a55a8f1d475912a76260a7fe48))
+* create subscribers when package is in transit ([39bdebd](https://github.com/viniciusferreira7/fast-feet-api/commit/39bdebd41cf8acf4156b0332ec9a3acbfa374f9e))
+* create use case to mark package is in transit ([e61f7dc](https://github.com/viniciusferreira7/fast-feet-api/commit/e61f7dc8a229df9ea16e560ce2c69d6ce1651b3a))
+
 # [1.23.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.22.0...v1.23.0) (2026-03-11)
 
 
