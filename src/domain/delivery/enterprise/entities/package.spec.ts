@@ -499,6 +499,328 @@ describe('Package', () => {
     });
   });
 
+  describe('markAsFailedDelivery', () => {
+    it('should mark package as failed delivery successfully', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const result = packageEntity.markAsFailedDelivery(deliveryPersonId);
+
+        expect(result.isRight()).toBe(true);
+        expect(packageEntity.status.isFailedDelivery()).toBe(true);
+        expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should keep deliveryPersonId after marking as failed delivery', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsFailedDelivery(deliveryPersonId);
+
+        expect(packageEntity.deliveryPersonId).toBe(deliveryPersonId);
+      }
+    });
+
+    it('should store custom description in history when provided', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const customDescription = 'Recipient not home';
+        packageEntity.markAsFailedDelivery(deliveryPersonId, customDescription);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe(customDescription);
+      }
+    });
+
+    it('should store default description in history when not provided', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsFailedDelivery(deliveryPersonId);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe('Package delivery failed');
+      }
+    });
+
+    it('should add a history entry on marking as failed delivery', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const initialCount = packageEntity.histories.getItems().length;
+        packageEntity.markAsFailedDelivery(deliveryPersonId);
+
+        expect(packageEntity.histories.getItems().length).toBe(
+          initialCount + 1
+        );
+      }
+    });
+
+    it('should fail when package has no delivery person assigned', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId: null,
+        });
+
+        const result = packageEntity.markAsFailedDelivery(new UniqueEntityId());
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(
+            PackageNotAssignedToDeliveryPersonError
+          );
+        }
+      }
+    });
+
+    it('should fail when package is assigned to a different delivery person', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const assignedDeliveryPersonId = new UniqueEntityId();
+        const anotherDeliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId: assignedDeliveryPersonId,
+        });
+
+        const result = packageEntity.markAsFailedDelivery(
+          anotherDeliveryPersonId
+        );
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(
+            DeliveryPersonNotAssignedToPackageError
+          );
+        }
+      }
+    });
+
+    it('should fail when package is not in out_for_delivery status', () => {
+      const deliveryPersonId = new UniqueEntityId();
+      const packageEntity = makePackage({ deliveryPersonId });
+
+      const result = packageEntity.markAsFailedDelivery(deliveryPersonId);
+
+      expect(result.isLeft()).toBe(true);
+      if (result.isLeft()) {
+        expect(result.value).toBeInstanceOf(InvalidatePackageStatusError);
+      }
+    });
+  });
+
+  describe('markAsReturned', () => {
+    it('should mark package as returned successfully', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const result = packageEntity.markAsReturned(deliveryPersonId);
+
+        expect(result.isRight()).toBe(true);
+        expect(packageEntity.status.isReturned()).toBe(true);
+        expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should clear deliveryPersonId after marking as returned', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsReturned(deliveryPersonId);
+
+        expect(packageEntity.deliveryPersonId).toBeNull();
+      }
+    });
+
+    it('should store custom description in history when provided', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const customDescription = 'Returned to sender';
+        packageEntity.markAsReturned(deliveryPersonId, customDescription);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe(customDescription);
+      }
+    });
+
+    it('should store default description in history when not provided', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsReturned(deliveryPersonId);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe('Package returned');
+      }
+    });
+
+    it('should add a history entry on marking as returned', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const initialCount = packageEntity.histories.getItems().length;
+        packageEntity.markAsReturned(deliveryPersonId);
+
+        expect(packageEntity.histories.getItems().length).toBe(
+          initialCount + 1
+        );
+      }
+    });
+
+    it('should fail when package has no delivery person assigned', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId: null,
+        });
+
+        const result = packageEntity.markAsReturned(new UniqueEntityId());
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(
+            PackageNotAssignedToDeliveryPersonError
+          );
+        }
+      }
+    });
+
+    it('should fail when package is assigned to a different delivery person', () => {
+      const failedDeliveryResult = PackageStatus.create('failed_delivery');
+
+      expect(failedDeliveryResult.isRight()).toBe(true);
+
+      if (failedDeliveryResult.isRight()) {
+        const assignedDeliveryPersonId = new UniqueEntityId();
+        const anotherDeliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: failedDeliveryResult.value,
+          deliveryPersonId: assignedDeliveryPersonId,
+        });
+
+        const result = packageEntity.markAsReturned(anotherDeliveryPersonId);
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(
+            DeliveryPersonNotAssignedToPackageError
+          );
+        }
+      }
+    });
+
+    it('should fail when package is not in failed_delivery status', () => {
+      const deliveryPersonId = new UniqueEntityId();
+      const packageEntity = makePackage({ deliveryPersonId });
+
+      const result = packageEntity.markAsReturned(deliveryPersonId);
+
+      expect(result.isLeft()).toBe(true);
+      if (result.isLeft()) {
+        expect(result.value).toBeInstanceOf(InvalidatePackageStatusError);
+      }
+    });
+  });
+
   describe('markAsOutForDelivery', () => {
     it('should mark package as out for delivery successfully', () => {
       const inTransitResult = PackageStatus.create('in_transit');
