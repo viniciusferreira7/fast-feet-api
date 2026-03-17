@@ -2,6 +2,7 @@ import { makePackage } from 'test/factories/make-package';
 import { makePackageAttachment } from 'test/factories/make-package-attachment';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 
+import { DeliveryPersonNotAssignedToPackageError } from '../../application/use-cases/errors/delivery-person-not-assigned-to-package-error';
 import { PackageAlreadyAssignedError } from '../../application/use-cases/errors/package-already-assined-erro';
 import { PackageNotAssignedToDeliveryPersonError } from '../../application/use-cases/errors/package-not-assigned-to-delivery-person-error';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
