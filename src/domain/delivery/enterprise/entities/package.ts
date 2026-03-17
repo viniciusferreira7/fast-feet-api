@@ -11,6 +11,7 @@ import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigne
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
 import { PackageIsInTransitEvent } from '../events/package-is-in-transit-event';
+import { PackageIsOutForDeliveryEvent } from '../events/package-is-out-for-delivery-event';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
@@ -351,6 +352,46 @@ export class Package extends AggregateRoot<PackageProps> {
     this.histories.add(packageHistory);
 
     return right(this.status);
+  }
+
+  public markAsOutForDelivery(
+    authorId: UniqueEntityId,
+    deliveryPersonId: UniqueEntityId,
+    description?: string
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
+    const outForDeliveryStatus = PackageStatus.create('out_for_delivery');
+
+    if (outForDeliveryStatus.isLeft()) {
+      return left(outForDeliveryStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(outForDeliveryStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: authorId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package is out for delivery',
+      fromStatus: this.status,
+      toStatus: outForDeliveryStatus.value,
+    });
+
+    this.props.deliveryPersonId = deliveryPersonId;
+    this.props.status = outForDeliveryStatus.value;
+    this.touch();
+
+    this.addDomainEvent(
+      new PackageIsOutForDeliveryEvent(packageHistory, this.id)
+    );
+
+    this.histories.add(packageHistory);
+
+    return right(this.props.status);
   }
 
   public static create(
