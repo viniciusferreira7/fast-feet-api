@@ -306,6 +306,199 @@ describe('Package', () => {
     });
   });
 
+  describe('markAsInTransit', () => {
+    it('should mark package as in transit successfully', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId,
+        });
+
+        const result = packageEntity.markAsInTransit(
+          authorId,
+          deliveryPersonId
+        );
+
+        expect(result.isRight()).toBe(true);
+        expect(packageEntity.status.isInTransit()).toBe(true);
+        expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should clear deliveryPersonId after marking as in transit', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsInTransit(authorId, deliveryPersonId);
+
+        expect(packageEntity.deliveryPersonId).toBeNull();
+      }
+    });
+
+    it('should store custom description in history when provided', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId,
+        });
+
+        const customDescription = 'Dispatched from central hub';
+        packageEntity.markAsInTransit(
+          authorId,
+          deliveryPersonId,
+          customDescription
+        );
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe(customDescription);
+      }
+    });
+
+    it('should store default description in history when not provided', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsInTransit(authorId, deliveryPersonId);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe('Package is in transit');
+      }
+    });
+
+    it('should add a history entry on marking as in transit', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId,
+        });
+
+        const initialCount = packageEntity.histories.getItems().length;
+        packageEntity.markAsInTransit(authorId, deliveryPersonId);
+
+        expect(packageEntity.histories.getItems().length).toBe(
+          initialCount + 1
+        );
+      }
+    });
+
+    it('should fail when package has no delivery person assigned', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId: null,
+        });
+
+        const result = packageEntity.markAsInTransit(
+          new UniqueEntityId(),
+          new UniqueEntityId()
+        );
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(
+            PackageNotAssignedToDeliveryPersonError
+          );
+        }
+      }
+    });
+
+    it('should fail when package is assigned to a different delivery person', () => {
+      const atDistributionCenterResult = PackageStatus.create(
+        'at_distribution_center'
+      );
+
+      expect(atDistributionCenterResult.isRight()).toBe(true);
+
+      if (atDistributionCenterResult.isRight()) {
+        const assignedDeliveryPersonId = new UniqueEntityId();
+        const anotherDeliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: atDistributionCenterResult.value,
+          deliveryPersonId: assignedDeliveryPersonId,
+        });
+
+        const result = packageEntity.markAsInTransit(
+          new UniqueEntityId(),
+          anotherDeliveryPersonId
+        );
+
+        expect(result.isLeft()).toBe(true);
+        if (result.isLeft()) {
+          expect(result.value).toBeInstanceOf(PackageAlreadyAssignedError);
+        }
+      }
+    });
+
+    it('should fail when package is not in at_distribution_center status', () => {
+      const deliveryPersonId = new UniqueEntityId();
+      const packageEntity = makePackage({ deliveryPersonId });
+
+      const result = packageEntity.markAsInTransit(
+        new UniqueEntityId(),
+        deliveryPersonId
+      );
+
+      expect(result.isLeft()).toBe(true);
+      if (result.isLeft()) {
+        expect(result.value).toBeInstanceOf(InvalidatePackageStatusError);
+      }
+    });
+  });
+
   describe('addAttachment', () => {
     it('should not be able to mark as delivered without attachment', () => {
       const outForDeliveryResult = PackageStatus.create('out_for_delivery');
