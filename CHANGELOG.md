@@ -1,3 +1,21 @@
+# [1.25.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.24.0...v1.25.0) (2026-03-17)
+
+
+### Bug Fixes
+
+* add missing DeliveryPersonNotAssignedToPackageError import in package.spec.ts ([867ea53](https://github.com/viniciusferreira7/fast-feet-api/commit/867ea53d7e17d83bae2d45f9638080db2999a6be))
+* correct expected default notification title in on-package-is-in-transit subscriber test ([dc8b47b](https://github.com/viniciusferreira7/fast-feet-api/commit/dc8b47b6a610145e3917678e1eb7b5e0216fd9a8))
+
+
+### Features
+
+* add markAsFailedDelivery and markAsReturned methods to Package entity ([e229c0c](https://github.com/viniciusferreira7/fast-feet-api/commit/e229c0c85d721e323dd24d7a9d609235af963863))
+* add markAsOutForDelivery method to Package entity ([d7535c1](https://github.com/viniciusferreira7/fast-feet-api/commit/d7535c170ebc56fbea83b718643935cddbab5c79))
+* create PackageFailedDelivery and ReturnPackage use cases ([d673053](https://github.com/viniciusferreira7/fast-feet-api/commit/d673053211c56268967a10a6d95195242ad0add1))
+* create PackageFailedDeliveryEvent and PackageReturnedEvent domain events ([2574ea2](https://github.com/viniciusferreira7/fast-feet-api/commit/2574ea29db63822fee2c0f82b8a32360f9609f93))
+* create PackageIsOutForDelivery use case ([8307b01](https://github.com/viniciusferreira7/fast-feet-api/commit/8307b0136affd21381daa4394fc1d07a68a74428))
+* create PackageIsOutForDeliveryEvent domain event ([bce64ed](https://github.com/viniciusferreira7/fast-feet-api/commit/bce64eddbd057e8fe8967547608b193f3dc24b20))
+
 # [1.24.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.23.0...v1.24.0) (2026-03-13)
 
 
