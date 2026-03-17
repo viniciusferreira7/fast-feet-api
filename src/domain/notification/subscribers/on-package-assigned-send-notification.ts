@@ -4,7 +4,9 @@ import type { PackagesRepository } from '@/domain/delivery/application/repositor
 import { PackageAssignedToADeliveryPersonEvent } from '@/domain/delivery/enterprise/events/package-assigned-to-a-delivery-person-event';
 import type { SendNotificationUseCase } from '../application/use-cases/send-notification';
 
-export class OnPackageAssignedSendNotification implements EventHandler {
+export class OnPackageAssignedToADeliveryPersonSendNotification
+  implements EventHandler
+{
   constructor(
     private readonly packagesRepository: PackagesRepository,
     private readonly sendNotificationUseCase: SendNotificationUseCase
