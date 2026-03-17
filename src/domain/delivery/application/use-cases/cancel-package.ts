@@ -1,6 +1,3 @@
-//TODO: create specific use cases to cancel
-//TODO: create use case to update package status
-
 import { type Either, left, right } from '@/core/either';
 import type { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
