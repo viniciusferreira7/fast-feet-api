@@ -92,8 +92,6 @@ describe('On package is in transit', () => {
       (item) => item.title === 'Your package is now in transit'
     );
 
-    console.log(notification);
-
     expect(notification).toEqual(
       expect.objectContaining({
         title: 'Your package is now in transit',
@@ -106,5 +104,64 @@ describe('On package is in transit', () => {
         createdAt: expect.any(Date),
       })
     );
+  });
+
+  it('should send notification with default title when no description is provided', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const atDistributionCenterStatus = PackageStatus.create(
+      'at_distribution_center'
+    );
+
+    if (atDistributionCenterStatus.isLeft()) {
+      throw new Error('Failed to create at_distribution_center status');
+    }
+
+    const packageRecord = makePackage({
+      status: atDistributionCenterStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    const adminPerson = makeAdminPerson();
+
+    await packagesRepository.register(packageRecord);
+
+    packageRecord.markAsInTransit(adminPerson.id, deliveryPerson.id);
+
+    await packagesRepository.update(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toBeCalledTimes(1);
+      expect(sendNotificationSpy).toBeCalledWith(
+        expect.objectContaining({
+          title: 'Your package is now in transit',
+        })
+      );
+    });
+  });
+
+  it('should not send notification when package does not exist', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const atDistributionCenterStatus = PackageStatus.create(
+      'at_distribution_center'
+    );
+
+    if (atDistributionCenterStatus.isLeft()) {
+      throw new Error('Failed to create at_distribution_center status');
+    }
+
+    const packageRecord = makePackage({
+      status: atDistributionCenterStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    const adminPerson = makeAdminPerson();
+
+    packageRecord.markAsInTransit(adminPerson.id, deliveryPerson.id);
+
+    await packagesRepository.update(packageRecord);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    expect(sendNotificationSpy).not.toHaveBeenCalled();
   });
 });
