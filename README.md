@@ -393,7 +393,7 @@ The application uses domain events for cross-bounded-context communication:
   - Sends notification to recipient when their package is registered
   - Cross-boundary communication between delivery and notification contexts
 
-- **OnPackageAssignedSendNotification**: Listens to `PackageAssignedToADeliveryPersonEvent`
+- **OnPackageAssignedToADeliveryPersonSendNotification**: Listens to `PackageAssignedToADeliveryPersonEvent`
   - Sends notification to recipient when delivery person is assigned
   - Cross-boundary communication between delivery and notification contexts
 
@@ -503,7 +503,7 @@ The project includes comprehensive testing with Vitest:
   - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson)
   - Email verification requirement in authentication flow
   - Entity behavior and state management
-  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageCanceledSendNotification)
+  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageCanceledSendNotification)
   - In-memory repository implementations for isolated testing
   - Comprehensive test coverage with 200+ passing tests
 
