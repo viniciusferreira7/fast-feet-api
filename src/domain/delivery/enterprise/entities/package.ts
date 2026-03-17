@@ -11,8 +11,10 @@ import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigne
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
 import { PackageIsInTransitEvent } from '../events/package-is-in-transit-event';
+import { PackageFailedDeliveryEvent } from '../events/package-failed-delivery-event';
 import { PackageIsOutForDeliveryEvent } from '../events/package-is-out-for-delivery-event';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
+import { PackageReturnedEvent } from '../events/package-returned-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
@@ -354,6 +356,105 @@ export class Package extends AggregateRoot<PackageProps> {
     return right(this.status);
   }
 
+  public markAsFailedDelivery(
+    deliveryPersonId: UniqueEntityId,
+    description?: string
+  ): Either<
+    | PackageNotAssignedToDeliveryPersonError
+    | DeliveryPersonNotAssignedToPackageError
+    | InvalidatePackageStatusError,
+    PackageStatus
+  > {
+    if (!this.props.deliveryPersonId) {
+      return left(new PackageNotAssignedToDeliveryPersonError());
+    }
+
+    if (!this.props.deliveryPersonId.equals(deliveryPersonId)) {
+      return left(new DeliveryPersonNotAssignedToPackageError());
+    }
+
+    const failedDeliveryStatus = PackageStatus.create('failed_delivery');
+
+    if (failedDeliveryStatus.isLeft()) {
+      return left(failedDeliveryStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(failedDeliveryStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package delivery failed',
+      fromStatus: this.status,
+      toStatus: failedDeliveryStatus.value,
+    });
+
+    this.props.status = failedDeliveryStatus.value;
+    this.touch();
+
+    this.addDomainEvent(new PackageFailedDeliveryEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+
+    return right(this.props.status);
+  }
+
+  public markAsReturned(
+    deliveryPersonId: UniqueEntityId,
+    description?: string
+  ): Either<
+    | PackageNotAssignedToDeliveryPersonError
+    | DeliveryPersonNotAssignedToPackageError
+    | InvalidatePackageStatusError,
+    PackageStatus
+  > {
+    if (!this.props.deliveryPersonId) {
+      return left(new PackageNotAssignedToDeliveryPersonError());
+    }
+
+    if (!this.props.deliveryPersonId.equals(deliveryPersonId)) {
+      return left(new DeliveryPersonNotAssignedToPackageError());
+    }
+
+    const returnedStatus = PackageStatus.create('returned');
+
+    if (returnedStatus.isLeft()) {
+      return left(returnedStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(returnedStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package returned',
+      fromStatus: this.status,
+      toStatus: returnedStatus.value,
+    });
+
+    this.props.status = returnedStatus.value;
+    this.props.deliveryPersonId = null;
+    this.touch();
+
+    this.addDomainEvent(new PackageReturnedEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+
+    return right(this.props.status);
+  }
+
   public markAsOutForDelivery(
     authorId: UniqueEntityId,
     deliveryPersonId: UniqueEntityId,
@@ -365,7 +466,9 @@ export class Package extends AggregateRoot<PackageProps> {
       return left(outForDeliveryStatus.value);
     }
 
-    const transitionResult = this.status.transitionTo(outForDeliveryStatus.value);
+    const transitionResult = this.status.transitionTo(
+      outForDeliveryStatus.value
+    );
 
     if (transitionResult.isLeft()) {
       return left(transitionResult.value);
