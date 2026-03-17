@@ -133,7 +133,7 @@ describe('On package is in transit', () => {
       expect(sendNotificationSpy).toBeCalledTimes(1);
       expect(sendNotificationSpy).toBeCalledWith(
         expect.objectContaining({
-          title: 'Your package is now in transit',
+          title: 'Package is in transit',
         })
       );
     });
