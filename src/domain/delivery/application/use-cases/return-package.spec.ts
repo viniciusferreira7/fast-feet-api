@@ -23,7 +23,10 @@ describe('Return Package', () => {
       packageHistoryRepository
     );
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
-    sut = new ReturnPackageUseCase(packagesRepository, deliveryPeopleRepository);
+    sut = new ReturnPackageUseCase(
+      packagesRepository,
+      deliveryPeopleRepository
+    );
   });
 
   it('should be able to return a package', async () => {

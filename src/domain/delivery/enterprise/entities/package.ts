@@ -10,12 +10,12 @@ import { InvalidatePackageStatusError } from '../../errors/invalidate-package-st
 import { PackageAssignedToADeliveryPersonEvent } from '../events/package-assigned-to-a-delivery-person-event';
 import { PackageAtDistributionCenterEvent } from '../events/package-at-distribution-center-event';
 import { PackageCanceledEvent } from '../events/package-canceled-event';
-import { PackageIsInTransitEvent } from '../events/package-is-in-transit-event';
 import { PackageFailedDeliveryEvent } from '../events/package-failed-delivery-event';
+import { PackageIsInTransitEvent } from '../events/package-is-in-transit-event';
 import { PackageIsOutForDeliveryEvent } from '../events/package-is-out-for-delivery-event';
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
-import { PackageReturnedEvent } from '../events/package-returned-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
+import { PackageReturnedEvent } from '../events/package-returned-event';
 import type { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
@@ -379,7 +379,9 @@ export class Package extends AggregateRoot<PackageProps> {
       return left(failedDeliveryStatus.value);
     }
 
-    const transitionResult = this.status.transitionTo(failedDeliveryStatus.value);
+    const transitionResult = this.status.transitionTo(
+      failedDeliveryStatus.value
+    );
 
     if (transitionResult.isLeft()) {
       return left(transitionResult.value);
@@ -398,7 +400,9 @@ export class Package extends AggregateRoot<PackageProps> {
     this.props.status = failedDeliveryStatus.value;
     this.touch();
 
-    this.addDomainEvent(new PackageFailedDeliveryEvent(packageHistory, this.id));
+    this.addDomainEvent(
+      new PackageFailedDeliveryEvent(packageHistory, this.id)
+    );
 
     this.histories.add(packageHistory);
 
