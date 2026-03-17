@@ -499,6 +499,135 @@ describe('Package', () => {
     });
   });
 
+  describe('markAsOutForDelivery', () => {
+    it('should mark package as out for delivery successfully', () => {
+      const inTransitResult = PackageStatus.create('in_transit');
+
+      expect(inTransitResult.isRight()).toBe(true);
+
+      if (inTransitResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: inTransitResult.value,
+          deliveryPersonId: null,
+        });
+
+        const result = packageEntity.markAsOutForDelivery(
+          authorId,
+          deliveryPersonId
+        );
+
+        expect(result.isRight()).toBe(true);
+        expect(packageEntity.status.isOutForDelivery()).toBe(true);
+        expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should set deliveryPersonId after marking as out for delivery', () => {
+      const inTransitResult = PackageStatus.create('in_transit');
+
+      expect(inTransitResult.isRight()).toBe(true);
+
+      if (inTransitResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: inTransitResult.value,
+          deliveryPersonId: null,
+        });
+
+        packageEntity.markAsOutForDelivery(authorId, deliveryPersonId);
+
+        expect(packageEntity.deliveryPersonId).toBe(deliveryPersonId);
+      }
+    });
+
+    it('should store custom description in history when provided', () => {
+      const inTransitResult = PackageStatus.create('in_transit');
+
+      expect(inTransitResult.isRight()).toBe(true);
+
+      if (inTransitResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: inTransitResult.value,
+          deliveryPersonId: null,
+        });
+
+        const customDescription = 'Out for final delivery';
+        packageEntity.markAsOutForDelivery(
+          authorId,
+          deliveryPersonId,
+          customDescription
+        );
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe(customDescription);
+      }
+    });
+
+    it('should store default description in history when not provided', () => {
+      const inTransitResult = PackageStatus.create('in_transit');
+
+      expect(inTransitResult.isRight()).toBe(true);
+
+      if (inTransitResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: inTransitResult.value,
+          deliveryPersonId: null,
+        });
+
+        packageEntity.markAsOutForDelivery(authorId, deliveryPersonId);
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe('Package is out for delivery');
+      }
+    });
+
+    it('should add a history entry on marking as out for delivery', () => {
+      const inTransitResult = PackageStatus.create('in_transit');
+
+      expect(inTransitResult.isRight()).toBe(true);
+
+      if (inTransitResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const authorId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: inTransitResult.value,
+          deliveryPersonId: null,
+        });
+
+        const initialCount = packageEntity.histories.getItems().length;
+        packageEntity.markAsOutForDelivery(authorId, deliveryPersonId);
+
+        expect(packageEntity.histories.getItems().length).toBe(
+          initialCount + 1
+        );
+      }
+    });
+
+    it('should fail when package is not in in_transit status', () => {
+      const deliveryPersonId = new UniqueEntityId();
+      const packageEntity = makePackage({ deliveryPersonId: null });
+
+      const result = packageEntity.markAsOutForDelivery(
+        new UniqueEntityId(),
+        deliveryPersonId
+      );
+
+      expect(result.isLeft()).toBe(true);
+      if (result.isLeft()) {
+        expect(result.value).toBeInstanceOf(InvalidatePackageStatusError);
+      }
+    });
+  });
+
   describe('addAttachment', () => {
     it('should not be able to mark as delivered without attachment', () => {
       const outForDeliveryResult = PackageStatus.create('out_for_delivery');
