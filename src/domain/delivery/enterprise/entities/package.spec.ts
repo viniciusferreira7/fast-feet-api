@@ -544,7 +544,10 @@ describe('Package', () => {
           deliveryPersonId,
         });
 
-        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
+        packageEntity.markAsFailedDelivery(
+          deliveryPersonId,
+          new UniqueEntityId()
+        );
 
         expect(packageEntity.deliveryPersonId).toBe(deliveryPersonId);
       }
@@ -587,7 +590,10 @@ describe('Package', () => {
           deliveryPersonId,
         });
 
-        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
+        packageEntity.markAsFailedDelivery(
+          deliveryPersonId,
+          new UniqueEntityId()
+        );
 
         const histories = packageEntity.histories.getItems();
         const lastHistory = histories[histories.length - 1];
@@ -608,7 +614,10 @@ describe('Package', () => {
         });
 
         const initialCount = packageEntity.histories.getItems().length;
-        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
+        packageEntity.markAsFailedDelivery(
+          deliveryPersonId,
+          new UniqueEntityId()
+        );
 
         expect(packageEntity.histories.getItems().length).toBe(
           initialCount + 1
@@ -1141,7 +1150,10 @@ describe('Package', () => {
     it('should set updatedAt after updating', () => {
       const packageEntity = makePackage();
 
-      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+      packageEntity.update({
+        name: 'New name',
+        recipientAddress: 'New address',
+      });
 
       expect(packageEntity.updatedAt).toBeInstanceOf(Date);
     });
@@ -1150,7 +1162,10 @@ describe('Package', () => {
       const packageEntity = makePackage();
 
       const initialCount = packageEntity.histories.getItems().length;
-      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+      packageEntity.update({
+        name: 'New name',
+        recipientAddress: 'New address',
+      });
 
       expect(packageEntity.histories.getItems().length).toBe(initialCount + 1);
     });
@@ -1171,7 +1186,10 @@ describe('Package', () => {
     it('should store default description in history when not provided', () => {
       const packageEntity = makePackage();
 
-      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+      packageEntity.update({
+        name: 'New name',
+        recipientAddress: 'New address',
+      });
 
       const histories = packageEntity.histories.getItems();
       const lastHistory = histories[histories.length - 1];
@@ -1182,7 +1200,10 @@ describe('Package', () => {
       const packageEntity = makePackage();
       const originalStatus = packageEntity.status.value;
 
-      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+      packageEntity.update({
+        name: 'New name',
+        recipientAddress: 'New address',
+      });
 
       expect(packageEntity.status.value).toBe(originalStatus);
     });
