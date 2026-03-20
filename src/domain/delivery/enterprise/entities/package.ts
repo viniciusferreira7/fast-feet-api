@@ -354,6 +354,7 @@ export class Package extends AggregateRoot<PackageProps> {
 
   public markAsFailedDelivery(
     deliveryPersonId: UniqueEntityId,
+    attachmentId: UniqueEntityId,
     description?: string
   ): Either<
     | PackageNotAssignedToDeliveryPersonError
@@ -383,6 +384,11 @@ export class Package extends AggregateRoot<PackageProps> {
       return left(transitionResult.value);
     }
 
+    const packageAttachment = PackageAttachment.create({
+      attachmentId: attachmentId,
+      PackageId: this.props.id,
+    });
+
     const packageHistory = PackageHistory.create({
       packageId: this.props.id,
       authorId: deliveryPersonId,
@@ -393,6 +399,7 @@ export class Package extends AggregateRoot<PackageProps> {
       toStatus: failedDeliveryStatus.value,
     });
 
+    this.props.attachment = packageAttachment;
     this.props.status = failedDeliveryStatus.value;
     this.touch();
 
