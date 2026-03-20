@@ -16,7 +16,8 @@ import { PackageIsOutForDeliveryEvent } from '../events/package-is-out-for-deliv
 import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import { PackageReturnedEvent } from '../events/package-returned-event';
-import type { PackageAttachment } from './package-attachment';
+import { PackageWasDeliveredEvent } from '../events/package-was-delivered-event';
+import { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
 import { PackageHistoryList } from './value-object/package-history-list';
@@ -141,11 +142,6 @@ export class Package extends AggregateRoot<PackageProps> {
     this.histories.add(packageHistory);
 
     return right(awaitingPickupStatus.value);
-  }
-
-  public addAttachment(attachment: PackageAttachment): void {
-    this.props.attachment = attachment;
-    this.touch();
   }
 
   public markAsRegistered(authorId: UniqueEntityId): void {
@@ -495,6 +491,50 @@ export class Package extends AggregateRoot<PackageProps> {
     this.addDomainEvent(
       new PackageIsOutForDeliveryEvent(packageHistory, this.id)
     );
+
+    this.histories.add(packageHistory);
+
+    return right(this.props.status);
+  }
+
+  public markAsDelivered(
+    deliveryPersonId: UniqueEntityId,
+    attachmentId: UniqueEntityId,
+    description?: string
+  ): Either<InvalidatePackageStatusError, PackageStatus> {
+    const deliveredStatus = PackageStatus.create('delivered');
+
+    if (deliveredStatus.isLeft()) {
+      return left(deliveredStatus.value);
+    }
+
+    const transitionResult = this.status.transitionTo(deliveredStatus.value);
+
+    if (transitionResult.isLeft()) {
+      return left(transitionResult.value);
+    }
+
+    const packageAttachment = PackageAttachment.create({
+      attachmentId: attachmentId,
+      PackageId: this.props.id,
+    });
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: deliveryPersonId,
+      createdAt: new Date(),
+      deliveryPersonId: deliveryPersonId,
+      description: description ?? 'Package was delivered',
+      fromStatus: this.status,
+      toStatus: deliveredStatus.value,
+    });
+
+    this.props.attachment = packageAttachment;
+    this.props.status = deliveredStatus.value;
+    this.props.deliveredAt = new Date();
+    this.touch();
+
+    this.addDomainEvent(new PackageWasDeliveredEvent(packageHistory, this.id));
 
     this.histories.add(packageHistory);
 
