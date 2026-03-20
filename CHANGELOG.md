@@ -1,3 +1,29 @@
+# [1.26.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.25.0...v1.26.0) (2026-03-20)
+
+
+### Bug Fixes
+
+* correct expected default title in OnPackageWasUpdated subscriber test ([32a1986](https://github.com/viniciusferreira7/fast-feet-api/commit/32a1986a65ba343dbc745713dfb9116b8f64e08a))
+* correct ResourceNotFoundError message from 'recipient' to 'package' in UpdatePackage ([5bcd585](https://github.com/viniciusferreira7/fast-feet-api/commit/5bcd58543e1f937d54772d074c5379856c031441))
+* set deliveredAt in markAsDelivered and correct AttachmentsRepository return type ([98d7ddf](https://github.com/viniciusferreira7/fast-feet-api/commit/98d7ddf18b1d12e9f8d51c99e98d7e38e2822082))
+* use PackageWasUpdatedEvent and correct default description in Package update method ([9a6afc9](https://github.com/viniciusferreira7/fast-feet-api/commit/9a6afc9f9d34e95a5e48681ed50a9cf8e7839fe4))
+
+
+### Features
+
+* add attachmentId to markAsFailedDelivery entity method ([dad3d11](https://github.com/viniciusferreira7/fast-feet-api/commit/dad3d116dcc43e322074226f0338e6079dc826fb))
+* add AttachmentsRepository and PackageAttachmentsRepository interfaces ([8d74e3a](https://github.com/viniciusferreira7/fast-feet-api/commit/8d74e3ad8836d626d827e410f2cf0d6255594dd5))
+* add DeliveryWithoutRequiredPhoto error ([6099c6a](https://github.com/viniciusferreira7/fast-feet-api/commit/6099c6af71c4339ae8b21f2686faa5ed18ce51cb))
+* add InvalidAttachmentTypeError and UploadAndCreateAttachment use case ([17e19e1](https://github.com/viniciusferreira7/fast-feet-api/commit/17e19e12f780d118a565ea7941c39b5bf6d2a269))
+* add Uploader storage interface and FakeUploader test double ([f62a217](https://github.com/viniciusferreira7/fast-feet-api/commit/f62a217ea3b74d6e9a514713eeee0a4546a965b2))
+* create OnPackageFailedDelivery notification subscriber ([9a21cf8](https://github.com/viniciusferreira7/fast-feet-api/commit/9a21cf89a036cc61f229bdd4447a088b62ee72a1))
+* create OnPackageWasDelivered notification subscriber ([98ec91c](https://github.com/viniciusferreira7/fast-feet-api/commit/98ec91c2652b50041ccd9f3610ef8798824c21c9))
+* create OnPackageWasUpdated notification subscriber ([4b2a4ff](https://github.com/viniciusferreira7/fast-feet-api/commit/4b2a4ffaf3f51104df540b3af46b4e93e011e1b3))
+* create PackageWasDelivered use case ([7b8191c](https://github.com/viniciusferreira7/fast-feet-api/commit/7b8191cd358830c34d1312d10ae226b2d149ddbb))
+* create PackageWasDeliveredEvent domain event ([31c9c25](https://github.com/viniciusferreira7/fast-feet-api/commit/31c9c2517c73bed920ec62e8f38ec25870d05680))
+* create PackageWasUpdatedEvent domain event ([34d3aea](https://github.com/viniciusferreira7/fast-feet-api/commit/34d3aeaf10efccc43ec66887b2bc3f12ec26d7c5))
+* update PackageFailedDelivery use case to require attachment ([30244eb](https://github.com/viniciusferreira7/fast-feet-api/commit/30244eb2c139e109c22d800b8078796a70b1204a))
+
 # [1.25.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.24.0...v1.25.0) (2026-03-17)
 
 
