@@ -1,5 +1,4 @@
 import { makePackage } from 'test/factories/make-package';
-import { makePackageAttachment } from 'test/factories/make-package-attachment';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 
 import { DeliveryPersonNotAssignedToPackageError } from '../../application/use-cases/errors/delivery-person-not-assigned-to-package-error';
@@ -20,19 +19,6 @@ describe('Package', () => {
     expect(packageEntity.recipientId).toBe(recipientId);
     expect(packageEntity.recipientAddress).toBe('123 Main St');
     expect(packageEntity.status.isPending()).toBe(true);
-  });
-
-  it('should be able to add attachment to package', () => {
-    const packageEntity = makePackage({ attachment: null });
-
-    const attachment = makePackageAttachment({
-      PackageId: packageEntity.id,
-    });
-
-    packageEntity.addAttachment(attachment);
-
-    expect(packageEntity.attachment).toBe(attachment);
-    expect(packageEntity.updatedAt).toBeInstanceOf(Date);
   });
 
   describe('assignDeliveryPerson', () => {
@@ -951,33 +937,152 @@ describe('Package', () => {
     });
   });
 
-  describe('addAttachment', () => {
-    it('should not be able to mark as delivered without attachment', () => {
+  describe('markAsDelivered', () => {
+    it('should mark package as delivered successfully', () => {
       const outForDeliveryResult = PackageStatus.create('out_for_delivery');
 
       expect(outForDeliveryResult.isRight()).toBe(true);
 
       if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const attachmentId = new UniqueEntityId();
         const packageEntity = makePackage({
           status: outForDeliveryResult.value,
-          attachment: null,
+          deliveryPersonId,
         });
 
-        expect(packageEntity.attachment).toBeNull();
+        const result = packageEntity.markAsDelivered(
+          deliveryPersonId,
+          attachmentId
+        );
+
+        expect(result.isRight()).toBe(true);
+        expect(packageEntity.status.isDelivered()).toBe(true);
+        expect(packageEntity.updatedAt).toBeInstanceOf(Date);
       }
     });
 
-    it('should be able to add attachment to package without one', () => {
-      const packageId = new UniqueEntityId();
-      const packageEntity = makePackage({ id: packageId, attachment: null });
+    it('should set deliveredAt when marking as delivered', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
 
-      expect(packageEntity.attachment).toBeNull();
+      expect(outForDeliveryResult.isRight()).toBe(true);
 
-      const attachment = makePackageAttachment({ PackageId: packageId });
-      packageEntity.addAttachment(attachment);
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const attachmentId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
 
-      expect(packageEntity.attachment).toBe(attachment);
-      expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+        expect(packageEntity.deliveredAt).toBeNull();
+
+        packageEntity.markAsDelivered(deliveryPersonId, attachmentId);
+
+        expect(packageEntity.deliveredAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should set attachment when marking as delivered', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const attachmentId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+          attachment: null,
+        });
+
+        packageEntity.markAsDelivered(deliveryPersonId, attachmentId);
+
+        expect(packageEntity.attachment).not.toBeNull();
+        expect(packageEntity.attachment?.attachmentId).toBe(attachmentId);
+      }
+    });
+
+    it('should store custom description in history when provided', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const customDescription = 'Left at the front door';
+        packageEntity.markAsDelivered(
+          deliveryPersonId,
+          new UniqueEntityId(),
+          customDescription
+        );
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe(customDescription);
+      }
+    });
+
+    it('should store default description in history when not provided', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        packageEntity.markAsDelivered(deliveryPersonId, new UniqueEntityId());
+
+        const histories = packageEntity.histories.getItems();
+        const lastHistory = histories[histories.length - 1];
+        expect(lastHistory.description).toBe('Package was delivered');
+      }
+    });
+
+    it('should add a history entry on marking as delivered', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+        });
+
+        const initialCount = packageEntity.histories.getItems().length;
+        packageEntity.markAsDelivered(deliveryPersonId, new UniqueEntityId());
+
+        expect(packageEntity.histories.getItems().length).toBe(
+          initialCount + 1
+        );
+      }
+    });
+
+    it('should fail when package is not in out_for_delivery status', () => {
+      const deliveryPersonId = new UniqueEntityId();
+      const packageEntity = makePackage({ deliveryPersonId });
+
+      const result = packageEntity.markAsDelivered(
+        deliveryPersonId,
+        new UniqueEntityId()
+      );
+
+      expect(result.isLeft()).toBe(true);
+      if (result.isLeft()) {
+        expect(result.value).toBeInstanceOf(InvalidatePackageStatusError);
+      }
     });
   });
 });
