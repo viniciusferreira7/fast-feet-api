@@ -1,20 +1,25 @@
 import { type Either, left, right } from '@/core/either';
 import type { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
+import type { AttachmentsRepository } from '../repositories/attachments-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import type { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import { DeliveryPersonNotAssignedToPackageError } from './errors/delivery-person-not-assigned-to-package-error';
+import { DeliveryWithoutRequiredPhoto } from './errors/delivery-without-required-photo';
 import { PackageNotAssignedToDeliveryPersonError } from './errors/package-not-assigned-to-delivery-person-error';
 import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface PackageFailedDeliveryUseCaseRequest {
   deliveryPersonId: string;
   packageId: string;
+  attachmentId: string;
   description?: string;
 }
 
 type PackageFailedDeliveryUseCaseResponse = Either<
   | ResourceNotFoundError
+  | DeliveryWithoutRequiredPhoto
   | PackageNotAssignedToDeliveryPersonError
   | DeliveryPersonNotAssignedToPackageError
   | InvalidatePackageStatusError,
@@ -24,21 +29,31 @@ type PackageFailedDeliveryUseCaseResponse = Either<
 export class PackageFailedDeliveryUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,
+    private readonly attachmentsRepository: AttachmentsRepository,
+    private readonly packageAttachmentsRepository: PackageAttachmentsRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository
   ) {}
 
   async execute({
     deliveryPersonId,
     packageId,
+    attachmentId,
     description,
   }: PackageFailedDeliveryUseCaseRequest): Promise<PackageFailedDeliveryUseCaseResponse> {
-    const [packageRecord, deliveryPersonRecord] = await Promise.all([
-      this.packagesRepository.findById(packageId),
-      this.deliveryPeopleRepository.findById(deliveryPersonId),
-    ]);
+    const [packageRecord, attachment, deliveryPersonRecord] = await Promise.all(
+      [
+        this.packagesRepository.findById(packageId),
+        this.attachmentsRepository.findById(attachmentId),
+        this.deliveryPeopleRepository.findById(deliveryPersonId),
+      ]
+    );
 
     if (!packageRecord) {
       return left(new ResourceNotFoundError('package'));
+    }
+
+    if (!attachment) {
+      return left(new DeliveryWithoutRequiredPhoto());
     }
 
     if (!deliveryPersonRecord) {
@@ -47,6 +62,7 @@ export class PackageFailedDeliveryUseCase {
 
     const transitionResult = packageRecord.markAsFailedDelivery(
       deliveryPersonRecord.id,
+      attachment.id,
       description
     );
 
@@ -54,6 +70,11 @@ export class PackageFailedDeliveryUseCase {
       return left(transitionResult.value);
     }
 
+    if (!packageRecord.attachment) {
+      return left(new DeliveryWithoutRequiredPhoto());
+    }
+
+    await this.packageAttachmentsRepository.create(packageRecord.attachment);
     await this.packagesRepository.update(packageRecord);
 
     return right({ package: packageRecord });
