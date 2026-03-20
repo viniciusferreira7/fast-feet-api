@@ -17,6 +17,7 @@ import { PackagePickedUpEvent } from '../events/package-picked-up-event';
 import { PackageRegisteredEvent } from '../events/package-registered-event';
 import { PackageReturnedEvent } from '../events/package-returned-event';
 import { PackageWasDeliveredEvent } from '../events/package-was-delivered-event';
+import { PackageWasUpdatedEvent } from '../events/package-was-updated-event';
 import { PackageAttachment } from './package-attachment';
 import { PackageHistory } from './package-history';
 import { PackageCode } from './value-object/package-code';
@@ -548,6 +549,28 @@ export class Package extends AggregateRoot<PackageProps> {
     return right(this.props.status);
   }
 
+  public update(
+    props: Pick<PackageProps, 'name' | 'recipientAddress'>,
+    description?: string
+  ) {
+    this.props.name = props.name;
+    this.props.recipientAddress = props.recipientAddress;
+    this.touch();
+
+    const packageHistory = PackageHistory.create({
+      packageId: this.props.id,
+      authorId: this.props.authorId,
+      createdAt: new Date(),
+      deliveryPersonId: this.props.deliveryPersonId,
+      description: description ?? 'Package updated',
+      fromStatus: this.status,
+      toStatus: this.status,
+    });
+
+    this.addDomainEvent(new PackageWasUpdatedEvent(packageHistory, this.id));
+
+    this.histories.add(packageHistory);
+  }
   public static create(
     props: Optional<PackageProps, 'createdAt' | 'updatedAt' | 'deliveredAt'>,
     id?: UniqueEntityId
