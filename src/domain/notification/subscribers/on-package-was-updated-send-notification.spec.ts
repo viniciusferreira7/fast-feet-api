@@ -101,7 +101,7 @@ describe('On package was updated', () => {
       expect(sendNotificationSpy).toBeCalledTimes(1);
       expect(sendNotificationSpy).toBeCalledWith(
         expect.objectContaining({
-          title: 'Package was updated',
+          title: 'Package updated',
         })
       );
     });
