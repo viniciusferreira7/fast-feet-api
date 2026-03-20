@@ -1121,4 +1121,70 @@ describe('Package', () => {
       }
     });
   });
+
+  describe('update', () => {
+    it('should update name and recipientAddress', () => {
+      const packageEntity = makePackage({
+        name: 'Original name',
+        recipientAddress: 'Original address',
+      });
+
+      packageEntity.update({
+        name: 'New name',
+        recipientAddress: 'New address',
+      });
+
+      expect(packageEntity.name).toBe('New name');
+      expect(packageEntity.recipientAddress).toBe('New address');
+    });
+
+    it('should set updatedAt after updating', () => {
+      const packageEntity = makePackage();
+
+      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+
+      expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+    });
+
+    it('should add a history entry on update', () => {
+      const packageEntity = makePackage();
+
+      const initialCount = packageEntity.histories.getItems().length;
+      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+
+      expect(packageEntity.histories.getItems().length).toBe(initialCount + 1);
+    });
+
+    it('should store custom description in history when provided', () => {
+      const packageEntity = makePackage();
+
+      packageEntity.update(
+        { name: 'New name', recipientAddress: 'New address' },
+        'Updated by admin request'
+      );
+
+      const histories = packageEntity.histories.getItems();
+      const lastHistory = histories[histories.length - 1];
+      expect(lastHistory.description).toBe('Updated by admin request');
+    });
+
+    it('should store default description in history when not provided', () => {
+      const packageEntity = makePackage();
+
+      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+
+      const histories = packageEntity.histories.getItems();
+      const lastHistory = histories[histories.length - 1];
+      expect(lastHistory.description).toBe('Package updated');
+    });
+
+    it('should keep the same status after updating', () => {
+      const packageEntity = makePackage();
+      const originalStatus = packageEntity.status.value;
+
+      packageEntity.update({ name: 'New name', recipientAddress: 'New address' });
+
+      expect(packageEntity.status.value).toBe(originalStatus);
+    });
+  });
 });
