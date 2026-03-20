@@ -494,16 +494,41 @@ describe('Package', () => {
 
       if (outForDeliveryResult.isRight()) {
         const deliveryPersonId = new UniqueEntityId();
+        const attachmentId = new UniqueEntityId();
         const packageEntity = makePackage({
           status: outForDeliveryResult.value,
           deliveryPersonId,
         });
 
-        const result = packageEntity.markAsFailedDelivery(deliveryPersonId);
+        const result = packageEntity.markAsFailedDelivery(
+          deliveryPersonId,
+          attachmentId
+        );
 
         expect(result.isRight()).toBe(true);
         expect(packageEntity.status.isFailedDelivery()).toBe(true);
         expect(packageEntity.updatedAt).toBeInstanceOf(Date);
+      }
+    });
+
+    it('should set attachment when marking as failed delivery', () => {
+      const outForDeliveryResult = PackageStatus.create('out_for_delivery');
+
+      expect(outForDeliveryResult.isRight()).toBe(true);
+
+      if (outForDeliveryResult.isRight()) {
+        const deliveryPersonId = new UniqueEntityId();
+        const attachmentId = new UniqueEntityId();
+        const packageEntity = makePackage({
+          status: outForDeliveryResult.value,
+          deliveryPersonId,
+          attachment: null,
+        });
+
+        packageEntity.markAsFailedDelivery(deliveryPersonId, attachmentId);
+
+        expect(packageEntity.attachment).not.toBeNull();
+        expect(packageEntity.attachment?.attachmentId).toBe(attachmentId);
       }
     });
 
@@ -519,7 +544,7 @@ describe('Package', () => {
           deliveryPersonId,
         });
 
-        packageEntity.markAsFailedDelivery(deliveryPersonId);
+        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
 
         expect(packageEntity.deliveryPersonId).toBe(deliveryPersonId);
       }
@@ -538,7 +563,11 @@ describe('Package', () => {
         });
 
         const customDescription = 'Recipient not home';
-        packageEntity.markAsFailedDelivery(deliveryPersonId, customDescription);
+        packageEntity.markAsFailedDelivery(
+          deliveryPersonId,
+          new UniqueEntityId(),
+          customDescription
+        );
 
         const histories = packageEntity.histories.getItems();
         const lastHistory = histories[histories.length - 1];
@@ -558,7 +587,7 @@ describe('Package', () => {
           deliveryPersonId,
         });
 
-        packageEntity.markAsFailedDelivery(deliveryPersonId);
+        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
 
         const histories = packageEntity.histories.getItems();
         const lastHistory = histories[histories.length - 1];
@@ -579,7 +608,7 @@ describe('Package', () => {
         });
 
         const initialCount = packageEntity.histories.getItems().length;
-        packageEntity.markAsFailedDelivery(deliveryPersonId);
+        packageEntity.markAsFailedDelivery(deliveryPersonId, new UniqueEntityId());
 
         expect(packageEntity.histories.getItems().length).toBe(
           initialCount + 1
@@ -598,7 +627,10 @@ describe('Package', () => {
           deliveryPersonId: null,
         });
 
-        const result = packageEntity.markAsFailedDelivery(new UniqueEntityId());
+        const result = packageEntity.markAsFailedDelivery(
+          new UniqueEntityId(),
+          new UniqueEntityId()
+        );
 
         expect(result.isLeft()).toBe(true);
         if (result.isLeft()) {
@@ -623,7 +655,8 @@ describe('Package', () => {
         });
 
         const result = packageEntity.markAsFailedDelivery(
-          anotherDeliveryPersonId
+          anotherDeliveryPersonId,
+          new UniqueEntityId()
         );
 
         expect(result.isLeft()).toBe(true);
@@ -639,7 +672,10 @@ describe('Package', () => {
       const deliveryPersonId = new UniqueEntityId();
       const packageEntity = makePackage({ deliveryPersonId });
 
-      const result = packageEntity.markAsFailedDelivery(deliveryPersonId);
+      const result = packageEntity.markAsFailedDelivery(
+        deliveryPersonId,
+        new UniqueEntityId()
+      );
 
       expect(result.isLeft()).toBe(true);
       if (result.isLeft()) {
