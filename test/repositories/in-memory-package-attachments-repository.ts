@@ -7,12 +7,16 @@ export class InMemoryPackageAttachmentsRepository
 {
   public packageAttachments: PackageAttachment[] = [];
 
-  async create(packageAttachment: PackageAttachment): Promise<PackageAttachment> {
+  async create(
+    packageAttachment: PackageAttachment
+  ): Promise<PackageAttachment> {
     this.packageAttachments.push(packageAttachment);
     return packageAttachment;
   }
 
-  async findById(packageAttachmentId: string): Promise<PackageAttachment | null> {
+  async findById(
+    packageAttachmentId: string
+  ): Promise<PackageAttachment | null> {
     return (
       this.packageAttachments.find((a) =>
         a.id.equals(new UniqueEntityId(packageAttachmentId))
