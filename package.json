@@ -14,7 +14,7 @@
     "docker:build": "docker build -t fast-feet-api:latest -t fast-feet-api:$(git rev-parse --short HEAD) .",
     "docker:build:prod": "docker build --target production -t fast-feet-api:latest -t fast-feet-api:$(git rev-parse --short HEAD) .",
     "format": "biome format --write",
-    "lint": "biome lint --write",
+    "lint": "biome lint",
     "check": "biome check",
     "check:fix": "biome check --write",
     "check:type": "tsc --noEmit",
