@@ -2,13 +2,13 @@
 //TODO: It needs use case to add attachment and assign image with a package
 
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { Package } from '../../enterprise/entities/package';
 import type { AttachmentsRepository } from '../repositories/attachments-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import { DeliveryWithoutRequiredPhoto } from './errors/delivery-without-required-photo';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface PackageWasDeliveredUseCaseRequest {
   packageId: string;

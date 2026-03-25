@@ -1,10 +1,10 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface AssignPackageToADeliveryPersonUseCaseRequest {
   packageId: string;

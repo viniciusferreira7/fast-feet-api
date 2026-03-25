@@ -5,11 +5,11 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { PackageIsOutForDeliveryUseCase } from './package-is-out-for-delivery';
 
 let packagesRepository: InMemoryPackagesRepository;

@@ -1,9 +1,9 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface GetByIdRecipientPersonUseCaseRequest {
   recipientPersonId: string;

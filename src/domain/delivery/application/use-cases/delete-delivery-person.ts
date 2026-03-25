@@ -1,4 +1,5 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { DeliveryPersonAlreadyDisabledError } from '../../errors/delivery-person-already-disabled-error';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
@@ -6,7 +7,6 @@ import type { DeliveryPeopleRepository } from '../repositories/delivery-people-r
 import { PackagesRepository } from '../repositories/packages-repository';
 import { CannotDisableDeliveryPersonWithActivePackagesError } from './errors/cannot-disable-delivery-person-with-active-packages-error';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface DeleteDeliveryPersonUseCaseRequest {
   authorId: string;

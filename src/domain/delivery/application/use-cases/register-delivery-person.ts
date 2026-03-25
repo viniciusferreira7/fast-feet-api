@@ -1,4 +1,5 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
@@ -10,7 +11,6 @@ import { DeliveryPeopleRepository } from '../repositories/delivery-people-reposi
 import { CpfValidator } from '../validation/cpf-validator';
 import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterDeliveryPersonUseCaseRequest {
   name: string;

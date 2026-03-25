@@ -7,10 +7,10 @@ import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-p
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
 import { Pagination } from '@/core/entities/value-object/pagination';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { PostalCode } from '../../enterprise/entities/value-object/postal-code';
 import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
 import { InvalidPostalCode } from '../../errors/invalid-postal-code-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { FetchPackagesNearByDeliveryPersonUseCase } from './fetch-packages-near-by-delivery-person';
 
 let packagesRepository: InMemoryPackagesRepository;

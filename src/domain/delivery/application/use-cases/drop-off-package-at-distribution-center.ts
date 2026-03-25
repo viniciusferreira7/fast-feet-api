@@ -1,11 +1,11 @@
 import { Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import { PackagesRepository } from '../repositories/packages-repository';
 import { DeliveryPersonNotAssignedToPackageError } from './errors/delivery-person-not-assigned-to-package-error';
 import { PackageNotAssignedToDeliveryPersonError } from './errors/package-not-assigned-to-delivery-person-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface DropOffPackageAtDistributionCenterUseCaseRequest {
   deliveryPersonId: string;

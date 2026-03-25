@@ -1,5 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import type { Pagination } from '@/core/entities/value-object/pagination';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { Package } from '../../enterprise/entities/package';
 import { PostalCode } from '../../enterprise/entities/value-object/postal-code';
 import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
@@ -8,7 +9,6 @@ import type { AdminPeopleRepository } from '../repositories/admin-people-reposit
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import type { PostalCodeValidator } from '../validation/postal-code-validator';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface FetchPackagesNearByDeliveryPersonUseCaseRequest {
   authorId: string;

@@ -5,10 +5,10 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { AssignPackageToADeliveryPerson } from './assign-package-to-a-delivery-person';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 let packagesRepository: InMemoryPackagesRepository;
 let packageHistoryRepository: InMemoryPackagesHistoryRepository;

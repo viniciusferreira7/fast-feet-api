@@ -3,9 +3,9 @@ import { makePackage } from 'test/factories/make-package';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { GetByPackageByIdUseCase } from './get-package-by-id';
 
 let packagesRepository: InMemoryPackagesRepository;

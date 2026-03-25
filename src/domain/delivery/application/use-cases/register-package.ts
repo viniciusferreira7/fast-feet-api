@@ -1,5 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
 import { PackageHistoryList } from '../../enterprise/entities/value-object/package-history-list';
@@ -14,7 +15,6 @@ import type { DeliveryPeopleRepository } from '../repositories/delivery-people-r
 import type { PackagesRepository } from '../repositories/packages-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import type { PostalCodeValidator } from '../validation/postal-code-validator';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface RegisterPackageUseCaseRequest {
   recipientId: string;

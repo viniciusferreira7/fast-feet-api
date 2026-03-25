@@ -1,11 +1,11 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailAlreadyInUseError } from './errors/email-already-in-use-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface UpdateDeliveryPersonUseCaseRequest {
   id: string;

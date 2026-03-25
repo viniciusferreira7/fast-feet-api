@@ -5,13 +5,13 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { RegisterDeliveryPerson } from './register-delivery-person';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;

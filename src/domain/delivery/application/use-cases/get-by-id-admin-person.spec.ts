@@ -1,8 +1,8 @@
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { GetByIdAdminPersonUseCase } from './get-by-id-admin-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;

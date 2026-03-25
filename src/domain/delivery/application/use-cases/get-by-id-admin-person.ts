@@ -1,8 +1,8 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface GetByIdAdminPersonUseCaseRequest {
   adminPersonId: string;

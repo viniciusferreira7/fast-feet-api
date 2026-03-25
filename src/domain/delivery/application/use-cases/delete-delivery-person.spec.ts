@@ -5,12 +5,12 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { DeliveryPersonAlreadyDisabledError } from '../../errors/delivery-person-already-disabled-error';
 import { DeleteDeliveryPersonUseCase } from './delete-delivery-person';
 import { CannotDisableDeliveryPersonWithActivePackagesError } from './errors/cannot-disable-delivery-person-with-active-packages-error';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let adminPeopleRepository: InMemoryAdminPeopleRepository;

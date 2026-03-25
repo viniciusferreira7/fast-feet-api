@@ -1,10 +1,10 @@
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { ValidateRecipientPersonCodeUseCase } from './validate-recipient-person-code';
 
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;

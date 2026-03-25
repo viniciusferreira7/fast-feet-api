@@ -1,10 +1,10 @@
 import { type Either, left, right } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 
 interface ValidateRecipientPersonCodeUseCaseRequest {
   code: string;

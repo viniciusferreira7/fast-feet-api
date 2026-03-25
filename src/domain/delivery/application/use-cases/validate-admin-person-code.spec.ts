@@ -1,10 +1,10 @@
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { ValidateAdminPersonCodeUseCase } from './validate-admin-person-code';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;

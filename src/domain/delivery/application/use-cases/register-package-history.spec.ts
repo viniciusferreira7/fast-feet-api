@@ -6,9 +6,9 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { PackageHistory } from '../../enterprise/entities/package-history';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { RegisterPackageHistoryUseCase } from './register-package-history';
 
 let packagesRepository: InMemoryPackagesRepository;

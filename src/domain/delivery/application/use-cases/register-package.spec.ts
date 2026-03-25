@@ -7,11 +7,11 @@ import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-p
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
 import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { RegisterPackage } from './register-package';
 
 let packagesRepository: InMemoryPackagesRepository;

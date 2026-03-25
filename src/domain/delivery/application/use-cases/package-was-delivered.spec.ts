@@ -6,11 +6,10 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { InMemoryPackageAttachmentsRepository } from 'test/repositories/in-memory-package-attachments-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
-
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { DeliveryWithoutRequiredPhoto } from './errors/delivery-without-required-photo';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { PackageWasDeliveredUseCase } from './package-was-delivered';
 
 let packagesRepository: InMemoryPackagesRepository;

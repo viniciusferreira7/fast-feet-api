@@ -2,9 +2,9 @@ import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { GetByIdRecipientPersonUseCase } from './get-by-id-recipient-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;

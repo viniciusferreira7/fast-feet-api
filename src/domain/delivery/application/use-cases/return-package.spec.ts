@@ -3,12 +3,12 @@ import { makePackage } from 'test/factories/make-package';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
 import { DeliveryPersonNotAssignedToPackageError } from './errors/delivery-person-not-assigned-to-package-error';
 import { PackageNotAssignedToDeliveryPersonError } from './errors/package-not-assigned-to-delivery-person-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { ReturnPackageUseCase } from './return-package';
 
 let packagesRepository: InMemoryPackagesRepository;

@@ -4,9 +4,9 @@ import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailAlreadyInUseError } from './errors/email-already-in-use-error';
-import { ResourceNotFoundError } from './errors/resource-not-found-error';
 import { UpdateDeliveryPersonUseCase } from './update-delivery-person';
 
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
