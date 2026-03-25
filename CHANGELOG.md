@@ -1,3 +1,14 @@
+# [1.27.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.26.0...v1.27.0) (2026-03-25)
+
+
+### Features
+
+* add FetchManyNotificationsUseCase ([25692ec](https://github.com/viniciusferreira7/fast-feet-api/commit/25692ec41513ca17376f8c52c3e394ec4f66032e))
+* add findByIdAndAuthorId and pagination params to NotificationsRepository ([05cfae5](https://github.com/viniciusferreira7/fast-feet-api/commit/05cfae532f8b69fbbfc5ed29210de3c759017b54))
+* add markAllNotificationAsRead and updateManyByIdAndAuthorId to NotificationsRepository ([05324dc](https://github.com/viniciusferreira7/fast-feet-api/commit/05324dc412416527ef2388f4a55465a5d2b01e05))
+* add MarkAsReadNotificationUseCase ([7c298aa](https://github.com/viniciusferreira7/fast-feet-api/commit/7c298aa76ea67ee971e015689ea18ba522a565b4))
+* add MarkManyNotificationsAsReaUseCase ([d02fa9f](https://github.com/viniciusferreira7/fast-feet-api/commit/d02fa9f4c47d0c21dafd5ec3df218a62eeac1d02))
+
 # [1.26.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.25.0...v1.26.0) (2026-03-20)
 
 
