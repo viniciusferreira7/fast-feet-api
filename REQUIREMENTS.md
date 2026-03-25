@@ -32,6 +32,6 @@
 ## 🧠 Practiced Concepts
 
 - [X] Domain-Driven Design (DDD), Domain Events and Clean Architecture
-- [ ] Authentication and authorization with RBAC
+- [X] Authentication and authorization with RBAC
 - [ ] Unit and end-to-end (E2E) tests
 - [ ] Integration with external services (e.g., notifications)
