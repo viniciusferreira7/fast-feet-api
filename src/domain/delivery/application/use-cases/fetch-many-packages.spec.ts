@@ -135,7 +135,7 @@ describe('Fetch Many Packages', () => {
 
     const result = await sut.execute({
       authorId: admin.id.toString(),
-      name: 'fragile',
+      search: 'fragile',
     });
 
     expect(result.isRight()).toBe(true);

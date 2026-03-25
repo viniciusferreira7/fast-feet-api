@@ -11,7 +11,6 @@ import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perf
 interface FetchManyPackagesUseCaseRequest {
   authorId: string;
   search?: string;
-  name?: string;
   code?: string;
   recipientAddress?: string;
   status?: string;
