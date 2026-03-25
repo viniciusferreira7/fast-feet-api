@@ -29,4 +29,6 @@ export abstract class NotificationsRepository {
   ): Promise<Notification | null>;
   abstract create(notification: Notification): Promise<void>;
   abstract save(notification: Notification): Promise<void>;
+  abstract updateManyByIdAndAuthorId(authorId: string): Promise<boolean>;
+  abstract markAllNotificationAsRead(authorId: string): Promise<boolean>;
 }

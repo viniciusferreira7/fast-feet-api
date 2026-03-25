@@ -84,4 +84,36 @@ export class InMemoryNotificationsRepository
       this.items[itemIndex] = notification;
     }
   }
+
+  async markAllNotificationAsRead(authorId: string): Promise<boolean> {
+    const notifications = this.items.filter(
+      (item) => item.recipientId.toString() === authorId
+    );
+
+    if (notifications.length === 0) {
+      return false;
+    }
+
+    for (const notification of notifications) {
+      notification.read();
+    }
+
+    return true;
+  }
+
+  async updateManyByIdAndAuthorId(authorId: string): Promise<boolean> {
+    const notifications = this.items.filter(
+      (item) => item.recipientId.toString() === authorId
+    );
+
+    if (notifications.length === 0) {
+      return false;
+    }
+
+    for (const notification of notifications) {
+      notification.read();
+    }
+
+    return true;
+  }
 }
