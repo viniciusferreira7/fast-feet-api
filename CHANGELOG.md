@@ -1,3 +1,12 @@
+# [1.28.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.27.0...v1.28.0) (2026-03-27)
+
+
+### Features
+
+* add ArgoHasher, JwtEncrypter and CryptographyModule ([035f36f](https://github.com/viniciusferreira7/fast-feet-api/commit/035f36f72ab756677b9d111152807f4bae920ef7))
+* add EnvModule and EnvService for typed env access ([e967c90](https://github.com/viniciusferreira7/fast-feet-api/commit/e967c9027735cc26f8b467ee88bacf3a1ecb9771))
+* add JWT authentication with RS256, guard, strategy and decorators ([f1d4439](https://github.com/viniciusferreira7/fast-feet-api/commit/f1d4439b5b2552a0566dd9c654c7a13740f5834d))
+
 # [1.27.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.26.0...v1.27.0) (2026-03-25)
 
 
