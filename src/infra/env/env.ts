@@ -17,6 +17,7 @@ export const envSchema = z.object({
   JWT_PUBLIC_KEY: z.string().refine(isBase64, {
     message: 'JWT_PUBLIC_KEY must be a valid base64 string',
   }),
+  CORS_ORIGIN: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;
