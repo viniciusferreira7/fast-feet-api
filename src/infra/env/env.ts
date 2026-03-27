@@ -18,6 +18,7 @@ export const envSchema = z.object({
     message: 'JWT_PUBLIC_KEY must be a valid base64 string',
   }),
   CORS_ORIGIN: z.url(),
+  ARGON2_PEPPER: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
