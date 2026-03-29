@@ -157,6 +157,12 @@ src/
 │   │   │       ├── package-assigned-to-a-delivery-person-event.ts
 │   │   │       ├── package-picked-up-event.ts
 │   │   │       ├── package-at-distribution-center-event.ts
+│   │   │       ├── package-is-in-transit-event.ts
+│   │   │       ├── package-is-out-for-delivery-event.ts
+│   │   │       ├── package-was-delivered-event.ts
+│   │   │       ├── package-failed-delivery-event.ts
+│   │   │       ├── package-returned-event.ts
+│   │   │       ├── package-was-updated-event.ts
 │   │   │       └── package-canceled-event.ts
 │   │   ├── application/            # Application business rules
 │   │   │   ├── use-cases/          # Use cases (application services)
@@ -189,6 +195,7 @@ src/
 │   │   │   │   ├── delete-delivery-person.ts
 │   │   │   │   ├── # Package Management
 │   │   │   │   ├── register-package.ts
+│   │   │   │   ├── update-package.ts
 │   │   │   │   ├── get-package-by-id.ts
 │   │   │   │   ├── get-package-by-code.ts
 │   │   │   │   ├── fetch-many-packages.ts
@@ -197,7 +204,13 @@ src/
 │   │   │   │   ├── picked-up-package.ts
 │   │   │   │   ├── drop-off-package-at-distribution-center.ts
 │   │   │   │   ├── package-is-in-transit.ts
+│   │   │   │   ├── package-is-out-for-delivery.ts
+│   │   │   │   ├── package-was-delivered.ts
+│   │   │   │   ├── package-failed-delivery.ts
+│   │   │   │   ├── return-package.ts
 │   │   │   │   ├── cancel-package.ts
+│   │   │   │   ├── # Attachments
+│   │   │   │   ├── upload-and-create-attachment.ts
 │   │   │   │   ├── # Package History
 │   │   │   │   ├── register-package-history.ts
 │   │   │   │   └── errors/         # Use case errors
@@ -215,13 +228,17 @@ src/
 │   │   │   │       ├── cannot-disable-delivery-person-with-active-packages-error.ts
 │   │   │   │       ├── package-already-assigned-error.ts
 │   │   │   │       ├── package-already-canceled-error.ts
-│   │   │   │       └── package-not-assigned-to-delivery-person-error.ts
+│   │   │   │       ├── package-not-assigned-to-delivery-person-error.ts
+│   │   │   │       ├── delivery-without-required-photo.ts
+│   │   │   │       └── invalid-attachment-type-error.ts
 │   │   │   ├── repositories/       # Repository interfaces
 │   │   │   │   ├── admin-people-repository.ts
 │   │   │   │   ├── delivery-people-repository.ts
 │   │   │   │   ├── recipient-people-repository.ts
 │   │   │   │   ├── packages-repository.ts
 │   │   │   │   ├── packages-history-repository.ts
+│   │   │   │   ├── attachments-repository.ts
+│   │   │   │   ├── package-attachments-repository.ts
 │   │   │   │   └── email-verifications-repository.ts
 │   │   │   ├── email/              # Email service interfaces
 │   │   │   │   └── email-sender.ts
@@ -229,6 +246,8 @@ src/
 │   │   │   │   ├── hash-generator.ts
 │   │   │   │   ├── hash-comparer.ts
 │   │   │   │   └── encrypter.ts
+│   │   │   ├── storage/            # Storage interfaces
+│   │   │   │   └── uploader.ts
 │   │   │   └── validation/         # Validation interfaces
 │   │   │       ├── cpf-validator.ts
 │   │   │       ├── password-validator.ts
@@ -254,17 +273,36 @@ src/
 │       │   ├── repositories/
 │       │   │   └── notifications-repository.ts
 │       │   └── use-cases/          # Use cases
-│       │       └── send-notification.ts
+│       │       ├── send-notification.ts
+│       │       ├── fetch-many-notifications.ts
+│       │       ├── mark-as-read-notification.ts
+│       │       └── mark-many-notifications-as-read.ts
 │       └── subscribers/            # Event subscribers (cross-boundary communication)
 │           ├── on-package-registered-send-notification.ts
 │           ├── on-package-assigned-send-notification.ts
 │           ├── on-package-picked-up-send-notification.ts
 │           ├── on-package-is-at-a-distribution-center-send-notification.ts
+│           ├── on-package-is-in-transit-send-notification.ts
+│           ├── on-package-was-delivered-send-notification.ts
+│           ├── on-package-failed-delivery-send-notification.ts
+│           ├── on-package-was-updated-send-notification.ts
 │           └── on-package-canceled-send-notification.ts
 │
 └── infra/                          # Infrastructure layer
+    ├── auth/                       # Authentication module
+    │   ├── auth.module.ts
+    │   ├── current-user.decorator.ts
+    │   ├── jwt-auth.guard.ts
+    │   ├── jwt.strategy.ts
+    │   └── public.ts
+    ├── cryptography/               # Cryptography implementations
+    │   ├── argon-hasher.ts        # Argon2 password hashing
+    │   ├── jwt-encrypter.ts       # JWT encryption
+    │   └── cryptography.module.ts
     ├── env/                        # Environment configuration
-    │   └── env.ts
+    │   ├── env.ts
+    │   ├── env.service.ts
+    │   └── env.module.ts
     ├── app.module.ts
     └── main.ts
 ```
@@ -371,40 +409,28 @@ The application uses domain events for cross-bounded-context communication:
 #### Events
 
 - **PackageRegisteredEvent**: Dispatched when a package is registered
-  - Triggers notification to recipient about new package
-  - Contains package history and package ID
-
 - **PackageAssignedToADeliveryPersonEvent**: Dispatched when a package is assigned to a delivery person
-  - Triggers notification to recipient about assignment
-  - Contains package history and package ID
-
 - **PackagePickedUpEvent**: Dispatched when a delivery person picks up a package
-  - Triggers notification to recipient about pickup
-
 - **PackageAtDistributionCenterEvent**: Dispatched when a package arrives at a distribution center
-  - Triggers notification to recipient about current location
-
+- **PackageIsInTransitEvent**: Dispatched when a package is in transit
+- **PackageIsOutForDeliveryEvent**: Dispatched when a package is out for delivery
+- **PackageWasDeliveredEvent**: Dispatched when a package is successfully delivered
+- **PackageFailedDeliveryEvent**: Dispatched when a delivery attempt fails
+- **PackageReturnedEvent**: Dispatched when a package is returned to sender
+- **PackageWasUpdatedEvent**: Dispatched when package details are updated
 - **PackageCanceledEvent**: Dispatched when a package is canceled
-  - Triggers notification to recipient about cancellation
 
 #### Subscribers
 
 - **OnPackageRegisteredSendNotification**: Listens to `PackageRegisteredEvent`
-  - Sends notification to recipient when their package is registered
-  - Cross-boundary communication between delivery and notification contexts
-
 - **OnPackageAssignedToADeliveryPersonSendNotification**: Listens to `PackageAssignedToADeliveryPersonEvent`
-  - Sends notification to recipient when delivery person is assigned
-  - Cross-boundary communication between delivery and notification contexts
-
 - **OnPackagePickedUpSendNotification**: Listens to `PackagePickedUpEvent`
-  - Sends notification to recipient when package is picked up
-
 - **OnPackageIsAtADistributionCenterSendNotification**: Listens to `PackageAtDistributionCenterEvent`
-  - Sends notification to recipient when package reaches a distribution center
-
+- **OnPackageIsInTransitSendNotification**: Listens to `PackageIsInTransitEvent`
+- **OnPackageWasDeliveredSendNotification**: Listens to `PackageWasDeliveredEvent`
+- **OnPackageFailedDeliverySendNotification**: Listens to `PackageFailedDeliveryEvent`
+- **OnPackageWasUpdatedSendNotification**: Listens to `PackageWasUpdatedEvent`
 - **OnPackageCanceledSendNotification**: Listens to `PackageCanceledEvent`
-  - Sends notification to recipient when package is canceled
 
 ### Package History
 
@@ -500,10 +526,10 @@ The project includes comprehensive testing with Vitest:
 - **Unit Tests**: Testing individual components, use cases, and domain logic
   - Value object validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
   - Entity logic (EmailVerification expiration, validation status)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson)
+  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, UpdatePackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, PackageIsInTransit, PackageIsOutForDelivery, PackageWasDelivered, PackageFailedDelivery, ReturnPackage, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson, UploadAndCreateAttachment, FetchManyNotifications, MarkAsReadNotification, MarkManyNotificationsAsRead)
   - Email verification requirement in authentication flow
   - Entity behavior and state management
-  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageCanceledSendNotification)
+  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageIsInTransitSendNotification, OnPackageWasDeliveredSendNotification, OnPackageFailedDeliverySendNotification, OnPackageWasUpdatedSendNotification, OnPackageCanceledSendNotification)
   - In-memory repository implementations for isolated testing
   - Comprehensive test coverage with 200+ passing tests
 
@@ -515,9 +541,9 @@ The project includes comprehensive testing with Vitest:
 - **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
 
 - **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation, FakeEmailSender for email delivery)
-  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository)
-  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment) with automatic email verification creation
+  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation, FakeEmailSender for email delivery, FakeUploader for file storage)
+  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository, InMemoryAttachmentsRepository, InMemoryPackageAttachmentsRepository)
+  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment, makeAttachment, makeNotification) with automatic email verification creation
   - Test data generators (CPF generator, ULID generator, verification code generator)
 
 ### Test Structure
@@ -534,14 +560,20 @@ test/
 │   ├── make-recipient-person.ts
 │   ├── make-package.ts
 │   ├── make-package-attachment.ts
-│   └── make-package-history.ts
+│   ├── make-package-history.ts
+│   ├── make-attachment.ts
+│   └── make-notification.ts
 ├── repositories/           # In-memory repository implementations
 │   ├── in-memory-admin-people-repository.ts
 │   ├── in-memory-delivery-people-repository.ts
 │   ├── in-memory-recipient-people-repository.ts
 │   ├── in-memory-packages-repository.ts
 │   ├── in-memory-packages-history-repository.ts
-│   └── in-memory-notifications-repository.ts
+│   ├── in-memory-notifications-repository.ts
+│   ├── in-memory-attachments-repository.ts
+│   └── in-memory-package-attachments-repository.ts
+├── storage/                # Fake storage implementations
+│   └── fake-uploader.ts
 ├── validation/             # Fake validation implementations
 │   ├── fake-cpf-validator.ts
 │   ├── fake-password-validator.ts
@@ -600,16 +632,25 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Password reset use cases for all user types
 - Package management use cases
   - Package registration with postal code validation
+  - Package update
   - Package retrieval (by ID and by code)
   - Package listing with pagination and filtering
   - Location-based package filtering for delivery persons
   - Package assignment to delivery person with automatic status updates
-  - Package pickup, drop-off at distribution center, and cancellation
-  - Package in-transit status transition
-- Password hashing with cryptography layer
+  - Full package lifecycle: pickup → distribution center → in transit → out for delivery → delivered / failed delivery → returned
+  - Package cancellation
+  - Photo attachment upload for delivery proof (UploadAndCreateAttachment)
+- Notification management use cases
+  - Fetch many notifications (with pagination)
+  - Mark notification as read
+  - Mark many notifications as read
+- Password hashing with cryptography layer (Argon2 via ArgoHasher)
+- JWT encryption implementation (JwtEncrypter)
+- Auth module with JWT strategy, guards, and decorators
 - External CPF validation with dependency injection pattern
 - External postal code validation with dependency injection pattern
 - External password strength validation with dependency injection pattern
+- File storage abstraction with Uploader interface
 - Repository pattern with in-memory implementations for testing
 - Domain events infrastructure for event-driven architecture
 - Event subscribers for cross-boundary communication
@@ -617,6 +658,10 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
   - Package assigned notification
   - Package picked up notification
   - Package at distribution center notification
+  - Package in transit notification
+  - Package was delivered notification
+  - Package failed delivery notification
+  - Package was updated notification
   - Package canceled notification
 - Package history tracking with automatic audit trail
   - Automatic creation on status changes
