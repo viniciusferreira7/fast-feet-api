@@ -62,25 +62,31 @@ print_step "Running unit tests"
 pnpm test:unit
 print_success "Unit tests passed"
 
-# # Step 3: Docker
+# Step 3: Integration Tests
+CURRENT_STEP="Integration Tests"
+print_step "Running integration tests"
+pnpm test:int
+print_success "Integration tests passed"
+
+# # Step 4: Docker
 # CURRENT_STEP="Docker"
 # print_step "Starting Docker services"
 # pnpm docker:up
 # print_success "Docker services started"
 
-# # Step 4: E2E Tests
+# # Step 5: E2E Tests
 # CURRENT_STEP="E2E Tests"
 # print_step "Running E2E tests"
 # pnpm test:e2e
 # print_success "E2E tests passed"
 
-# Step 5: Linting & Formatting
+# Step 6: Linting & Formatting
 CURRENT_STEP="Lint & Format"
 print_step "Running linter and formatter"
 pnpm check:fix
 print_success "Code linting and formatting completed"
 
-# Step 6: Type Checking
+# Step 7: Type Checking
 CURRENT_STEP="Type Check"
 print_step "Running TypeScript type checking"
 pnpm check:type
