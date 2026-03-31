@@ -19,6 +19,8 @@ export const envSchema = z.object({
   }),
   CORS_ORIGIN: z.url(),
   ARGON2_PEPPER: z.string(),
+  RESEND_API_KEY: z.string(),
+  EMAIL: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;
