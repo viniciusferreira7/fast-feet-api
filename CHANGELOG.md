@@ -1,3 +1,19 @@
+# [1.29.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.28.0...v1.29.0) (2026-04-01)
+
+
+### Bug Fixes
+
+* add AuthModule, EnvModule and ConfigModule to AppModule ([043531c](https://github.com/viniciusferreira7/fast-feet-api/commit/043531cafd99c9be3920ae9cc358c2f8e5f72b9e))
+* cast emailService to any in spec to access private resend property ([1f79ef0](https://github.com/viniciusferreira7/fast-feet-api/commit/1f79ef0900d09e4c7586c06c17154cde93527b57))
+* register EmailService as own provider token and export it from EmailModule ([414c9a2](https://github.com/viniciusferreira7/fast-feet-api/commit/414c9a208f81248aee5a6b3fa4289f3f00d43fe8))
+* use [@ts-expect-error](https://github.com/ts-expect-error) instead of any to access private resend in test ([9961e20](https://github.com/viniciusferreira7/fast-feet-api/commit/9961e20806efc091e3f22dd722b21d4ea164061b))
+* use dot notation for resend property access in email spec ([7beb3ed](https://github.com/viniciusferreira7/fast-feet-api/commit/7beb3ed16aa90fbd3146d1234f1692d8eef74141))
+
+
+### Features
+
+* create email service ([673b737](https://github.com/viniciusferreira7/fast-feet-api/commit/673b7374f8999cf7cbecb9c2b15568dbcf756153))
+
 # [1.28.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.27.0...v1.28.0) (2026-03-27)
 
 
