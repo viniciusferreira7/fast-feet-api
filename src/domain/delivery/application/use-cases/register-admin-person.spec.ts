@@ -22,7 +22,7 @@ describe('Register Admin Person', () => {
     sut = new RegisterAdminPerson(
       adminPeopleRepository,
       passwordValidator,
-      hashGenerator,
+      hashGenerator
     );
   });
 

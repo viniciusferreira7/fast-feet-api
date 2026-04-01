@@ -22,7 +22,7 @@ describe('Register Recipient Person', () => {
     sut = new RegisterRecipientPerson(
       recipientPeopleRepository,
       passwordValidator,
-      hashGenerator,
+      hashGenerator
     );
   });
 

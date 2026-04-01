@@ -28,7 +28,7 @@ describe('Register Delivery Person', () => {
       deliveryPeopleRepository,
       adminPeopleRepository,
       passwordValidator,
-      hashGenerator,
+      hashGenerator
     );
   });
 

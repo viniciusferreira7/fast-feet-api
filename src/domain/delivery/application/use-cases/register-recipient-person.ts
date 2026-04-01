@@ -28,7 +28,7 @@ export class RegisterRecipientPerson {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,
     private readonly passwordValidator: PasswordValidator,
-    private readonly hashGenerator: HashGenerator,
+    private readonly hashGenerator: HashGenerator
   ) {}
 
   async execute({
