@@ -55,9 +55,12 @@ describe('EmailService', () => {
   });
 
   it('should call resend with the correct payload', async () => {
-    // @ts-expect-error accessing private property in test
     const sendSpy = vi
-      .spyOn(emailService.resend.emails, 'send')
+      .spyOn(
+        // @ts-expect-error accessing private property in test
+        emailService.resend.emails,
+        'send'
+      )
       .mockResolvedValueOnce({
         data: { id: 'email-id-123' },
         error: null,
