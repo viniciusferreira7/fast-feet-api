@@ -74,4 +74,8 @@ describe('EmailService', () => {
       html: expect.stringContaining('<p>Your package arrived</p>'),
     });
   });
+
+  afterEach(async () => {
+    await app.close();
+  });
 });
