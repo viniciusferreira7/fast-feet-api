@@ -107,6 +107,18 @@ jobs:
 
       - name: Run integration tests
         run: pnpm run test:int
+        env:
+          NODE_ENV: "test"
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
+          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL: ${{ secrets.EMAIL }}
 
   test-e2e:
     name: E2E Tests
@@ -140,6 +152,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+      ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
+      CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}
 
@@ -227,6 +241,7 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}
       # REDIS_URL: ${{ secrets.REDIS_URL }}
