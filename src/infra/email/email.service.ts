@@ -6,7 +6,7 @@ import { buildEmailHtml } from './build-email-html';
 
 @Injectable()
 export class EmailService implements EmailSender {
-  private resend: Resend;
+  protected resend: Resend;
   private email: string;
 
   constructor(private readonly envService: EnvService) {

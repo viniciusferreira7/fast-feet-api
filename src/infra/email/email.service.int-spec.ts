@@ -17,7 +17,7 @@ describe('EmailService', () => {
   });
 
   it('should return true when email is sent successfully', async () => {
-    vi.spyOn(emailService['resend'].emails, 'send').mockResolvedValueOnce({
+    vi.spyOn(emailService.resend.emails, 'send').mockResolvedValueOnce({
       data: { id: 'email-id-123' },
       error: null,
       headers: null,
@@ -33,7 +33,7 @@ describe('EmailService', () => {
   });
 
   it('should return false when resend returns an error', async () => {
-    vi.spyOn(emailService['resend'].emails, 'send').mockResolvedValueOnce({
+    vi.spyOn(emailService.resend.emails, 'send').mockResolvedValueOnce({
       data: null,
       error: {
         name: 'validation_error',
@@ -54,7 +54,7 @@ describe('EmailService', () => {
 
   it('should call resend with the correct payload', async () => {
     const sendSpy = vi
-      .spyOn(emailService['resend'].emails, 'send')
+      .spyOn(emailService.resend.emails, 'send')
       .mockResolvedValueOnce({
         data: { id: 'email-id-123' },
         error: null,
