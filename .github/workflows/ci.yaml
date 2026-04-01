@@ -140,6 +140,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL: ${{ secrets.EMAIL }}
 
     steps:
       - name: Checkout code
@@ -225,6 +227,8 @@ jobs:
       DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL: ${{ secrets.EMAIL }}
       # REDIS_URL: ${{ secrets.REDIS_URL }}
       # REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
