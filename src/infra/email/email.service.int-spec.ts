@@ -17,7 +17,8 @@ describe('EmailService', () => {
   });
 
   it('should return true when email is sent successfully', async () => {
-    vi.spyOn((emailService as any).resend.emails, 'send').mockResolvedValueOnce({
+    // @ts-expect-error accessing private property in test
+    vi.spyOn(emailService.resend.emails, 'send').mockResolvedValueOnce({
       data: { id: 'email-id-123' },
       error: null,
       headers: null,
@@ -33,7 +34,8 @@ describe('EmailService', () => {
   });
 
   it('should return false when resend returns an error', async () => {
-    vi.spyOn((emailService as any).resend.emails, 'send').mockResolvedValueOnce({
+    // @ts-expect-error accessing private property in test
+    vi.spyOn(emailService.resend.emails, 'send').mockResolvedValueOnce({
       data: null,
       error: {
         name: 'validation_error',
@@ -53,8 +55,9 @@ describe('EmailService', () => {
   });
 
   it('should call resend with the correct payload', async () => {
+    // @ts-expect-error accessing private property in test
     const sendSpy = vi
-      .spyOn((emailService as any).resend.emails, 'send')
+      .spyOn(emailService.resend.emails, 'send')
       .mockResolvedValueOnce({
         data: { id: 'email-id-123' },
         error: null,
