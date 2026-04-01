@@ -2,13 +2,11 @@ import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import { CpfValidator } from '../validation/cpf-validator';
 import type { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
@@ -23,7 +21,6 @@ interface RegisterDeliveryPersonUseCaseRequest {
 type RegisterDeliveryPersonUseCaseResponse = Either<
   | InvalidateCpfError
   | PersonAlreadyExistsError
-  | ExternalCpfValidationError
   | ExternalPasswordValidationError
   | ResourceNotFoundError,
   {
@@ -37,7 +34,6 @@ export class RegisterDeliveryPerson {
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly passwordValidator: PasswordValidator,
     private readonly hashGenerator: HashGenerator,
-    private readonly cpfValidator: CpfValidator
   ) {}
 
   async execute({
@@ -67,12 +63,6 @@ export class RegisterDeliveryPerson {
 
     if (!adminPerson) {
       return left(new ResourceNotFoundError('admin'));
-    }
-
-    const isCpfValid = await this.cpfValidator.validate(cpf);
-
-    if (!isCpfValid) {
-      return left(new ExternalCpfValidationError());
     }
 
     const DeliveryPersonCpf = Cpf.create(cpf);

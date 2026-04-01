@@ -7,6 +7,7 @@ import { CryptographyModule } from './cryptography/cryptography.module';
 import { EmailModule } from './email/email.module';
 import { envSchema } from './env/env';
 import { EnvModule } from './env/env.module';
+import { ValidationModule } from './validation/validation.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EnvModule } from './env/env.module';
       },
       isGlobal: true,
     }),
+    ValidationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,12 +3,10 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
-import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
@@ -18,7 +16,6 @@ let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let passwordValidator: FakePasswordValidator;
 let hashGenerator: FakeHasher;
-let cpfValidator: FakeCpfValidator;
 let sut: RegisterDeliveryPerson;
 
 describe('Register Delivery Person', () => {
@@ -27,13 +24,11 @@ describe('Register Delivery Person', () => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     passwordValidator = new FakePasswordValidator();
     hashGenerator = new FakeHasher();
-    cpfValidator = new FakeCpfValidator();
     sut = new RegisterDeliveryPerson(
       deliveryPeopleRepository,
       adminPeopleRepository,
       passwordValidator,
       hashGenerator,
-      cpfValidator
     );
   });
 
@@ -182,25 +177,6 @@ describe('Register Delivery Person', () => {
     if (result.isRight()) {
       expect(result.value.deliveryPerson.cpf).toBeInstanceOf(Cpf);
       expect(result.value.deliveryPerson.cpf.value).toBe(cpfRaw);
-    }
-  });
-
-  it('should not be able to register with CPF that fails external validation', async () => {
-    const admin = makeAdminPerson();
-    await adminPeopleRepository.register(admin);
-    vi.spyOn(cpfValidator, 'validate').mockResolvedValueOnce(false);
-
-    const result = await sut.execute({
-      name: 'John Doe',
-      cpf: generateCpf(),
-      email: 'john@example.com',
-      password: '123456',
-      authorId: admin.id.toString(),
-    });
-
-    expect(result.isLeft()).toBe(true);
-    if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalCpfValidationError);
     }
   });
 

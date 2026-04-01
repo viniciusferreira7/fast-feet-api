@@ -1,11 +1,9 @@
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
-import { FakeCpfValidator } from 'test/validation/fake-cpf-validator';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalCpfValidationError } from '../../errors/external-cpf-validation-error';
 import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
@@ -14,7 +12,6 @@ import { RegisterAdminPerson } from './register-admin-person';
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let passwordValidator: FakePasswordValidator;
 let hashGenerator: FakeHasher;
-let cpfValidator: FakeCpfValidator;
 let sut: RegisterAdminPerson;
 
 describe('Register Admin Person', () => {
@@ -22,12 +19,10 @@ describe('Register Admin Person', () => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     passwordValidator = new FakePasswordValidator();
     hashGenerator = new FakeHasher();
-    cpfValidator = new FakeCpfValidator();
     sut = new RegisterAdminPerson(
       adminPeopleRepository,
       passwordValidator,
       hashGenerator,
-      cpfValidator
     );
   });
 
@@ -149,22 +144,6 @@ describe('Register Admin Person', () => {
     if (result.isRight()) {
       expect(result.value.adminPerson.cpf).toBeInstanceOf(Cpf);
       expect(result.value.adminPerson.cpf.value).toBe(cpfRaw);
-    }
-  });
-
-  it('should not be able to register with CPF that fails external validation', async () => {
-    vi.spyOn(cpfValidator, 'validate').mockResolvedValueOnce(false);
-
-    const result = await sut.execute({
-      name: 'John Doe',
-      cpf: generateCpf(),
-      email: 'john@example.com',
-      password: '123456',
-    });
-
-    expect(result.isLeft()).toBe(true);
-    if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalCpfValidationError);
     }
   });
 
