@@ -60,3 +60,6 @@ TODO.md
 
 private_key.pem
 public_key.pem
+
+# Tests
+.env.test
