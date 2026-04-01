@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Resend } from 'resend';
 import { EmailSender } from '@/domain/delivery/application/email/email-sender';
 import { EnvService } from '../env/env.service';
+import { buildEmailHtml } from './build-email-html';
 
 @Injectable()
 export class EmailService implements EmailSender {
@@ -18,7 +19,7 @@ export class EmailService implements EmailSender {
       from: `Fast Feet ${this.email}`,
       to: to,
       subject: title,
-      html: content, //TODO: create html to use like a template
+      html: buildEmailHtml(title, content),
     });
 
     if (createEmailResponse.error) return false;

@@ -4,11 +4,12 @@ import { EmailService } from './email.service';
 
 @Module({
   providers: [
+    EmailService,
     {
       provide: EmailSender,
-      useClass: EmailService,
+      useExisting: EmailService,
     },
   ],
-  exports: [EmailSender],
+  exports: [EmailSender, EmailService],
 })
 export class EmailModule {}
