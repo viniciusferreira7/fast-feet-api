@@ -1,24 +1,16 @@
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { Test } from '@nestjs/testing';
-import { JwtEncrypter } from './jwt-encrypter';
+import { JwtService } from '@nestjs/jwt';
+import { makeModuleRef } from 'test/factories/make-module-ref';
+import { Encrypter } from '@/domain/delivery/application/cryptography/encrypter';
 
 describe('JwtEncrypter', () => {
-  let encrypter: JwtEncrypter;
+  let encrypter: Encrypter;
   let jwtService: JwtService;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      imports: [
-        JwtModule.register({
-          secret: 'test-secret',
-          signOptions: { expiresIn: '1d' },
-        }),
-      ],
-      providers: [JwtEncrypter],
-    }).compile();
+    const moduleRef = await makeModuleRef();
 
-    encrypter = module.get(JwtEncrypter);
-    jwtService = module.get(JwtService);
+    encrypter = moduleRef.get(Encrypter, { strict: false });
+    jwtService = moduleRef.get(JwtService, { strict: false });
   });
 
   it('should encrypt a payload and return a JWT token', async () => {

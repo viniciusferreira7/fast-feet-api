@@ -1,23 +1,14 @@
-import { Test } from '@nestjs/testing';
-import { EnvService } from '../env/env.service';
+import { makeModuleRef } from 'test/factories/make-module-ref';
+import { HashGenerator } from '@/domain/delivery/application/cryptography/hash-generator';
 import { ArgoHasher } from './argon-hasher';
-
-const makeEnvService = (): Partial<EnvService> => ({
-  get: vi.fn().mockReturnValue('test-pepper-secret'),
-});
 
 describe('ArgoHasher', () => {
   let hasher: ArgoHasher;
 
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        ArgoHasher,
-        { provide: EnvService, useValue: makeEnvService() },
-      ],
-    }).compile();
+    const moduleRef = await makeModuleRef();
 
-    hasher = module.get(ArgoHasher);
+    hasher = moduleRef.get(HashGenerator, { strict: false }) as ArgoHasher;
   });
 
   it('should hash a plain text', async () => {
