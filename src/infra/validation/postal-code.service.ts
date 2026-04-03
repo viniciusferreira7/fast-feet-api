@@ -23,9 +23,13 @@ export class PostalCodeService implements PostalCodeValidator {
     const url = new URL(`${postalCode}/json/`, postalCodeExternalService);
 
     try {
-      const result = await this.httpClient.get<PostalCodeExternalServiceResponse>(url.toString(), {
-        retries: 5,
-      });
+      const result =
+        await this.httpClient.get<PostalCodeExternalServiceResponse>(
+          url.toString(),
+          {
+            retries: 5,
+          }
+        );
 
       if (result.erro) {
         return left(new ExternalPostalCodeError('Invalid postal code'));

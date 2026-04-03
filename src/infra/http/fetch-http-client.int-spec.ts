@@ -31,7 +31,9 @@ describe('FetchHttpClient', () => {
     const url = `${envService.get('HTTPBIN_URL')}/get`;
     const result = await client.get<{ url: string }>(url);
 
-    expect(result).toMatchObject({ url: `${envService.get('HTTPBIN_URL')}/get` });
+    expect(result).toMatchObject({
+      url: `${envService.get('HTTPBIN_URL')}/get`,
+    });
   });
 
   it('should throw HTTP error on non-OK response', async () => {

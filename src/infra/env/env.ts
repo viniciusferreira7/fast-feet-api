@@ -28,10 +28,7 @@ export const envSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV === 'test') {
-      const testOnlyFields = [
-        'JSON_PLACEHOLDER_URL',
-        'HTTPBIN_URL',
-      ] as const;
+      const testOnlyFields = ['JSON_PLACEHOLDER_URL', 'HTTPBIN_URL'] as const;
 
       for (const field of testOnlyFields) {
         if (!data[field]) {

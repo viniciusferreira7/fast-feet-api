@@ -1,4 +1,4 @@
-import { right, type Either } from '@/core/either';
+import { type Either, right } from '@/core/either';
 import type { PasswordValidator } from '@/domain/delivery/application/validation/password-validator';
 import type { WeakPasswordError } from '@/domain/delivery/errors/weak-password-error';
 
