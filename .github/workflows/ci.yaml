@@ -119,6 +119,9 @@ jobs:
           CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           EMAIL: ${{ secrets.EMAIL }}
+          POSTAL_CODE_EXTERNAL_SERVICE_URL: ${{ secrets.POSTAL_CODE_EXTERNAL_SERVICE_URL }}
+          JSON_PLACEHOLDER_URL: ${{ secrets.JSON_PLACEHOLDER_URL }}
+          HTTPBIN_URL: ${{ secrets.HTTPBIN_URL }}
 
   test-e2e:
     name: E2E Tests
