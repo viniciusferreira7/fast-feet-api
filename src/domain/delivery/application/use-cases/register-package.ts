@@ -53,7 +53,7 @@ export class RegisterPackage {
     recipientAddress,
     postalCode,
   }: RegisterPackageUseCaseRequest): Promise<RegisterPackageUseCaseResponse> {
-    const [author, deliveryPerson, recipientPerson, isPostalCodeValid] =
+    const [author, deliveryPerson, recipientPerson, postalCodeIsValid] =
       await Promise.all([
         this.adminPeopleRepository.findById(authorId),
         deliveryPersonId
@@ -75,8 +75,8 @@ export class RegisterPackage {
       return left(new ResourceNotFoundError('recipient'));
     }
 
-    if (!isPostalCodeValid) {
-      return left(new ExternalPostalCodeError());
+    if (postalCodeIsValid.isLeft()) {
+      return left(postalCodeIsValid.value);
     }
 
     const packageCode = PackageCode.create();

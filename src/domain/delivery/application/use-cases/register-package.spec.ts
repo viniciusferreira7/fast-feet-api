@@ -7,6 +7,7 @@ import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-p
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
 import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
+import { left } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
@@ -290,7 +291,9 @@ describe('Register Package', () => {
     await recipientPeopleRepository.register(recipientPerson);
 
     const invalidPostalCodeValidator = new FakePostalCodeValidator();
-    vi.spyOn(invalidPostalCodeValidator, 'validate').mockResolvedValue(false);
+    vi.spyOn(invalidPostalCodeValidator, 'validate').mockResolvedValue(
+      left(new ExternalPostalCodeError())
+    );
 
     const registerPackageWithInvalidValidator = new RegisterPackage(
       packagesRepository,
@@ -304,7 +307,7 @@ describe('Register Package', () => {
       recipientId: recipientPerson.id.toString(),
       name: 'Package',
       recipientAddress: '123 Main St, City, State',
-      postalCode: 'invalid-postal-code',
+      postalCode: '12345-678',
       deliveryPersonId: null,
       authorId: admin.id.toString(),
     });
