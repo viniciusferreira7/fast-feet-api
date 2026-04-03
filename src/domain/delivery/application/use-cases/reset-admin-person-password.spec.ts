@@ -2,7 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 import { ResetAdminPersonPassword } from './reset-admin-person-password';
@@ -141,7 +141,7 @@ describe('Reset Admin Person Password', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

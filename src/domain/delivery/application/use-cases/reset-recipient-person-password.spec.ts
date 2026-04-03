@@ -2,7 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 import { ResetRecipientPersonPassword } from './reset-recipient-person-password';
@@ -141,7 +141,7 @@ describe('Reset Recipient Person Password', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

@@ -1,6 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import type { HashComparer } from '../cryptography/hash-comparer';
 import type { HashGenerator } from '../cryptography/hash-generator';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
@@ -15,9 +15,7 @@ interface ResetAdminPersonPasswordUseCaseRequest {
 }
 
 type ResetAdminPersonPasswordUseCaseResponse = Either<
-  | WrongCredentialsError
-  | EmailCodeHasNotBeenVerifiedError
-  | ExternalPasswordValidationError,
+  WrongCredentialsError | EmailCodeHasNotBeenVerifiedError | WeakPasswordError,
   { adminPerson: AdminPerson }
 >;
 
@@ -55,10 +53,10 @@ export class ResetAdminPersonPassword {
       return left(new EmailCodeHasNotBeenVerifiedError());
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(newPassword);
+    const passwordValidation = this.passwordValidator.validate(newPassword);
 
-    if (!isPasswordValid) {
-      return left(new ExternalPasswordValidationError());
+    if (passwordValidation.isLeft()) {
+      return left(passwordValidation.value);
     }
 
     const newPasswordHashed = await this.hashGenerator.hash(newPassword);

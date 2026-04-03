@@ -38,7 +38,7 @@ export class FetchPackagesNearByDeliveryPersonUseCase {
     page,
     perPage,
   }: FetchPackagesNearByDeliveryPersonUseCaseRequest): Promise<FetchPackagesNearByDeliveryPersonUseCaseResponse> {
-    const [author, deliveryPerson, isDeliveryPersonPostalCodeLocationValid] =
+    const [author, deliveryPerson, deliveryPersonPostalCodeLocationValid] =
       await Promise.all([
         this.adminPeopleRepository.findById(authorId),
         this.deliveryPeopleRepository.findById(deliveryPersonId),
@@ -53,8 +53,8 @@ export class FetchPackagesNearByDeliveryPersonUseCase {
       return left(new ResourceNotFoundError('delivery'));
     }
 
-    if (!isDeliveryPersonPostalCodeLocationValid) {
-      return left(new ExternalPostalCodeError());
+    if (deliveryPersonPostalCodeLocationValid.isLeft()) {
+      return left(deliveryPersonPostalCodeLocationValid.value);
     }
 
     const postalCode = PostalCode.create({

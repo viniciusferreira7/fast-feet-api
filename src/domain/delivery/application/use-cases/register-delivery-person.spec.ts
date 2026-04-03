@@ -7,8 +7,8 @@ import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterDeliveryPerson } from './register-delivery-person';
 
@@ -195,7 +195,7 @@ describe('Register Delivery Person', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

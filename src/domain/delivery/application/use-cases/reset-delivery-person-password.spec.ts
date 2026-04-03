@@ -2,7 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
@@ -163,7 +163,7 @@ describe('Reset Delivery Person Password', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

@@ -1,8 +1,8 @@
 import { type Either, left, right } from '@/core/either';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { PasswordValidator } from '../validation/password-validator';
@@ -16,9 +16,7 @@ interface RegisterAdminPersonUseCaseRequest {
 }
 
 type RegisterAdminPersonUseCaseResponse = Either<
-  | InvalidateCpfError
-  | PersonAlreadyExistsError
-  | ExternalPasswordValidationError,
+  InvalidateCpfError | PersonAlreadyExistsError | WeakPasswordError,
   {
     adminPerson: AdminPerson;
   }
@@ -57,10 +55,10 @@ export class RegisterAdminPerson {
       return left(adminPersonCpf.value);
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(password);
+    const passwordValidation = this.passwordValidator.validate(password);
 
-    if (!isPasswordValid) {
-      return left(new ExternalPasswordValidationError());
+    if (passwordValidation.isLeft()) {
+      return left(passwordValidation.value);
     }
 
     const hashedPassword = await this.hashGenerator.hash(password);

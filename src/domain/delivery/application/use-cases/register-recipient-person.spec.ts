@@ -4,8 +4,8 @@ import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-r
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterRecipientPerson } from './register-recipient-person';
 
@@ -159,7 +159,7 @@ describe('Register Recipient Person', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

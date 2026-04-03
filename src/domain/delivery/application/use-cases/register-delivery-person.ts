@@ -2,8 +2,8 @@ import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
@@ -21,7 +21,7 @@ interface RegisterDeliveryPersonUseCaseRequest {
 type RegisterDeliveryPersonUseCaseResponse = Either<
   | InvalidateCpfError
   | PersonAlreadyExistsError
-  | ExternalPasswordValidationError
+  | WeakPasswordError
   | ResourceNotFoundError,
   {
     deliveryPerson: DeliveryPerson;
@@ -71,10 +71,10 @@ export class RegisterDeliveryPerson {
       return left(DeliveryPersonCpf.value);
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(password);
+    const passwordValidation = this.passwordValidator.validate(password);
 
-    if (!isPasswordValid) {
-      return left(new ExternalPasswordValidationError());
+    if (passwordValidation.isLeft()) {
+      return left(passwordValidation.value);
     }
 
     const hashedPassword = await this.hashGenerator.hash(password);

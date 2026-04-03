@@ -4,8 +4,8 @@ import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 import { RegisterAdminPerson } from './register-admin-person';
 
@@ -159,7 +159,7 @@ describe('Register Admin Person', () => {
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(ExternalPasswordValidationError);
+      expect(result.value).toBeInstanceOf(WeakPasswordError);
     }
   });
 

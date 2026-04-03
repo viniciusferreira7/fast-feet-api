@@ -1,6 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
-import { ExternalPasswordValidationError } from '../../errors/external-password-validation-error';
+import { WeakPasswordError } from '../../errors/weak-password-error';
 import type { HashComparer } from '../cryptography/hash-comparer';
 import type { HashGenerator } from '../cryptography/hash-generator';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
@@ -18,7 +18,7 @@ interface ResetDeliveryPersonPasswordUseCaseRequest {
 type ResetDeliveryPersonPasswordUseCaseResponse = Either<
   | WrongCredentialsError
   | EmailCodeHasNotBeenVerifiedError
-  | ExternalPasswordValidationError
+  | WeakPasswordError
   | DeliveryPersonProfileIsDisableError,
   { deliveryPerson: DeliveryPerson }
 >;
@@ -62,10 +62,10 @@ export class ResetDeliveryPersonPassword {
       return left(new EmailCodeHasNotBeenVerifiedError());
     }
 
-    const isPasswordValid = await this.passwordValidator.validate(newPassword);
+    const passwordValidation = this.passwordValidator.validate(newPassword);
 
-    if (!isPasswordValid) {
-      return left(new ExternalPasswordValidationError());
+    if (passwordValidation.isLeft()) {
+      return left(passwordValidation.value);
     }
 
     const newPasswordHashed = await this.hashGenerator.hash(newPassword);

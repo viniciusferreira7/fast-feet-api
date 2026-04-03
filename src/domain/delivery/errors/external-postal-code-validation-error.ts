@@ -4,7 +4,7 @@ export class ExternalPostalCodeError
   extends Error
   implements ErrorImplementation
 {
-  constructor() {
-    super('External postal code validation failed');
+  constructor(message?: string) {
+    super(message ?? 'External postal code validation failed');
   }
 }
