@@ -1,3 +1,18 @@
+# [1.30.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.29.0...v1.30.0) (2026-04-03)
+
+
+### Bug Fixes
+
+* correct use case to register package ([b6e9787](https://github.com/viniciusferreira7/fast-feet-api/commit/b6e9787192009e34f9570859fa74479a3e75ab0c))
+* **postal-code:** fix URL construction and handle viacep erro field ([060d80a](https://github.com/viniciusferreira7/fast-feet-api/commit/060d80a58529e1765624907631e447a0284ce332))
+
+
+### Features
+
+* add HttpClient abstraction and fix Either-based validator mocks in tests ([2e80a21](https://github.com/viniciusferreira7/fast-feet-api/commit/2e80a21e7f58040dd9de61dc7d05b2327b5a0330))
+* **env:** require JSON_PLACEHOLDER_URL and HTTPBIN_URL in test environment ([7886978](https://github.com/viniciusferreira7/fast-feet-api/commit/7886978af2a45e07f63853ed9324e50fff56603d))
+* **http:** add retry support and proper error handling to FetchHttpClient ([8517d59](https://github.com/viniciusferreira7/fast-feet-api/commit/8517d59f8273514cead6f1e8c3716ccfd739e88a))
+
 # [1.29.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.28.0...v1.29.0) (2026-04-01)
 
 
