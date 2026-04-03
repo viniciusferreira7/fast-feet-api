@@ -7,6 +7,7 @@ import { CryptographyModule } from './cryptography/cryptography.module';
 import { EmailModule } from './email/email.module';
 import { envSchema } from './env/env';
 import { EnvModule } from './env/env.module';
+import { HttpModule } from './http/http.module';
 import { ValidationModule } from './validation/validation.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { ValidationModule } from './validation/validation.module';
     CryptographyModule,
     EmailModule,
     EnvModule,
+    HttpModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.test', '.env'],
       validate: (env) => {

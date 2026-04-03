@@ -4,6 +4,7 @@ import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { left } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
@@ -183,7 +184,9 @@ describe('Register Delivery Person', () => {
   it('should not be able to register with weak password', async () => {
     const admin = makeAdminPerson();
     await adminPeopleRepository.register(admin);
-    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+    vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
+      left(new WeakPasswordError())
+    );
 
     const result = await sut.execute({
       name: 'John Doe',

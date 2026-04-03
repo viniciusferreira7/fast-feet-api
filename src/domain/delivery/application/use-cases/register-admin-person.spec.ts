@@ -2,6 +2,7 @@ import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { left } from '@/core/either';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
@@ -148,7 +149,9 @@ describe('Register Admin Person', () => {
   });
 
   it('should not be able to register with weak password', async () => {
-    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+    vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
+      left(new WeakPasswordError())
+    );
 
     const result = await sut.execute({
       name: 'John Doe',

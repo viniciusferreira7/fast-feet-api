@@ -2,6 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { left } from '@/core/either';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
@@ -131,7 +132,9 @@ describe('Reset Recipient Person Password', () => {
 
     await recipientPeopleRepository.register(recipientPerson);
 
-    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+    vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
+      left(new WeakPasswordError())
+    );
 
     const result = await sut.execute({
       email: 'recipient@example.com',

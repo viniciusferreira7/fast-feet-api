@@ -2,6 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-delivery-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { left } from '@/core/either';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
@@ -153,7 +154,9 @@ describe('Reset Delivery Person Password', () => {
 
     await deliveryPeopleRepository.register(deliveryPerson);
 
-    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+    vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
+      left(new WeakPasswordError())
+    );
 
     const result = await sut.execute({
       email: 'john@example.com',

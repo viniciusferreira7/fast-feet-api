@@ -21,6 +21,7 @@ export const envSchema = z.object({
   ARGON2_PEPPER: z.string(),
   RESEND_API_KEY: z.string(),
   EMAIL: z.string(),
+  POSTAL_CODE_EXTERNAL_SERVICE_URL: z.url(),
 });
 
 export type Env = z.infer<typeof envSchema>;

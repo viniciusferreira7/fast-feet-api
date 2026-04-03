@@ -2,6 +2,7 @@ import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
+import { left } from '@/core/either';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
@@ -131,7 +132,9 @@ describe('Reset Admin Person Password', () => {
 
     await adminPeopleRepository.register(adminPerson);
 
-    vi.spyOn(passwordValidator, 'validate').mockResolvedValueOnce(false);
+    vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
+      left(new WeakPasswordError())
+    );
 
     const result = await sut.execute({
       email: 'admin@example.com',

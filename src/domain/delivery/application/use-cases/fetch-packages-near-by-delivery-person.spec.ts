@@ -6,6 +6,7 @@ import { InMemoryDeliveryPeopleRepository } from 'test/repositories/in-memory-de
 import { InMemoryPackagesHistoryRepository } from 'test/repositories/in-memory-packages-history-repository';
 import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages-repository';
 import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
+import { left } from '@/core/either';
 import { Pagination } from '@/core/entities/value-object/pagination';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { PostalCode } from '../../enterprise/entities/value-object/postal-code';
@@ -157,7 +158,9 @@ describe('Fetch Packages Near By Delivery Person', () => {
     await adminPeopleRepository.register(admin);
     await deliveryPeopleRepository.register(deliveryPerson);
 
-    vi.spyOn(postalCodeValidator, 'validate').mockResolvedValue(false);
+    vi.spyOn(postalCodeValidator, 'validate').mockResolvedValue(
+      left(new ExternalPostalCodeError())
+    );
 
     const result = await sut.execute({
       authorId: admin.id.toString(),
