@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.30.0...v1.31.0) (2026-04-05)
+
+
+### Features
+
+* add logic to do retries only in transactional error ([9e5fbe6](https://github.com/viniciusferreira7/fast-feet-api/commit/9e5fbe69c33f096e70955738362465cbe99a8917))
+
 # [1.30.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.29.0...v1.30.0) (2026-04-03)
 
 
