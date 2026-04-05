@@ -19,7 +19,9 @@ export class FetchHttpClient implements HttpClient {
         }
 
         if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
+          throw Object.assign(new Error(`HTTP error: ${response.status}`), {
+            status: response.status,
+          });
         }
 
         try {
@@ -28,7 +30,20 @@ export class FetchHttpClient implements HttpClient {
           throw new Error('Invalid JSON response');
         }
       },
-      { retries: options?.retries ?? 0 }
+      {
+        retries: options?.retries ?? 0,
+        maxTimeout: options?.maxTimeout,
+        minTimeout: options?.minTimeout,
+        factor: options?.factor,
+        randomize: options?.randomize,
+        maxRetryTime: options?.maxRetryTime,
+        shouldRetry({ error }) {
+          if ('status' in error) {
+            return (error as { status: number }).status >= 500;
+          }
+          return true;
+        },
+      }
     );
   }
 }

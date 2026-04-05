@@ -28,6 +28,11 @@ export class PostalCodeService implements PostalCodeValidator {
           url.toString(),
           {
             retries: 5,
+            maxTimeout: 1000,
+            minTimeout: 1,
+            factor: 2,
+            randomize: true,
+            maxRetryTime: 1200,
           }
         );
 

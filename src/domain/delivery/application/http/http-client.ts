@@ -1,5 +1,10 @@
 export interface HttpClientOptions {
   retries?: number;
+  maxTimeout?: number;
+  minTimeout?: number;
+  factor?: 1 | 2;
+  randomize?: boolean;
+  maxRetryTime?: number;
 }
 
 export abstract class HttpClient {
