@@ -8,6 +8,7 @@ import { EmailModule } from './email/email.module';
 import { envSchema } from './env/env';
 import { EnvModule } from './env/env.module';
 import { HttpModule } from './http/http.module';
+import { StorageModule } from './storage/storage.module';
 import { ValidationModule } from './validation/validation.module';
 
 @Module({
@@ -25,6 +26,7 @@ import { ValidationModule } from './validation/validation.module';
       isGlobal: true,
     }),
     ValidationModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
