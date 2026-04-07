@@ -1,3 +1,10 @@
+# [1.32.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.31.0...v1.32.0) (2026-04-07)
+
+
+### Features
+
+* **infra:** implement r2 storage to upload files ([0b9df6b](https://github.com/viniciusferreira7/fast-feet-api/commit/0b9df6b894c2b52d1dce625392724d1937b6ff1e))
+
 # [1.31.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.30.0...v1.31.0) (2026-04-05)
 
 
