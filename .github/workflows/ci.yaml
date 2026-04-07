@@ -122,6 +122,11 @@ jobs:
           POSTAL_CODE_EXTERNAL_SERVICE_URL: ${{ secrets.POSTAL_CODE_EXTERNAL_SERVICE_URL }}
           JSON_PLACEHOLDER_URL: ${{ secrets.JSON_PLACEHOLDER_URL }}
           HTTPBIN_URL: ${{ secrets.HTTPBIN_URL }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
 
   test-e2e:
     name: E2E Tests
@@ -159,6 +164,11 @@ jobs:
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
+      AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
 
     steps:
       - name: Checkout code
@@ -249,6 +259,12 @@ jobs:
       EMAIL: ${{ secrets.EMAIL }}
       # REDIS_URL: ${{ secrets.REDIS_URL }}
       # REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
+      AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
 
     steps:
       - name: Checkout code

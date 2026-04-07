@@ -25,6 +25,11 @@ export const envSchema = z
     POSTAL_CODE_EXTERNAL_SERVICE_URL: z.url(),
     JSON_PLACEHOLDER_URL: z.url().optional(),
     HTTPBIN_URL: z.url().optional(),
+    CLOUDFLARE_ACCOUNT_ID: z.string(),
+    CLOUDFLARE_ACCOUNT_TOKEN: z.string(),
+    AWS_BUCKET_NAME: z.string(),
+    AWS_ACCESS_KEY_ID: z.string(),
+    AWS_SECRETE_ACCESS_KEY_ID: z.string(),
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV === 'test') {
