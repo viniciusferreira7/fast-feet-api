@@ -1,6 +1,3 @@
-//TODO: Create use case to delivery package
-//TODO: It needs use case to add attachment and assign image with a package
-
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { Package } from '../../enterprise/entities/package';
