@@ -17,7 +17,10 @@ describe('R2Storage', () => {
   });
 
   it('should upload a file and return a url key', async () => {
-    const filePath = resolve(__dirname, '../../../test/utils/assets/file-to-use-on-upload.png');
+    const filePath = resolve(
+      __dirname,
+      '../../../test/utils/assets/file-to-use-on-upload.png'
+    );
     const body = readFileSync(filePath);
 
     const result = await uploader.upload({
@@ -32,7 +35,10 @@ describe('R2Storage', () => {
   });
 
   it('should generate a unique key for each upload of the same file', async () => {
-    const filePath = resolve(__dirname, '../../../test/utils/assets/file-to-use-on-upload.png');
+    const filePath = resolve(
+      __dirname,
+      '../../../test/utils/assets/file-to-use-on-upload.png'
+    );
     const body = readFileSync(filePath);
     const params = {
       fileName: 'file-to-use-on-upload.png',
