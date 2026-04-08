@@ -1,3 +1,11 @@
+# [1.33.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.32.0...v1.33.0) (2026-04-08)
+
+
+### Features
+
+* **db:** implement drizzle service and configure drizzle-kit ([1cf1088](https://github.com/viniciusferreira7/fast-feet-api/commit/1cf10880169e4a6120f453e0fbb21674caaf3aa3))
+* **db:** setup drizzle orm with postgres ([3a756d3](https://github.com/viniciusferreira7/fast-feet-api/commit/3a756d3c3e4308e81723d7cd9040ddef8c9cc578))
+
 # [1.32.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.31.0...v1.32.0) (2026-04-07)
 
 
