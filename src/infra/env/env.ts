@@ -25,6 +25,7 @@ export const envSchema = z
     POSTAL_CODE_EXTERNAL_SERVICE_URL: z.url(),
     JSON_PLACEHOLDER_URL: z.url().optional(),
     HTTPBIN_URL: z.url().optional(),
+    DATABASE_URL: z.string(),
     DATABASE_PORT: z.coerce.number().default(5432),
     DATABASE_USERNAME: z.string(),
     DATABASE_PASSWORD: z.string(),
