@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CryptographyModule } from './cryptography/cryptography.module';
+import { DatabaseModule } from './database/database.module';
 import { EmailModule } from './email/email.module';
 import { envSchema } from './env/env';
 import { EnvModule } from './env/env.module';
@@ -27,6 +28,7 @@ import { ValidationModule } from './validation/validation.module';
     }),
     ValidationModule,
     StorageModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
