@@ -21,7 +21,6 @@ describe('DrizzleService', () => {
   });
 
   it('should expose a drizzle db instance after initialization', () => {
-    console.log(service);
     expect(service.db).toBeDefined();
   });
 
