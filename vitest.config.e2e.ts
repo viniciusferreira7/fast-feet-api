@@ -11,9 +11,6 @@ export default defineConfig({
     testTimeout: 1_000_000,
     hookTimeout: 1_000_000,
   },
-  optimizeDeps: {
-    exclude: ['generated/prisma'],
-  },
   plugins: [
     tsConfigPaths(),
     swc.vite({
