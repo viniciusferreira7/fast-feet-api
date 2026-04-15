@@ -17,6 +17,12 @@ For detailed requirements and features, see [REQUIREMENTS.md](./REQUIREMENTS.md)
 - **Package Manager**: pnpm v10.25.0
 - **HTTP Server**: Fastify
 - **Language**: TypeScript
+- **ORM**: Drizzle ORM (PostgreSQL)
+- **Password Hashing**: Argon2 (via argon2 package)
+- **Email**: Resend API
+- **File Storage**: Cloudflare R2 (S3-compatible)
+- **Observability**: OpenTelemetry (traces, metrics, logs via OTLP)
+- **Schema Validation**: Zod (environment variables)
 - **Code Quality**: Biome (linting & formatting)
 - **Testing**: Vitest
 - **Containerization**: Docker (multi-arch support)
@@ -297,12 +303,54 @@ src/
     │   └── public.ts
     ├── cryptography/               # Cryptography implementations
     │   ├── argon-hasher.ts        # Argon2 password hashing
+    │   ├── argon-hasher.int-spec.ts
     │   ├── jwt-encrypter.ts       # JWT encryption
+    │   ├── jwt-encrypter.int-spec.ts
     │   └── cryptography.module.ts
+    ├── database/                   # Database module
+    │   ├── database.module.ts
+    │   └── drizzle/               # Drizzle ORM
+    │       ├── drizzle.service.ts # Connection pool management
+    │       ├── drizzle.service.int-spec.ts
+    │       ├── mappers/           # Domain ↔ persistence mappers (wip)
+    │       ├── repositories/      # Drizzle repository implementations (wip)
+    │       └── schema/            # Table definitions
+    │           ├── index.ts
+    │           ├── users.ts
+    │           ├── delivery-profiles.ts
+    │           ├── recipient-profiles.ts
+    │           ├── email-codes.ts
+    │           ├── packages.ts
+    │           ├── package-histories.ts
+    │           ├── attachments.ts
+    │           └── notifications.ts
+    ├── email/                      # Email module (Resend)
+    │   ├── build-email-html.ts
+    │   ├── email.service.ts
+    │   ├── email.service.int-spec.ts
+    │   └── email.module.ts
     ├── env/                        # Environment configuration
-    │   ├── env.ts
+    │   ├── env.ts                 # Zod schema for all env vars
     │   ├── env.service.ts
+    │   ├── env.service.int-spec.ts
     │   └── env.module.ts
+    ├── http/                       # HTTP client module
+    │   ├── fetch-http-client.ts   # Fetch-based HTTP client
+    │   ├── fetch-http-client.int-spec.ts
+    │   └── http.module.ts
+    ├── interfaces/                 # Shared response interfaces
+    │   └── postal-code-external-service-response.ts
+    ├── storage/                    # File storage module (Cloudflare R2)
+    │   ├── r2-storage.ts
+    │   ├── r2-storage.int-spec.ts
+    │   └── storage.module.ts
+    ├── validation/                 # External validation services
+    │   ├── password.service.ts    # External password strength validation
+    │   ├── password.service.int-spec.ts
+    │   ├── postal-code.service.ts # External CEP validation
+    │   ├── postal-code.service.int-spec.ts
+    │   └── validation.module.ts
+    ├── tracer.ts                   # OpenTelemetry SDK setup
     ├── app.module.ts
     └── main.ts
 ```
@@ -521,38 +569,53 @@ http://localhost:3333/api/docs
 
 ## 🧪 Testing
 
-The project includes comprehensive testing with Vitest:
+The project includes three levels of testing with Vitest:
 
-- **Unit Tests**: Testing individual components, use cases, and domain logic
-  - Value object validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
-  - Entity logic (EmailVerification expiration, validation status)
-  - Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, UpdatePackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, PackageIsInTransit, PackageIsOutForDelivery, PackageWasDelivered, PackageFailedDelivery, ReturnPackage, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson, UploadAndCreateAttachment, FetchManyNotifications, MarkAsReadNotification, MarkManyNotificationsAsRead)
-  - Email verification requirement in authentication flow
-  - Entity behavior and state management
-  - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageIsInTransitSendNotification, OnPackageWasDeliveredSendNotification, OnPackageFailedDeliverySendNotification, OnPackageWasUpdatedSendNotification, OnPackageCanceledSendNotification)
-  - In-memory repository implementations for isolated testing
-  - Comprehensive test coverage with 200+ passing tests
+### Unit Tests (`.spec.ts`)
 
-- **E2E Tests**: Testing complete user flows and API endpoints
-  - Full request/response cycles
-  - Database integration
-  - Authentication flows
+Test domain logic in complete isolation using in-memory repositories and fakes:
 
-- **Coverage Reports**: Track code coverage metrics with Vitest coverage tools
+- Value object validation (CPF, PackageCode, PackageStatus, PostalCode, VerificationCode)
+- Entity logic (EmailVerification expiration, validation status)
+- Use case business logic (RegisterAdminPerson, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPerson, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackage, UpdatePackage, AssignPackageToADeliveryPerson, PickedUpPackage, DropOffPackageAtDistributionCenter, PackageIsInTransit, PackageIsOutForDelivery, PackageWasDelivered, PackageFailedDelivery, ReturnPackage, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson, UploadAndCreateAttachment, FetchManyNotifications, MarkAsReadNotification, MarkManyNotificationsAsRead)
+- Email verification requirement in authentication flow
+- Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageIsInTransitSendNotification, OnPackageWasDeliveredSendNotification, OnPackageFailedDeliverySendNotification, OnPackageWasUpdatedSendNotification, OnPackageCanceledSendNotification)
+- Comprehensive test coverage with 200+ passing tests
 
-- **Test Utilities**:
-  - Fake implementations (FakeHasher for password hashing, FakeEncrypter for JWT encryption, FakeCpfValidator for CPF validation, FakePostalCodeValidator for postal code validation, FakePasswordValidator for password validation, FakeEmailSender for email delivery, FakeUploader for file storage)
-  - In-memory repositories (InMemoryAdminPeopleRepository, InMemoryDeliveryPeopleRepository, InMemoryRecipientPeopleRepository, InMemoryPackagesRepository, InMemoryPackagesHistoryRepository, InMemoryNotificationsRepository, InMemoryAttachmentsRepository, InMemoryPackageAttachmentsRepository)
-  - Test data factories (makeAdminPerson, makeDeliveryPerson, makeRecipientPerson, makePackage, makePackageHistory, makePackageAttachment, makeAttachment, makeNotification) with automatic email verification creation
-  - Test data generators (CPF generator, ULID generator, verification code generator)
+### Integration Tests (`.int-spec.ts`)
+
+Test infrastructure services against real external systems (database, email, storage, external APIs). Each integration test spins up a NestJS app via `makeModuleRef`:
+
+| Test file | What it covers |
+|---|---|
+| `drizzle.service.int-spec.ts` | Database connection and query execution |
+| `argon-hasher.int-spec.ts` | Argon2 password hashing and verification |
+| `jwt-encrypter.int-spec.ts` | JWT sign and verify |
+| `env.service.int-spec.ts` | Environment variable loading and validation |
+| `email.service.int-spec.ts` | Resend email delivery |
+| `fetch-http-client.int-spec.ts` | HTTP client (external service calls) |
+| `r2-storage.int-spec.ts` | Cloudflare R2 file upload |
+| `password.service.int-spec.ts` | External password strength validation |
+| `postal-code.service.int-spec.ts` | ViaCEP postal code lookup |
+
+### E2E Tests
+
+Testing complete user flows, API endpoints, full request/response cycles, and database integration.
+
+### Coverage Reports
+
+Track code coverage metrics with Vitest coverage tools.
 
 ### Test Structure
+
 ```
 test/
+├── setup-e2e.ts            # E2E test setup
+├── drop-uuid-schema.ts     # DB cleanup helper
 ├── cryptography/           # Fake cryptography implementations
 │   ├── fake-hasher.ts
 │   └── faker-encrypter.ts
-├── email/                  # Fake email implementations
+├── email/
 │   └── fake-email-sender.ts
 ├── factories/              # Test data factories
 │   ├── make-admin-person.ts
@@ -562,7 +625,8 @@ test/
 │   ├── make-package-attachment.ts
 │   ├── make-package-history.ts
 │   ├── make-attachment.ts
-│   └── make-notification.ts
+│   ├── make-notification.ts
+│   └── make-module-ref.ts  # NestJS app factory for integration tests
 ├── repositories/           # In-memory repository implementations
 │   ├── in-memory-admin-people-repository.ts
 │   ├── in-memory-delivery-people-repository.ts
@@ -572,20 +636,37 @@ test/
 │   ├── in-memory-notifications-repository.ts
 │   ├── in-memory-attachments-repository.ts
 │   └── in-memory-package-attachments-repository.ts
-├── storage/                # Fake storage implementations
+├── storage/
 │   └── fake-uploader.ts
-├── validation/             # Fake validation implementations
-│   ├── fake-cpf-validator.ts
+├── validation/
 │   ├── fake-password-validator.ts
 │   └── fake-postal-code-validator.ts
-└── utils/                  # Test utilities and helpers
+└── utils/
+    ├── generate-future-ulid.ts  # ULID generator with future timestamp
+    ├── wait-for.ts              # Async polling helper for domain events
+    └── assets/
+        └── file-to-use-on-upload.png
 ```
 
 ## 🗃️ Database
 
 - **PostgreSQL**: Primary database (managed via Docker Compose)
+- **ORM**: Drizzle ORM with `drizzle-orm/node-postgres` driver
 - **Automatic Setup**: Run `pnpm run prestart:dev` to start PostgreSQL
 - **Environment Variables**: Configure database connection in `.env` file
+
+### Schema Tables
+
+| Table | Description |
+|---|---|
+| `users` | All user accounts (Admin, DeliveryPerson, RecipientPerson) with role enum |
+| `delivery_profiles` | Delivery-person-specific data (`isActive`) |
+| `recipient_profiles` | Recipient-specific extension marker |
+| `email_codes` | Email verification codes with `validatedAt` tracking |
+| `packages` | Package lifecycle data with `packageStatusEnum` constraint |
+| `package_histories` | Immutable audit log of package status transitions |
+| `attachments` | Uploaded files (delivery proof photos) |
+| `notifications` | Recipient notifications with read tracking |
 
 ### Required Environment Variables
 
@@ -593,8 +674,9 @@ Create a `.env` file in the root directory:
 
 ```env
 # Server
-PORT=3333
+PORT=3000
 NODE_ENV="dev"  # Options: dev, test, production
+CORS_ORIGIN="http://localhost:3000"
 
 # JWT (RS256 - Public/Private Key Authentication)
 # Generate keys with:
@@ -606,8 +688,33 @@ NODE_ENV="dev"  # Options: dev, test, production
 JWT_PRIVATE_KEY="base64-encoded-private-key"
 JWT_PUBLIC_KEY="base64-encoded-public-key"
 
-# Database (optional - for production)
+# Database
 DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
+DATABASE_PORT=5432
+DATABASE_USERNAME="user"
+DATABASE_PASSWORD="password"
+DATABASE_NAME="fastfeet"
+
+# Password hashing
+ARGON2_PEPPER="random-pepper-string"
+
+# Email (Resend)
+RESEND_API_KEY="re_xxxxxxxxxxxx"
+EMAIL="noreply@yourdomain.com"
+
+# External services
+POSTAL_CODE_EXTERNAL_SERVICE_URL="https://viacep.com.br/ws"
+
+# File storage (Cloudflare R2)
+CLOUDFLARE_ACCOUNT_ID="your-account-id"
+CLOUDFLARE_ACCOUNT_TOKEN="your-account-token"
+AWS_BUCKET_NAME="your-bucket-name"
+AWS_ACCESS_KEY_ID="your-access-key"
+AWS_SECRETE_ACCESS_KEY_ID="your-secret-key"
+
+# Test environment only
+JSON_PLACEHOLDER_URL="https://jsonplaceholder.typicode.com"
+HTTPBIN_URL="https://httpbin.org"
 ```
 
 ## 🔍 Key Features
@@ -683,9 +790,20 @@ DATABASE_URL="postgresql://user:password@localhost:5432/fastfeet"
 - Test data factories for easy test setup with automatic email verification
 - Functional error handling with Either monad pattern
 
+### Infrastructure ✅
+
+- **Database**: Drizzle ORM with PostgreSQL — connection pool, schema definitions with enums, indexes, FK constraints
+- **Email**: Resend integration for sending verification codes
+- **File Storage**: Cloudflare R2 (S3-compatible) for delivery proof photos
+- **HTTP Client**: Fetch-based client for external service calls (ViaCEP postal code lookup)
+- **Password Validation**: External password strength validation service
+- **Observability**: OpenTelemetry SDK with OTLP trace and log exporters
+- **Environment**: Zod-validated environment configuration with per-environment rules
+- **Integration Tests**: 9 integration test suites covering all infrastructure services
+
 ### In Progress 🚧
+- Drizzle repository implementations and domain mappers
 - HTTP/REST API endpoints with NestJS controllers
-- JWT authentication middleware and guards
 - Package CRUD operations API
 - Recipient management API
 - Photo upload for delivery proof
