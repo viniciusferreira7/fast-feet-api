@@ -9,6 +9,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
+import { emailsCodes } from './email-codes';
 
 export const userRoleEnum = pgEnum('user_role', [
   'ADMIN',
@@ -32,9 +33,14 @@ export const users = pgTable(
       () => sql`now()`
     ),
     version: integer('version').default(1).notNull(),
+
+    emailCode: uuid('email_code').references(() => emailsCodes.id),
   },
   (table) => [
     check('cpf_numeric_check', sql`${table.cpf} ~ '^[0-9]{11}$'`),
     index('role_idx').on(table.role),
   ]
 );
+
+//TODO: When you finish to model Database use claude to correct if it has any possibles errors
+//Docs: https://chatgpt.com/c/69de5371-a6d0-83e9-9ed1-0dfffa905aa4
