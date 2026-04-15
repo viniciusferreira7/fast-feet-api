@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, uuid } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 export const recipientProfiles = pgTable('recipient_profiles', {
@@ -7,7 +7,5 @@ export const recipientProfiles = pgTable('recipient_profiles', {
     .references(() => users.id, {
       onDelete: 'cascade',
     }),
-
-  isActive: boolean('is_active').notNull(),
   version: integer('version').default(1).notNull(),
 });
