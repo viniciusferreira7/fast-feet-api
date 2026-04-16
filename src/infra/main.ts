@@ -1,3 +1,7 @@
+import sdk from './tracer';
+
+sdk.start();
+
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -86,7 +90,8 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3000);
 
-  console.log(`🚀 API Gateway running on port ${port}`);
+  console.log(`\n 🚀  API running on port ${port}`);
+  console.log('--------------------------------');
   console.log(`📚 Swagger documentation: <http://localhost:${port}/api>`);
 }
 bootstrap();
