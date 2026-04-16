@@ -1,3 +1,25 @@
+# [1.34.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.33.0...v1.34.0) (2026-04-16)
+
+
+### Bug Fixes
+
+* **schema:** add emailCode foreign key reference to users table ([b4a8eb0](https://github.com/viniciusferreira7/fast-feet-api/commit/b4a8eb030fd75abe65d3b6098e3d819edd860741))
+* **schema:** add packageStatusEnum, make deliveryPersonId nullable, add indexes in packages ([b4909dc](https://github.com/viniciusferreira7/fast-feet-api/commit/b4909dc42b9f8ffc24ec9690985d0812256a6564))
+* **schema:** align package-histories with domain entity, use packageStatusEnum and add indexes ([d8f3dd5](https://github.com/viniciusferreira7/fast-feet-api/commit/d8f3dd567dcd3ec6e28c91fee9271b77697ec51f))
+* **schema:** correct content column name typo and add recipient indexes in notifications ([0f274a3](https://github.com/viniciusferreira7/fast-feet-api/commit/0f274a32374dd1a132daac8ea7bea3061ea035af))
+* **schema:** correct url column name, enforce title not null, remove circular FK in attachments ([bcaa31e](https://github.com/viniciusferreira7/fast-feet-api/commit/bcaa31ef6a42c4baa6d3ef806964b425d5cea870))
+* **schema:** move isActive from recipient-profiles to new delivery-profiles table ([3f55cec](https://github.com/viniciusferreira7/fast-feet-api/commit/3f55cec63ebd5384fd75dbb10ef68a113266a875))
+* **schema:** replace updatedAt with validatedAt to align email-codes with EmailVerification entity ([a991d26](https://github.com/viniciusferreira7/fast-feet-api/commit/a991d26dccca237fb25fb649d259bae2bab8e2b0))
+* **tracer:** correct options of node sdk ([3805e1f](https://github.com/viniciusferreira7/fast-feet-api/commit/3805e1f66791082db029ca225ec7f1579fbfb98e))
+
+
+### Features
+
+* create attachments table ([a240a48](https://github.com/viniciusferreira7/fast-feet-api/commit/a240a48675ec21bed5232bc1b6e713e3e8f32695))
+* create email codes table ([5b134ce](https://github.com/viniciusferreira7/fast-feet-api/commit/5b134cedff5d291d669ecfacd157c420a4bacbad))
+* create recipient profiles and users table ([cdcaefc](https://github.com/viniciusferreira7/fast-feet-api/commit/cdcaefc8e354ec0912f8acabb6d6eec9d8e522e4))
+* otel setup file on project ([4ef4297](https://github.com/viniciusferreira7/fast-feet-api/commit/4ef4297b2a2f0da1409d495093d63672c27e608f))
+
 # [1.33.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.32.0...v1.33.0) (2026-04-08)
 
 
