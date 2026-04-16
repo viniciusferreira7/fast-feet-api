@@ -35,6 +35,7 @@ export const envSchema = z
     AWS_BUCKET_NAME: z.string(),
     AWS_ACCESS_KEY_ID: z.string(),
     AWS_SECRETE_ACCESS_KEY_ID: z.string(),
+    OTLP_TRACE_EXPORT_ENDPOINT: z.url().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV === 'test') {
@@ -48,6 +49,17 @@ export const envSchema = z
             path: [field],
           });
         }
+      }
+    }
+
+    if (data.NODE_ENV !== 'test') {
+      if (!data.OTLP_TRACE_EXPORT_ENDPOINT) {
+        ctx.addIssue({
+          code: 'custom',
+          message:
+            'OTLP_TRACE_EXPORT_ENDPOINT is required in production or development environment',
+          path: ['OTLP_TRACE_EXPORT_ENDPOINT'],
+        });
       }
     }
   });

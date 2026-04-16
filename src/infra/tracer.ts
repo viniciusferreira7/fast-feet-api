@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: '.env', override: true });
+
 import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
@@ -17,8 +21,13 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
+import { envSchema } from './env/env';
 
-const traceExporter = new OTLPTraceExporter();
+const env = envSchema.parse(process.env);
+
+const traceExporter = new OTLPTraceExporter({
+  url: env.OTLP_TRACE_EXPORT_ENDPOINT,
+});
 
 const resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: 'fast-feet-api',
