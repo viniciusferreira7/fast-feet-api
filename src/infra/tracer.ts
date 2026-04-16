@@ -1,3 +1,4 @@
+import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-proto';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
@@ -17,8 +18,6 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
 
-// import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
-
 const traceExporter = new OTLPTraceExporter();
 
 const resource = resourceFromAttributes({
@@ -27,15 +26,17 @@ const resource = resourceFromAttributes({
 });
 
 const mergedResource = resource;
-// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
 
 const sdk = new NodeSDK({
-  spanProcessor: new BatchSpanProcessor(traceExporter),
+  spanProcessors: [new BatchSpanProcessor(traceExporter)],
   traceExporter: new ConsoleSpanExporter(),
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new ConsoleMetricExporter(),
-  }),
-  logRecordProcessor: new SimpleLogRecordProcessor(new OTLPLogExporter()),
+  metricReaders: [
+    new PeriodicExportingMetricReader({
+      exporter: new ConsoleMetricExporter(),
+    }),
+  ],
+  logRecordProcessors: [new SimpleLogRecordProcessor(new OTLPLogExporter())],
   instrumentations: [getNodeAutoInstrumentations()],
   resource: mergedResource,
 });
