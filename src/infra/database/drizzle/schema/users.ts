@@ -41,6 +41,3 @@ export const users = pgTable(
     index('role_idx').on(table.role),
   ]
 );
-
-//TODO: When you finish to model Database use claude to correct if it has any possibles errors
-//Docs: https://chatgpt.com/c/69de5371-a6d0-83e9-9ed1-0dfffa905aa4

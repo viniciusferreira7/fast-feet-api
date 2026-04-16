@@ -5,5 +5,5 @@ export abstract class AdminPeopleRepository {
   abstract findByCpf(cpf: string): Promise<AdminPerson | null>;
   abstract findByEmail(email: string): Promise<AdminPerson | null>;
   abstract findById(id: string): Promise<AdminPerson | null>;
-  abstract update(data: AdminPerson): Promise<null>;
+  abstract update(data: AdminPerson): Promise<AdminPerson | null>;
 }
