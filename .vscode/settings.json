@@ -1,3 +1,11 @@
 {
-  "cSpell.words": ["encrypter", "Encrypter", "ibge", "siafi", "zxcvbn"]
+  "cSpell.words": [
+    "encrypter",
+    "Encrypter",
+    "ibge",
+    "opentelemetry",
+    "otlp",
+    "siafi",
+    "zxcvbn"
+  ]
 }
