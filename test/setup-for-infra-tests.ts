@@ -12,13 +12,17 @@ dotenv.config({ path: '.env.test', override: !process.env.CI });
 
 const env = envSchema.parse(process.env);
 
+const connectionString = process.env.CI
+  ? `postgresql://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:5432/${process.env.DATABASE_NAME}`
+  : env.DATABASE_URL;
+
 let cleanupPool: Pool;
 let cleanupDb: ReturnType<typeof drizzle>;
 
 beforeAll(async () => {
   DomainEvents.shouldRun = false;
 
-  cleanupPool = new Pool({ connectionString: env.DATABASE_URL });
+  cleanupPool = new Pool({ connectionString });
   cleanupDb = drizzle(cleanupPool);
 
   if (process.env.CI) {
