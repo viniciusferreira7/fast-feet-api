@@ -91,14 +91,14 @@ jobs:
       postgres:
         image: postgres:17.2
         env:
-          POSTGRES_USER: ${{ secrets.DATABASE_USERNAME }}
-          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fast-feet-api-test
         options: >-
-          --health-cmd="pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-cmd="pg_isready -U postgres -d fast-feet-api-test"
+          --health-interval=5s
+          --health-timeout=2s
+          --health-retries=20
         ports:
           - 5432:5432
 
@@ -124,11 +124,11 @@ jobs:
         run: pnpm run test:int
         env:
           NODE_ENV: "test"
-          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_PORT: "5432"
+          DATABASE_USERNAME: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: fast-feet-api-test
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/fast-feet-api-test"
           JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
           JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
           ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
