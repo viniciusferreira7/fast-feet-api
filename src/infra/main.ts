@@ -12,6 +12,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { EnvService } from './env/env.service';
+import { log } from './logger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -88,10 +89,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
-
-  console.log(`\n 🚀  API running on port ${port}`);
-  console.log('--------------------------------');
-  console.log(`📚 Swagger documentation: <http://localhost:${port}/api>`);
+  await app
+    .listen(process.env.PORT ?? 3000)
+    .then(() => {
+      log.info(`🚀  API running on port ${port}`);
+      log.info(`📚 Swagger documentation: <http://localhost:${port}/api>`);
+    })
+    .catch(log.error);
 }
 bootstrap();
