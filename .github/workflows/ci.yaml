@@ -2,10 +2,10 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    types: [opened, synchronize, ready_for_review]
-    branches: ["main"]
+    types: [ opened, synchronize, ready_for_review ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -91,14 +91,12 @@ jobs:
       postgres:
         image: postgres:17.2
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: fast-feet-api-test
+          POSTGRES_USER: ${{ secrets.DATABASE_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
         options: >-
-          --health-cmd="pg_isready -U postgres -d fast-feet-api-test"
-          --health-interval=5s
-          --health-timeout=2s
-          --health-retries=20
+          --health-cmd="pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+          --health-interval=10s --health-timeout=5s --health-retries=5
         ports:
           - 5432:5432
 
@@ -120,15 +118,34 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Push database schema
+        run: pnpm db:push:force
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
+          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL: ${{ secrets.EMAIL }}
+          POSTAL_CODE_EXTERNAL_SERVICE_URL: ${{ secrets.POSTAL_CODE_EXTERNAL_SERVICE_URL }}
+          JSON_PLACEHOLDER_URL: ${{ secrets.JSON_PLACEHOLDER_URL }}
+          HTTPBIN_URL: ${{ secrets.HTTPBIN_URL }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
+
       - name: Run integration tests
         run: pnpm run test:int
         env:
           NODE_ENV: "test"
-          DATABASE_PORT: "5432"
-          DATABASE_USERNAME: postgres
-          DATABASE_PASSWORD: postgres
-          DATABASE_NAME: fast-feet-api-test
-          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/fast-feet-api-test"
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
           JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
           ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
@@ -162,9 +179,7 @@ jobs:
           POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
         options: >-
           --health-cmd="pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --health-interval=10s --health-timeout=5s --health-retries=5
         ports:
           - 5432:5432
 
@@ -216,7 +231,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # needs: [quality, test-unit, test-integration, test-e2e] FIXME:
-    needs: [quality, test-unit, test-integration]
+    needs: [ quality, test-unit, test-integration ]
     if: github.ref == 'refs/heads/main'
 
     permissions:
@@ -254,7 +269,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # needs: [quality, test-unit, test-integration, test-e2e, release] //FIXME:
-    needs: [quality, test-unit, test-integration, release]
+    needs: [ quality, test-unit, test-integration, release ]
     if: github.ref == 'refs/heads/main'
 
     permissions:
@@ -330,7 +345,6 @@ jobs:
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.SERVICE_NAME }}:latest
             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.SERVICE_NAME }}:${{ steps.generate_tag.outputs.sha }}
-
       # - name: Configure AWS credentials
       #   if: false
       #   uses: aws-actions/configure-aws-credentials@v4

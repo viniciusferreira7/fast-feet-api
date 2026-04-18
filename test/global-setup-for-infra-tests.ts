@@ -5,5 +5,7 @@ dotenv.config({ path: '.env', override: true });
 dotenv.config({ path: '.env.test', override: !process.env.CI });
 
 export async function setup() {
-  execSync('pnpm db:push:force', { stdio: 'inherit' });
+  if (!process.env.CI) {
+    execSync('pnpm db:push:force', { stdio: 'inherit' });
+  }
 }
