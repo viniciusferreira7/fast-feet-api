@@ -2,7 +2,6 @@ import { execSync } from 'node:child_process';
 import * as dotenv from 'dotenv';
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Pool } from 'pg';
 import { DomainEvents } from '@/core/events/domain-events';
 import { envSchema } from '@/infra/env/env';
@@ -22,15 +21,9 @@ beforeAll(async () => {
   cleanupDb = drizzle(cleanupPool);
 
   try {
-    if (process.env.CI) {
-      await migrate(cleanupDb, {
-        migrationsFolder: 'src/infra/database/drizzle/migrations',
-      });
-    } else {
-      execSync('pnpm db:push:force', { stdio: 'inherit' });
-    }
+    execSync('pnpm db:push:force', { stdio: 'inherit' });
   } catch (error) {
-    console.error('Failed to set up database schema:', error);
+    console.error('Failed to push database schema:', error);
     throw error;
   }
 });
