@@ -7,7 +7,6 @@ import { EnvService } from '@/infra/env/env.service';
 export class DrizzleService implements OnModuleInit, OnModuleDestroy {
   private pool!: Pool;
   public db!: NodePgDatabase;
-
   constructor(private readonly envService: EnvService) {}
 
   onModuleInit() {
@@ -17,7 +16,6 @@ export class DrizzleService implements OnModuleInit, OnModuleDestroy {
 
     this.db = drizzle(this.pool);
   }
-
   async onModuleDestroy() {
     await this.pool.end();
   }

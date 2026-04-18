@@ -15,6 +15,7 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
       DrizzleAdminPersonMapper.toPersistence(data, 1);
 
     await this.drizzleService.db.insert(users).values({
+      id: adminPerson.id,
       cpf: adminPerson.cpf,
       name: adminPerson.name,
       email: adminPerson.email,
@@ -31,48 +32,47 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
   }
 
   public async findByCpf(cpf: string): Promise<AdminPerson | null> {
-    const [{ users: adminPerson, email_codes: emailCodes }] =
-      await this.drizzleService.db
-        .select()
-        .from(users)
-        .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-        .where(eq(users.cpf, cpf));
+    const [row] = await this.drizzleService.db
+      .select()
+      .from(users)
+      .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
+      .where(eq(users.cpf, cpf));
 
-    if (!adminPerson) return null;
+    if (!row) return null;
 
     return DrizzleAdminPersonMapper.toDomain({
-      users: adminPerson,
-      email_codes: emailCodes,
+      users: row.users,
+      email_codes: row.email_codes,
     });
   }
+
   public async findByEmail(email: string): Promise<AdminPerson | null> {
-    const [{ users: adminPerson, email_codes: emailCodes }] =
-      await this.drizzleService.db
-        .select()
-        .from(users)
-        .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-        .where(eq(users.email, email));
+    const [row] = await this.drizzleService.db
+      .select()
+      .from(users)
+      .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
+      .where(eq(users.email, email));
 
-    if (!adminPerson) return null;
+    if (!row) return null;
 
     return DrizzleAdminPersonMapper.toDomain({
-      users: adminPerson,
-      email_codes: emailCodes,
+      users: row.users,
+      email_codes: row.email_codes,
     });
   }
-  public async findById(id: string): Promise<AdminPerson | null> {
-    const [{ users: adminPerson, email_codes: emailCodes }] =
-      await this.drizzleService.db
-        .select()
-        .from(users)
-        .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-        .where(eq(users.id, id));
 
-    if (!adminPerson) return null;
+  public async findById(id: string): Promise<AdminPerson | null> {
+    const [row] = await this.drizzleService.db
+      .select()
+      .from(users)
+      .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
+      .where(eq(users.id, id));
+
+    if (!row) return null;
 
     return DrizzleAdminPersonMapper.toDomain({
-      users: adminPerson,
-      email_codes: emailCodes,
+      users: row.users,
+      email_codes: row.email_codes,
     });
   }
   public async update(data: AdminPerson): Promise<AdminPerson | null> {
