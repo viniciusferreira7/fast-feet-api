@@ -7,19 +7,17 @@ import { EnvService } from '@/infra/env/env.service';
 export class DrizzleService implements OnModuleInit, OnModuleDestroy {
   private pool!: Pool;
   public db!: NodePgDatabase;
+
   constructor(private readonly envService: EnvService) {}
 
   onModuleInit() {
     this.pool = new Pool({
-      host: 'localhost',
-      port: Number(this.envService.get('DATABASE_PORT') ?? 0),
-      user: this.envService.get('DATABASE_USERNAME'),
-      password: this.envService.get('DATABASE_PASSWORD'),
-      database: this.envService.get('DATABASE_NAME'),
+      connectionString: this.envService.get('DATABASE_URL'),
     });
 
     this.db = drizzle(this.pool);
   }
+
   async onModuleDestroy() {
     await this.pool.end();
   }

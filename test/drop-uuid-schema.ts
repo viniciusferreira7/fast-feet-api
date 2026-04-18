@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 import z from 'zod';
 
 function isUUID(str: string): boolean {
-  const result = z.object({ str: z.string().uuid() }).safeParse({ str });
+  const result = z.object({ str: z.uuid() }).safeParse({ str });
 
   return result.success;
 }

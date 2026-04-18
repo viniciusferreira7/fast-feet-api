@@ -5,43 +5,35 @@ dotenv.config({ path: '.env.test', override: true });
 
 import { execSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { sql } from 'drizzle-orm';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { Client } from 'pg';
 import { DomainEvents } from '@/core/events/domain-events';
 import { envSchema } from '@/infra/env/env';
 
 const env = envSchema.parse(process.env);
-
-let pool: Pool;
-
-function generateUniqueDatabaseURL(schemaId: string) {
-  const url = new URL(env.DATABASE_URL);
-
-  url.searchParams.set('schema', schemaId);
-  url.searchParams.set('connect_timeout', '1000');
-
-  return url.toString();
-}
-
 const schemaId = randomUUID();
+const dbName = new URL(env.DATABASE_URL).pathname.slice(1);
 
 beforeAll(async () => {
-  const databaseUrl = generateUniqueDatabaseURL(schemaId);
-
-  process.env.DATABASE_URL = databaseUrl;
-
   DomainEvents.shouldRun = false;
 
-  execSync('pnpm drizzle-kit migrate');
+  const client = new Client({ connectionString: env.DATABASE_URL });
+  await client.connect();
+  await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaId}"`);
+  await client.query(
+    `ALTER DATABASE "${dbName}" SET search_path TO "${schemaId}"`
+  );
+  await client.end();
 
-  pool = new Pool({ connectionString: databaseUrl });
+  process.env.DATABASE_URL = `${env.DATABASE_URL}?schema=${schemaId}`;
+  execSync('pnpm db:migrate');
 });
 
 afterAll(async () => {
-  const db = drizzle(pool);
+  const client = new Client({ connectionString: env.DATABASE_URL });
+  await client.connect();
+  await client.query(`ALTER DATABASE "${dbName}" RESET search_path`);
+  await client.query(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`);
+  await client.end();
 
-  await db.execute(sql.raw(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`));
-
-  await pool.end();
+  // await dropUUIDSchemas(env.DATABASE_URL); This is used to delete unused schemas
 });

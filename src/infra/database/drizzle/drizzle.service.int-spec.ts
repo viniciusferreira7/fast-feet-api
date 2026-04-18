@@ -30,6 +30,17 @@ describe('DrizzleService', () => {
     expect(result.rows[0]).toEqual({ value: 1 });
   });
 
+  it('should query the isolated UUID schema', async () => {
+    const result = await service.db.execute<{ current_schema: string }>(
+      sql`SELECT current_schema()`
+    );
+
+    const schemaFromUrl = new URL(
+      process.env.DATABASE_URL ?? ''
+    ).searchParams.get('schema');
+    expect(result.rows[0].current_schema).toBe(schemaFromUrl);
+  });
+
   afterEach(async () => {
     await app.close();
   });
