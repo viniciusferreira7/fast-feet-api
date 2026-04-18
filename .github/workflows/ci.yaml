@@ -121,6 +121,7 @@ jobs:
       - name: Push database schema
         run: pnpm db:push:force
         env:
+          NODE_ENV: "test"
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
