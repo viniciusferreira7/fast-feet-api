@@ -1,3 +1,35 @@
+# [1.35.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.34.0...v1.35.0) (2026-04-18)
+
+
+### Bug Fixes
+
+* **ci:** add dedicated schema push step and skip it in globalSetup ([077a25a](https://github.com/viniciusferreira7/fast-feet-api/commit/077a25a0a08c803ab89fad416e58924116afa90f))
+* **ci:** add missing DATABASE_* vars to Push database schema step ([204bacc](https://github.com/viniciusferreira7/fast-feet-api/commit/204bacc38b233a7acd56cb37075d4bad49ce28c8))
+* **ci:** add NODE_ENV=test to Push database schema step ([ce2a2dd](https://github.com/viniciusferreira7/fast-feet-api/commit/ce2a2dd245384e42d09a516c72f112168747b73e))
+* **ci:** migrate via drizzle-orm in globalSetup, fix healthcheck ([f431ff5](https://github.com/viniciusferreira7/fast-feet-api/commit/f431ff57a571eca6bbccf6a30dbe2471c027099a))
+* **ci:** use db:migrate instead of db:push:force for clean CI database ([6aa864d](https://github.com/viniciusferreira7/fast-feet-api/commit/6aa864daf50b907aff450e59b2298e552524bd94))
+* **ci:** use hardcoded test DB credentials and explicit DATABASE_URL ([f08d4a8](https://github.com/viniciusferreira7/fast-feet-api/commit/f08d4a86568a888ff282a94a5251d1300f986fc0))
+* **migrations:** squash 0001 into 0000 removing redundant unique constraint ([ca29e5c](https://github.com/viniciusferreira7/fast-feet-api/commit/ca29e5c9067161021054d4ce694b1e0759868647))
+* **repository:** save entity id on register and fix null safety in find methods ([c2d67f7](https://github.com/viniciusferreira7/fast-feet-api/commit/c2d67f755ebd56b1b2c4c15f13ffd53876acfbf7))
+* **schema:** remove redundant unique constraint on email_codes primary key ([6ccec99](https://github.com/viniciusferreira7/fast-feet-api/commit/6ccec99c748910733ccf16a2fce5949cbdd94de0))
+* **test:** build CI connection string from parts using port 5432 ([61e866b](https://github.com/viniciusferreira7/fast-feet-api/commit/61e866b055a9cbdc39d030cc29895c965d643491))
+* **test:** correct envs ([98c9b7f](https://github.com/viniciusferreira7/fast-feet-api/commit/98c9b7f54b630f87fa00b1ac31d7fc6c31c74f46))
+* **test:** disable file parallelism to prevent inter-worker TRUNCATE race ([669c623](https://github.com/viniciusferreira7/fast-feet-api/commit/669c6234b3cdababa86de1fe7f2a504af91cb240))
+* **test:** move db:push:force to globalSetup and respect CI env vars ([417e860](https://github.com/viniciusferreira7/fast-feet-api/commit/417e86084cb41ebb0582d7e98a30d12ef1b7bd18))
+* **test:** restore migrate() for CI — drizzle-kit push:force always fails in CI ([56f48be](https://github.com/viniciusferreira7/fast-feet-api/commit/56f48be836d42469b99aab25b96737e58c4c08c9))
+* **tests:** construct CI connection string from individual credentials ([3eca334](https://github.com/viniciusferreira7/fast-feet-api/commit/3eca3340990513ea70683aca4ef8668831daa729))
+* **test:** use push:force locally and migrate() in CI in globalSetup ([c060149](https://github.com/viniciusferreira7/fast-feet-api/commit/c06014985a8ca3b9297adbc4f883c37feca9b4e8))
+
+
+### Features
+
+* **database:** register AdminPeopleRepository token in DatabaseModule ([44b8037](https://github.com/viniciusferreira7/fast-feet-api/commit/44b803745f046ed7e89199f73cd420b7e726ae2f))
+* **entity:** add restore static factory to EmailVerification ([40b94f5](https://github.com/viniciusferreira7/fast-feet-api/commit/40b94f5a05fdbe1365b4360eb0a8c8f9644c1909))
+* **logger:** export pino instance and replace console.log in main bootstrap ([f432973](https://github.com/viniciusferreira7/fast-feet-api/commit/f4329738bb8067fb08460ed28320ea58f235a04c))
+* **mappers:** create drizzle admin person mapper ([8f63822](https://github.com/viniciusferreira7/fast-feet-api/commit/8f638229c51dd27c11aac1f42b641af6df2f9d80))
+* **migrations:** create first migration using drizzle ORM ([7e4362a](https://github.com/viniciusferreira7/fast-feet-api/commit/7e4362a347fff748d6149d5ca5e1f8c151f5a888))
+* **repositories:** create drizzle admin people repository ([7809b72](https://github.com/viniciusferreira7/fast-feet-api/commit/7809b727972bfb330bb4402201b8229d6eaef428))
+
 # [1.34.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.33.0...v1.34.0) (2026-04-16)
 
 
