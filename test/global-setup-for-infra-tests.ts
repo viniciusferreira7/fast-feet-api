@@ -1,5 +1,5 @@
-import * as dotenv from 'dotenv';
 import { execSync } from 'node:child_process';
+import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env', override: true });
 dotenv.config({ path: '.env.test', override: !process.env.CI });

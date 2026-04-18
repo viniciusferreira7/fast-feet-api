@@ -8,8 +8,8 @@ export default defineConfig({
     globals: true,
     root: './',
     setupFiles: ['./test/setup-for-infra-tests.ts'],
-    testTimeout: 1_000_000,
-    hookTimeout: 1_000_000,
+    testTimeout: 1_000_000, // 1_000 seconds
+    hookTimeout: 1_000_000, // 1_000 seconds
   },
   plugins: [
     tsConfigPaths(),
