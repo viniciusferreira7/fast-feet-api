@@ -11,7 +11,9 @@ import { HttpModule } from '@/infra/http/http.module';
 import { ValidationModule } from '@/infra/validation/validation.module';
 
 export async function makeModuleRef(): Promise<TestingModule> {
-  const databaseUrl = process.env.DATABASE_URL ?? '';
+  const databaseUrl = process.env.CI
+    ? `postgresql://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:5432/${process.env.DATABASE_NAME}`
+    : (process.env.DATABASE_URL ?? '');
 
   const moduleRef = await Test.createTestingModule({
     imports: [
