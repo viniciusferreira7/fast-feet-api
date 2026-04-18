@@ -1,9 +1,8 @@
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env', override: true });
-dotenv.config({ path: '.env.test', override: true });
+dotenv.config({ path: '.env.test', override: !process.env.CI });
 
-import { execSync } from 'node:child_process';
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -20,8 +19,6 @@ beforeAll(() => {
 
   cleanupPool = new Pool({ connectionString: env.DATABASE_URL });
   cleanupDb = drizzle(cleanupPool);
-
-  execSync('pnpm db:push:force', { stdio: 'inherit' });
 });
 
 afterEach(async () => {
