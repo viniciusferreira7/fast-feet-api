@@ -122,6 +122,10 @@ jobs:
         run: pnpm db:push:force
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
           JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
           JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
           ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
