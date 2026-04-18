@@ -1,0 +1,21 @@
+services:
+  fast-feet-api-postgresql-test:
+    container_name: fast-feet-api-postgresql-test
+    image: postgres:17.2
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fast-feet-api-test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fast-feet-api-test"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - fast-feet-api-test-network
+
+networks:
+  fast-feet-api-test-network:
+    driver: bridge
