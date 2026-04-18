@@ -95,8 +95,10 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
         options: >-
-          --health-cmd="pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-          --health-interval=10s --health-timeout=5s --health-retries=5
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
         ports:
           - 5432:5432
 
@@ -117,30 +119,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Run database migrations
-        run: pnpm db:migrate
-        env:
-          NODE_ENV: "test"
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-          ARGON2_PEPPER: ${{ secrets.ARGON2_PEPPER }}
-          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          EMAIL: ${{ secrets.EMAIL }}
-          POSTAL_CODE_EXTERNAL_SERVICE_URL: ${{ secrets.POSTAL_CODE_EXTERNAL_SERVICE_URL }}
-          JSON_PLACEHOLDER_URL: ${{ secrets.JSON_PLACEHOLDER_URL }}
-          HTTPBIN_URL: ${{ secrets.HTTPBIN_URL }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
-          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
 
       - name: Run integration tests
         run: pnpm run test:int
