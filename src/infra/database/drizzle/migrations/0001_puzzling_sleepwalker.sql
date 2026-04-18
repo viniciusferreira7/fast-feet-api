@@ -1,0 +1,1 @@
+ALTER TABLE "email_codes" DROP CONSTRAINT "email_codes_id_unique";
