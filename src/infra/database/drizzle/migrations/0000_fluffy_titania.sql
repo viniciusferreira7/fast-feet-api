@@ -18,7 +18,6 @@ CREATE TABLE "email_codes" (
 	"code" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"validated_at" timestamp with time zone,
-	CONSTRAINT "email_codes_id_unique" UNIQUE("id"),
 	CONSTRAINT "email_codes_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint

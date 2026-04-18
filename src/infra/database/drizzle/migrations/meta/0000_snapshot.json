@@ -135,11 +135,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "email_codes_id_unique": {
-          "name": "email_codes_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["id"]
-        },
         "email_codes_code_unique": {
           "name": "email_codes_code_unique",
           "nullsNotDistinct": false,
