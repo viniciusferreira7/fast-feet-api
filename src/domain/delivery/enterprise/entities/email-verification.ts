@@ -57,6 +57,17 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
     return time;
   }
 
+  /**
+   * Reconstructs an EmailVerification from persistence without re-validating
+   * expiry. Use this in mappers/repositories — never for new verifications.
+   */
+  public static restore(
+    props: EmailVerificationProps,
+    id: UniqueEntityId
+  ): EmailVerification {
+    return new EmailVerification(props, id);
+  }
+
   static create(
     props: Optional<
       EmailVerificationProps,
