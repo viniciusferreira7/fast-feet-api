@@ -29,9 +29,9 @@ export abstract class DeliveryPeopleRepository {
   abstract register(data: DeliveryPerson): Promise<DeliveryPerson>;
   abstract findByCpf(cpf: string): Promise<DeliveryPerson | null>;
   abstract findByEmail(email: string): Promise<DeliveryPerson | null>;
-  abstract findById(email: string): Promise<DeliveryPerson | null>;
+  abstract findById(id: string): Promise<DeliveryPerson | null>;
   abstract findManyDeliveryPerson(
     params: FindManyDeliveryPersonParams
   ): Promise<Pagination<DeliveryPerson>>;
-  abstract update(data: DeliveryPerson): Promise<null>;
+  abstract update(data: DeliveryPerson): Promise<DeliveryPerson | null>;
 }
