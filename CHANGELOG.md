@@ -1,3 +1,29 @@
+# [1.36.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.35.0...v1.36.0) (2026-04-19)
+
+
+### Bug Fixes
+
+* **mapper:** correct drizzle delivery person mapper ([b5e2e71](https://github.com/viniciusferreira7/fast-feet-api/commit/b5e2e714549dcab041de53498a6638d29e79a8fc))
+* **repository:** correct abstract method signatures in delivery-people-repository ([0ee4148](https://github.com/viniciusferreira7/fast-feet-api/commit/0ee4148823df25ca5fc31843aab2aeb0d0f384dc))
+* **repository:** correct abstract method signatures in recipient-people-repository ([87019e4](https://github.com/viniciusferreira7/fast-feet-api/commit/87019e4ff469a85a1a5de8d2461dca6c67a25c12))
+
+
+### Features
+
+* **database:** register all remaining repositories in database module ([8e015e4](https://github.com/viniciusferreira7/fast-feet-api/commit/8e015e425f3b04685f039b655384351f92fa4543))
+* **database:** register DrizzleDeliveryPeopleRepository in database module ([45c77d5](https://github.com/viniciusferreira7/fast-feet-api/commit/45c77d5cc553a74bc385d91ee63db4ac36e97d24))
+* **database:** register DrizzleRecipientPeopleRepository in database module ([ee2e036](https://github.com/viniciusferreira7/fast-feet-api/commit/ee2e036279a5883a19943f4090f753f77d952776))
+* **mapper:** create drizzle recipient person mapper ([cd432d2](https://github.com/viniciusferreira7/fast-feet-api/commit/cd432d28ff8b86bbda203b058bf4977a6a1ab020))
+* **mappers:** create drizzle delivery person mapper ([a4a584d](https://github.com/viniciusferreira7/fast-feet-api/commit/a4a584dbc1bad31cc481611963b6348ff18b4c06))
+* **repository:** implement drizzle attachments repository ([0670d9b](https://github.com/viniciusferreira7/fast-feet-api/commit/0670d9b2d89ed18920790db5b2912ec041b258b6))
+* **repository:** implement drizzle delivery people repository ([5d78c56](https://github.com/viniciusferreira7/fast-feet-api/commit/5d78c562267e2f1040ba0e234794e9bd5ed52fa5))
+* **repository:** implement drizzle email verifications repository ([724c3ae](https://github.com/viniciusferreira7/fast-feet-api/commit/724c3ae42033b3cb9e9fa732312acddff2375622))
+* **repository:** implement drizzle notifications repository ([be4e908](https://github.com/viniciusferreira7/fast-feet-api/commit/be4e908b095ca56e80a2c0ed5ee735369ad1e63f))
+* **repository:** implement drizzle package attachments repository ([2c1f8cf](https://github.com/viniciusferreira7/fast-feet-api/commit/2c1f8cff4cdfd53052c47ab1f963b16398b8b979))
+* **repository:** implement drizzle packages history repository ([a995ffc](https://github.com/viniciusferreira7/fast-feet-api/commit/a995ffc6e680963e20d9911b0959e834c0994bc1))
+* **repository:** implement drizzle packages repository ([f179a2a](https://github.com/viniciusferreira7/fast-feet-api/commit/f179a2ab18420fa9d1b1267073c4f62722090f24))
+* **repository:** implement drizzle recipient people repository ([f5a8d58](https://github.com/viniciusferreira7/fast-feet-api/commit/f5a8d582706f7e9d5a17796d70f3c3afd5dafab0))
+
 # [1.35.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.34.0...v1.35.0) (2026-04-18)
 
 
