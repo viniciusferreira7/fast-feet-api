@@ -17,6 +17,7 @@ type DeliveryProfileRaw = InferSelectModel<typeof deliveryProfiles>;
 export type DeliveryPersonRaw = {
   users: UserRaw;
   email_codes: EmailCodeRaw | null;
+  delivery_profiles: DeliveryProfileRaw | null;
 };
 
 export class DrizzleDeliveryPersonMapper {
@@ -51,7 +52,7 @@ export class DrizzleDeliveryPersonMapper {
       name: deliveryPerson.name,
       cpf: deliveryPerson.cpf.value,
       email: deliveryPerson.email,
-      role: 'RECIPIENT',
+      role: 'DELIVERY',
       password: deliveryPerson.password,
       createdAt: deliveryPerson.createdAt,
       updatedAt: deliveryPerson.updatedAt,
@@ -62,7 +63,7 @@ export class DrizzleDeliveryPersonMapper {
     const deliveryProfile: DeliveryProfileRaw = {
       userId: user.id.toString(),
       version: profileVersion,
-      isActive: true,
+      isActive: deliveryPerson.isActive,
     };
 
     return { user, emailCode, deliveryProfile };
@@ -104,6 +105,7 @@ export class DrizzleDeliveryPersonMapper {
         email: raw.users.email,
         password: raw.users.password,
         emailVerification,
+        isActive: raw.delivery_profiles?.isActive ?? true,
         createdAt: raw.users.createdAt,
         updatedAt: raw.users.updatedAt,
       },
