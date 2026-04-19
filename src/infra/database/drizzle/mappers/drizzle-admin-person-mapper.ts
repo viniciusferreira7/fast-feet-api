@@ -19,12 +19,6 @@ export type AdminPersonRaw = {
 };
 
 export class DrizzleAdminPersonMapper {
-  /**
-   * Maps the AdminPerson aggregate to the rows that must be persisted.
-   * Returns two separate pieces because they go into two different tables:
-   *   - `user`      → INSERT/UPDATE users
-   *   - `emailCode` → INSERT/UPDATE email_codes (upsert before users, due to FK)
-   */
   public static toPersistence(
     adminPerson: AdminPerson,
     version: number
@@ -56,11 +50,6 @@ export class DrizzleAdminPersonMapper {
     return { user, emailCode };
   }
 
-  /**
-   * Reconstructs the AdminPerson aggregate from a joined Drizzle row.
-   * Call this with the result of:
-   *   db.select().from(users).leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-   */
   public static toDomain(raw: AdminPersonRaw): AdminPerson {
     const cpf = Cpf.create(raw.users.cpf);
 
