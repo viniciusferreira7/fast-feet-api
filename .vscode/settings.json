@@ -1,12 +1,22 @@
 {
   "cSpell.words": [
+    "awslabs",
+    "buildx",
+    "Buildx",
     "createdb",
+    "cycjimmy",
+    "DOCKERHUB",
     "encrypter",
     "Encrypter",
+    "github",
+    "GITHUB",
     "ibge",
+    "isready",
+    "linux",
     "opentelemetry",
     "otlp",
     "siafi",
+    "unplugin",
     "zxcvbn"
   ]
 }
