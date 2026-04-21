@@ -6,6 +6,7 @@ import {
   type UploadParams,
 } from '@/domain/delivery/application/storage/uploader';
 import { EnvService } from '../env/env.service';
+import { log } from '../logger';
 
 @Injectable()
 export class R2Storage implements Uploader {
@@ -37,15 +38,20 @@ export class R2Storage implements Uploader {
 
     const bucketName = this.envService.get('AWS_BUCKET_NAME');
 
-    await this.client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: uniqueFile,
-        ContentType: fileType,
-        Body: body,
-      })
-    );
+    try {
+      await this.client.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: uniqueFile,
+          ContentType: fileType,
+          Body: body,
+        })
+      );
 
-    return { url: uniqueFile };
+      return { url: uniqueFile };
+    } catch (error) {
+      log.error(error, '[R2 Storage Error]');
+      throw new Error('R2 Storage Error');
+    }
   }
 }
