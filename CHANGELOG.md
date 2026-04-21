@@ -1,3 +1,17 @@
+# [1.37.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.36.0...v1.37.0) (2026-04-21)
+
+
+### Features
+
+* **auth:** log invalid JWT payloads and unauthorized requests ([d729137](https://github.com/viniciusferreira7/fast-feet-api/commit/d729137491b1aafcae981d877d7d777c46beae5b))
+* **drizzle:** add pool lifecycle and query logging ([467476b](https://github.com/viniciusferreira7/fast-feet-api/commit/467476be05f03dc3b4485b933a91c12b30285d31))
+* **email:** log Resend send failures ([f68b106](https://github.com/viniciusferreira7/fast-feet-api/commit/f68b10660764d1941e7380734d4b7b6fa5b87601))
+* **http:** log retry attempts and final errors in FetchHttpClient ([7e81ca2](https://github.com/viniciusferreira7/fast-feet-api/commit/7e81ca2964de09da7a23c8133b86fb5587b7bd2b))
+* **logger:** add env-aware pino config with OTLP transport ([077e08c](https://github.com/viniciusferreira7/fast-feet-api/commit/077e08c764c3d349268d496d9002f00b0dc3555c))
+* **main:** add global exception filter, process error handlers and Fastify request logging ([8c11dd9](https://github.com/viniciusferreira7/fast-feet-api/commit/8c11dd92e076e68f89c602457f3da1948b3e77e9))
+* **postal-code:** log external service errors ([a318a3a](https://github.com/viniciusferreira7/fast-feet-api/commit/a318a3aedfc2150d38ab8b58ac59c3de12a07168))
+* **storage:** log and rethrow R2 upload errors ([cbd70fb](https://github.com/viniciusferreira7/fast-feet-api/commit/cbd70fb884158797fee9f21cf197edc0a42594ba))
+
 # [1.36.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.35.0...v1.36.0) (2026-04-19)
 
 
