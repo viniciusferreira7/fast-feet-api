@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { z } from 'zod';
 
 import { EnvService } from '../env/env.service';
+import { log } from '../logger';
 
 const tokenPayloadSchema = z.object({
   sub: z.string().uuid(),
@@ -25,6 +26,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: UserPayload) {
-    return tokenPayloadSchema.parse(payload);
+    try {
+      return tokenPayloadSchema.parse(payload);
+    } catch (error) {
+      log.warn({ err: error }, '[Auth] invalid JWT payload');
+      throw error;
+    }
   }
 }
