@@ -21,7 +21,8 @@ For detailed requirements and features, see [REQUIREMENTS.md](./REQUIREMENTS.md)
 - **Password Hashing**: Argon2 (via argon2 package)
 - **Email**: Resend API
 - **File Storage**: Cloudflare R2 (S3-compatible)
-- **Observability**: OpenTelemetry (traces, metrics, logs via OTLP)
+- **Logging**: Pino with `pino-pretty` (dev) and `pino-opentelemetry-transport` (OTLP)
+- **Observability**: OpenTelemetry (traces, metrics, logs via OTLP) — exported to a [Grafana LGTM stack](https://github.com/viniciusferreira7/observability) (Loki, Grafana, Tempo, Mimir)
 - **Schema Validation**: Zod (environment variables)
 - **Code Quality**: Biome (linting & formatting)
 - **Testing**: Vitest
@@ -310,10 +311,19 @@ src/
     ├── database/                   # Database module
     │   ├── database.module.ts
     │   └── drizzle/               # Drizzle ORM
-    │       ├── drizzle.service.ts # Connection pool management
+    │       ├── drizzle.service.ts # Connection pool + query logger
     │       ├── drizzle.service.int-spec.ts
-    │       ├── mappers/           # Domain ↔ persistence mappers (wip)
-    │       ├── repositories/      # Drizzle repository implementations (wip)
+    │       ├── mappers/           # Domain ↔ persistence mappers
+    │       ├── repositories/      # Drizzle repository implementations
+    │       │   ├── drizzle-admin-people-repository.ts
+    │       │   ├── drizzle-delivery-people-repository.ts
+    │       │   ├── drizzle-recipient-people-repository.ts
+    │       │   ├── drizzle-email-verifications-repository.ts
+    │       │   ├── drizzle-packages-repository.ts
+    │       │   ├── drizzle-packages-history-repository.ts
+    │       │   ├── drizzle-package-attachments-repository.ts
+    │       │   ├── drizzle-attachments-repository.ts
+    │       │   └── drizzle-notifications-repository.ts
     │       └── schema/            # Table definitions
     │           ├── index.ts
     │           ├── users.ts
@@ -340,6 +350,8 @@ src/
     │   └── http.module.ts
     ├── interfaces/                 # Shared response interfaces
     │   └── postal-code-external-service-response.ts
+    ├── filters/                    # Global NestJS filters
+    │   └── all-exceptions.filter.ts
     ├── storage/                    # File storage module (Cloudflare R2)
     │   ├── r2-storage.ts
     │   ├── r2-storage.int-spec.ts
@@ -350,6 +362,7 @@ src/
     │   ├── postal-code.service.ts # External CEP validation
     │   ├── postal-code.service.int-spec.ts
     │   └── validation.module.ts
+    ├── logger.ts                   # Pino logger (pretty + OTLP transports)
     ├── tracer.ts                   # OpenTelemetry SDK setup
     ├── app.module.ts
     └── main.ts
@@ -548,6 +561,45 @@ delivered   failed_delivery   │
 - ❌ Cannot view other delivery persons' packages
 - ❌ Cannot modify packages not assigned to them
 
+## 📈 Observability & Logging
+
+The API is fully instrumented end-to-end: traces, metrics and logs all ship via **OTLP** to a [Grafana LGTM stack](https://github.com/viniciusferreira7/observability) (Loki for logs, Grafana for dashboards, Tempo for traces, Mimir for metrics). The OpenTelemetry SDK is bootstrapped in `src/infra/tracer.ts` and started before any Nest module loads.
+
+### Logging architecture
+
+Logger is defined in `src/infra/logger.ts` as a single Pino instance whose transports are chosen from `NODE_ENV`:
+
+| Environment | Transports |
+|---|---|
+| `dev` | `pino-pretty` (colorized terminal) + `pino-opentelemetry-transport` (OTLP → Loki) |
+| `test` | `pino-pretty` only (no OTLP noise during test runs) |
+| `production` | `pino-opentelemetry-transport` only (structured JSON → Loki) |
+
+The default level is `debug` in dev/test and `info` in production. Override with the `LOG_LEVEL` env variable.
+
+### Where logs are emitted
+
+| Layer | File | What it logs |
+|---|---|---|
+| Bootstrap | `src/infra/main.ts` | Startup, `unhandledRejection`, `uncaughtException`, Fastify per-request access logs (`loggerInstance`) |
+| Global filter | `src/infra/filters/all-exceptions.filter.ts` | 5xx → `error`, 4xx → `warn` (method, url, status, stack) |
+| Database | `src/infra/database/drizzle/drizzle.service.ts` | Pool connect/error events; SQL queries + params at `debug` (skipped in production) |
+| Auth | `src/infra/auth/jwt.strategy.ts`, `jwt-auth.guard.ts` | Invalid JWT payloads, unauthorized requests |
+| External services | `fetch-http-client.ts`, `email.service.ts`, `r2-storage.ts`, `postal-code.service.ts` | Retry attempts (`warn`) and final failures (`error`) |
+
+### Running the observability stack locally
+
+```bash
+# Clone the companion repo
+git clone https://github.com/viniciusferreira7/observability
+cd observability
+
+# Bring up Grafana + Loki + Tempo + Mimir + OTel Collector
+docker compose up -d
+```
+
+Then set `OTLP_TRACE_EXPORT_ENDPOINT` in this project's `.env` to the collector URL exposed by that stack (e.g. `http://localhost:4318/v1/traces`). Logs are shipped through the same OTLP protocol.
+
 ## 📊 CI/CD Pipeline
 
 The project uses GitHub Actions for continuous integration and deployment:
@@ -589,6 +641,14 @@ Test infrastructure services against real external systems (database, email, sto
 | Test file | What it covers |
 |---|---|
 | `drizzle.service.int-spec.ts` | Database connection and query execution |
+| `drizzle-admin-people-repository.int-spec.ts` | Admin person repository CRUD |
+| `drizzle-delivery-people-repository.int-spec.ts` | Delivery person repository CRUD |
+| `drizzle-recipient-people-repository.int-spec.ts` | Recipient person repository CRUD |
+| `drizzle-email-verifications-repository.int-spec.ts` | Email verification repository |
+| `drizzle-packages-repository.int-spec.ts` | Packages repository CRUD + filters |
+| `drizzle-packages-history-repository.int-spec.ts` | Package history audit trail |
+| `drizzle-attachments-repository.int-spec.ts` | Attachments repository |
+| `drizzle-notifications-repository.int-spec.ts` | Notifications repository |
 | `argon-hasher.int-spec.ts` | Argon2 password hashing and verification |
 | `jwt-encrypter.int-spec.ts` | JWT sign and verify |
 | `env.service.int-spec.ts` | Environment variable loading and validation |
@@ -712,6 +772,14 @@ AWS_BUCKET_NAME="your-bucket-name"
 AWS_ACCESS_KEY_ID="your-access-key"
 AWS_SECRETE_ACCESS_KEY_ID="your-secret-key"
 
+# Observability (OTLP endpoint — OpenTelemetry Collector)
+# Required in dev/production, optional in test
+OTLP_TRACE_EXPORT_ENDPOINT="http://localhost:4318/v1/traces"
+
+# Logging (optional — overrides the per-environment default)
+# Defaults: debug (dev/test), info (production)
+LOG_LEVEL="debug"
+
 # Test environment only
 JSON_PLACEHOLDER_URL="https://jsonplaceholder.typicode.com"
 HTTPBIN_URL="https://httpbin.org"
@@ -793,16 +861,20 @@ HTTPBIN_URL="https://httpbin.org"
 ### Infrastructure ✅
 
 - **Database**: Drizzle ORM with PostgreSQL — connection pool, schema definitions with enums, indexes, FK constraints
-- **Email**: Resend integration for sending verification codes
-- **File Storage**: Cloudflare R2 (S3-compatible) for delivery proof photos
-- **HTTP Client**: Fetch-based client for external service calls (ViaCEP postal code lookup)
+  - All repository implementations wired into `DatabaseModule` (admin/delivery/recipient people, email verifications, packages, packages history, package attachments, attachments, notifications)
+  - Domain ↔ persistence mappers for every aggregate
+  - Pool lifecycle + per-query debug logging
+- **Email**: Resend integration for sending verification codes (with structured error logging)
+- **File Storage**: Cloudflare R2 (S3-compatible) for delivery proof photos (with structured error logging)
+- **HTTP Client**: Fetch-based client for external service calls (ViaCEP postal code lookup) with retry-attempt + final-failure logs
 - **Password Validation**: External password strength validation service
-- **Observability**: OpenTelemetry SDK with OTLP trace and log exporters
+- **Observability**: OpenTelemetry SDK with OTLP trace, metric and log exporters → [Grafana LGTM stack](https://github.com/viniciusferreira7/observability)
+- **Logging**: Pino with env-aware transports (pretty for dev/test, OTLP for dev/prod) and a global `AllExceptionsFilter` that logs every unhandled HTTP error
+- **Auth**: JWT strategy + guard with unauthorized-request warnings
 - **Environment**: Zod-validated environment configuration with per-environment rules
-- **Integration Tests**: 9 integration test suites covering all infrastructure services
+- **Integration Tests**: 9 infrastructure + 9 repository integration test suites
 
 ### In Progress 🚧
-- Drizzle repository implementations and domain mappers
 - HTTP/REST API endpoints with NestJS controllers
 - Package CRUD operations API
 - Recipient management API
