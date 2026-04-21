@@ -5,6 +5,7 @@ import { PostalCodeValidator } from '@/domain/delivery/application/validation/po
 import { ExternalPostalCodeError } from '@/domain/delivery/errors/external-postal-code-validation-error';
 import { EnvService } from '../env/env.service';
 import type { PostalCodeExternalServiceResponse } from '../interfaces/postal-code-external-service-response';
+import { log } from '../logger';
 
 @Injectable()
 export class PostalCodeService implements PostalCodeValidator {
@@ -42,6 +43,8 @@ export class PostalCodeService implements PostalCodeValidator {
 
       return right({ postalCode: result.cep });
     } catch (error) {
+      log.error(error, '[Postal External Service Error]');
+
       const message =
         error instanceof Error ? error.message : 'Invalid Postal Code';
       return left(new ExternalPostalCodeError(message));
