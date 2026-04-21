@@ -12,13 +12,24 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { EnvService } from './env/env.service';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 import { log } from './logger';
+
+process.on('unhandledRejection', (reason) => {
+  log.error(reason, '[Unhandled Rejection]');
+});
+
+process.on('uncaughtException', (err) => {
+  log.error(err, '[Uncaught Exception]');
+});
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter({ loggerInstance: log })
   );
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   const envService = app.get(EnvService);
 
@@ -93,7 +104,7 @@ async function bootstrap() {
     .listen(process.env.PORT ?? 3000)
     .then(() => {
       log.info(`🚀  API running on port ${port}`);
-      log.info(`📚 Swagger documentation: <http://localhost:${port}/api>`);
+      log.info(`📚  Swagger documentation: <http://localhost:${port}/api>`);
     })
     .catch(log.error);
 }
