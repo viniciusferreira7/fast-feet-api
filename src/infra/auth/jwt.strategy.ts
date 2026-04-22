@@ -6,11 +6,22 @@ import { z } from 'zod';
 import { EnvService } from '../env/env.service';
 import { log } from '../logger';
 
-const tokenPayloadSchema = z.object({
-  sub: z.string().uuid(),
+const userPayload = z.object({
+  type: z.literal('user'),
+  sub: z.uuid(),
+  role: z.enum(['admin', 'delivery', 'recipient']),
 });
 
-export type UserPayload = z.infer<typeof tokenPayloadSchema>;
+const apiPayload = z.object({
+  type: z.literal('api-key'),
+  service: z.literal('client'),
+});
+
+const payloadSchema = z.discriminatedUnion('type', [userPayload, apiPayload]);
+
+export type UserPayload = z.infer<typeof userPayload>;
+export type ApiPayload = z.infer<typeof apiPayload>;
+export type TokenPayload = z.infer<typeof payloadSchema>;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,9 +36,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: UserPayload) {
+  async validate(payload: TokenPayload) {
     try {
-      return tokenPayloadSchema.parse(payload);
+      return payloadSchema.parse(payload);
     } catch (error) {
       log.warn({ err: error }, '[Auth] invalid JWT payload');
       throw error;
