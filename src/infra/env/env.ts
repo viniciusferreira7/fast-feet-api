@@ -30,6 +30,7 @@ export const envSchema = z
     DATABASE_USERNAME: z.string(),
     DATABASE_PASSWORD: z.string(),
     DATABASE_NAME: z.string(),
+    CLIENT_API_KEY: z.string().optional(),
     CLOUDFLARE_ACCOUNT_ID: z.string(),
     CLOUDFLARE_ACCOUNT_TOKEN: z.string(),
     AWS_BUCKET_NAME: z.string(),
@@ -40,7 +41,11 @@ export const envSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV === 'test') {
-      const testOnlyFields = ['JSON_PLACEHOLDER_URL', 'HTTPBIN_URL'] as const;
+      const testOnlyFields = [
+        'JSON_PLACEHOLDER_URL',
+        'HTTPBIN_URL',
+        'CLIENT_API_KEY',
+      ] as const;
 
       for (const field of testOnlyFields) {
         if (!data[field]) {
