@@ -143,6 +143,7 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
+          CLIENT_API_KEY: ${{ secrets.CLIENT_API_KEY }}
 
   test-e2e:
     name: E2E Tests
@@ -184,6 +185,7 @@ jobs:
       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
+      CLIENT_API_KEY: ${{ secrets.CLIENT_API_KEY }}
 
     steps:
       - name: Checkout code
