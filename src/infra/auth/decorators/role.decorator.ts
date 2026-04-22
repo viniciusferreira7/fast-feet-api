@@ -1,7 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import type { InferSelectModel } from 'drizzle-orm';
-import type { users } from '../../database/drizzle/schema';
 
-type Role = InferSelectModel<typeof users>['role'];
+type Role = 'Admin' | 'Delivery' | 'Recipient';
 
-export const Role = (...roles: Role[]) => SetMetadata('roles', roles);
+export const Role = (role: Role) => SetMetadata('role', role);
