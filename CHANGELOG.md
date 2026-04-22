@@ -1,3 +1,14 @@
+# [1.38.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.37.0...v1.38.0) (2026-04-22)
+
+
+### Features
+
+* **auth:** add Role decorator for role-based route protection ([5c8e474](https://github.com/viniciusferreira7/fast-feet-api/commit/5c8e47421dadea72a99a0aa87b1525843031a2dd))
+* **auth:** add RoleGuard to enforce role-based access control ([7044820](https://github.com/viniciusferreira7/fast-feet-api/commit/7044820ebe51153a0df91c1d423fb13eb50f16b4))
+* **decorator:** create current api key decorator ([06e43a9](https://github.com/viniciusferreira7/fast-feet-api/commit/06e43a987298a1dfedf1e5d326efc0141f6fde96))
+* **env:** add CLIENT_API_KEY as test-only required variable ([f5709ac](https://github.com/viniciusferreira7/fast-feet-api/commit/f5709ac03efbfe9c2e3f33b4282131227726f009))
+* **scripts:** add generate-api-key script to issue client JWT tokens ([20cb47d](https://github.com/viniciusferreira7/fast-feet-api/commit/20cb47d4aa26b447083d50825942868e37cf6d4c))
+
 # [1.37.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.36.0...v1.37.0) (2026-04-21)
 
 
