@@ -1,6 +1,6 @@
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { Package } from '../../enterprise/entities/package';
+import type { PackageDetails } from '../../enterprise/entities/value-object/package-details';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { PackagesRepository } from '../repositories/packages-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
@@ -12,7 +12,7 @@ interface GetByPackageByCodeUseCaseRequest {
 
 type GetByPackageByCodeUseCaseResponse = Either<
   ResourceNotFoundError | OnlyAdminCanPerformThisActionError,
-  { package: Package }
+  { package: PackageDetails }
 >;
 
 export class GetByPackageByCodeUseCase {
@@ -25,19 +25,19 @@ export class GetByPackageByCodeUseCase {
     authorId,
     packageId,
   }: GetByPackageByCodeUseCaseRequest): Promise<GetByPackageByCodeUseCaseResponse> {
-    const [adminPerson, packageRegister] = await Promise.all([
+    const [adminPerson, packageDetails] = await Promise.all([
       this.adminPeopleRepository.findById(authorId),
-      this.packagesRepository.findByCode(packageId),
+      this.packagesRepository.findDetailsByCode(packageId),
     ]);
 
     if (!adminPerson) {
       return left(new OnlyAdminCanPerformThisActionError());
     }
 
-    if (!packageRegister) {
+    if (!packageDetails) {
       return left(new ResourceNotFoundError('package'));
     }
 
-    return right({ package: packageRegister });
+    return right({ package: packageDetails });
   }
 }
