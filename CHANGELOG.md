@@ -1,3 +1,17 @@
+# [1.39.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.38.0...v1.39.0) (2026-04-26)
+
+
+### Features
+
+* **infra:** implement PackageDetails in drizzle mapper and repository ([ab00dba](https://github.com/viniciusferreira7/fast-feet-api/commit/ab00dba73435276d03eec2a9d7696339e413eecc))
+* **presenters:** add package, package-details, package-history, and notification presenters ([6232e90](https://github.com/viniciusferreira7/fast-feet-api/commit/6232e90b15f5f9e465a445d1494a6d02e8b605fa))
+* **presenters:** create admin person presenter ([a7fa9ef](https://github.com/viniciusferreira7/fast-feet-api/commit/a7fa9ef287a1cadbcc65f093de146c8dce3724b6))
+* **presenters:** create delivery person presenter ([a8d347b](https://github.com/viniciusferreira7/fast-feet-api/commit/a8d347bc6a9cc8da3d39a1bb40a0aa045fcb0e9a))
+* **presenters:** create recipient person presenter ([738f2fb](https://github.com/viniciusferreira7/fast-feet-api/commit/738f2fb495772784fe4fb612cf3e60a23401865a))
+* **repository:** add findDetailsById and findDetailsByCode to PackagesRepository ([c608a03](https://github.com/viniciusferreira7/fast-feet-api/commit/c608a034315d0302dffaf93d2ff3e252829d0953))
+* **use-case:** get-package-by-code returns PackageDetails ([2857c28](https://github.com/viniciusferreira7/fast-feet-api/commit/2857c28ae6c2936cee3b2d7cf0b72c14068151ee))
+* **value-object:** create PackageDetails value object ([7800918](https://github.com/viniciusferreira7/fast-feet-api/commit/7800918bcbda5e89b336b25eabacda8725c01a43))
+
 # [1.38.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.37.0...v1.38.0) (2026-04-22)
 
 
