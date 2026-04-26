@@ -8,14 +8,27 @@ import type {
 } from '@/domain/delivery/application/repositories/packages-repository';
 import { Package } from '@/domain/delivery/enterprise/entities/package';
 import { PackageCode } from '@/domain/delivery/enterprise/entities/value-object/package-code';
+import { PackageDetails } from '@/domain/delivery/enterprise/entities/value-object/package-details';
 import type { Status } from '@/domain/delivery/enterprise/entities/value-object/package-status';
+import type { InMemoryAdminPeopleRepository } from './in-memory-admin-people-repository';
+import type { InMemoryAttachmentsRepository } from './in-memory-attachments-repository';
+import type { InMemoryDeliveryPeopleRepository } from './in-memory-delivery-people-repository';
 import type { InMemoryPackagesHistoryRepository } from './in-memory-packages-history-repository';
+import type { InMemoryRecipientPeopleRepository } from './in-memory-recipient-people-repository';
+
+interface PackagesRepositoryLookups {
+  recipientPeople?: InMemoryRecipientPeopleRepository;
+  deliveryPeople?: InMemoryDeliveryPeopleRepository;
+  adminPeople?: InMemoryAdminPeopleRepository;
+  attachments?: InMemoryAttachmentsRepository;
+}
 
 export class InMemoryPackagesRepository implements PackagesRepository {
   public packages: Package[] = [];
 
   constructor(
-    private readonly packagesHistoryRepository: InMemoryPackagesHistoryRepository
+    private readonly packagesHistoryRepository: InMemoryPackagesHistoryRepository,
+    private readonly lookups: PackagesRepositoryLookups = {}
   ) {}
 
   async register(data: Package): Promise<Package> {
@@ -59,6 +72,77 @@ export class InMemoryPackagesRepository implements PackagesRepository {
     });
 
     return packageItem;
+  }
+
+  async findDetailsById(id: string): Promise<PackageDetails | null> {
+    const pkg = this.packages.find((p) => p.id.equals(new UniqueEntityId(id)));
+
+    if (!pkg) return null;
+
+    return this.buildDetails(pkg);
+  }
+
+  async findDetailsByCode(code: string): Promise<PackageDetails | null> {
+    const pkg = this.packages.find((p) =>
+      p.code.equals(new PackageCode({ value: code }))
+    );
+
+    if (!pkg) return null;
+
+    return this.buildDetails(pkg);
+  }
+
+  private async buildDetails(pkg: Package): Promise<PackageDetails> {
+    const { recipientPeople, deliveryPeople, adminPeople, attachments } =
+      this.lookups;
+
+    const recipient = recipientPeople
+      ? await recipientPeople.findById(pkg.recipientId.toString())
+      : null;
+
+    const author = adminPeople
+      ? await adminPeople.findById(pkg.authorId.toString())
+      : null;
+
+    const deliveryPerson =
+      deliveryPeople && pkg.deliveryPersonId
+        ? await deliveryPeople.findById(pkg.deliveryPersonId.toString())
+        : null;
+
+    const attachment =
+      attachments && pkg.attachment
+        ? await attachments.findById(pkg.attachment.attachmentId.toString())
+        : null;
+
+    const histories = this.packagesHistoryRepository.packagesHistory.filter(
+      (h) => h.packageId.equals(pkg.id)
+    );
+
+    return PackageDetails.create({
+      packageId: pkg.id,
+      name: pkg.name,
+      code: pkg.code,
+      status: pkg.status,
+      recipientAddress: pkg.recipientAddress,
+      postalCode: pkg.postalCode,
+      recipient: {
+        id: pkg.recipientId,
+        name: recipient?.name ?? '',
+        email: recipient?.email ?? '',
+      },
+      author: {
+        id: pkg.authorId,
+        name: author?.name ?? '',
+      },
+      deliveryPerson: deliveryPerson
+        ? { id: deliveryPerson.id, name: deliveryPerson.name }
+        : null,
+      attachment,
+      histories,
+      createdAt: pkg.createdAt,
+      updatedAt: pkg.updatedAt,
+      deliveredAt: pkg.deliveredAt,
+    });
   }
 
   async update(data: Package): Promise<Package | null> {
