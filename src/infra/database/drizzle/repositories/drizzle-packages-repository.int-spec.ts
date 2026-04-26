@@ -10,6 +10,7 @@ import { AdminPeopleRepository } from '@/domain/delivery/application/repositorie
 import { DeliveryPeopleRepository } from '@/domain/delivery/application/repositories/delivery-people-repository';
 import { PackagesRepository } from '@/domain/delivery/application/repositories/packages-repository';
 import { RecipientPeopleRepository } from '@/domain/delivery/application/repositories/recipient-people-repository';
+import { PackageDetails } from '@/domain/delivery/enterprise/entities/value-object/package-details';
 import { PackageHistoryList } from '@/domain/delivery/enterprise/entities/value-object/package-history-list';
 import { DrizzlePackagesRepository } from './drizzle-packages-repository';
 
@@ -174,6 +175,84 @@ describe('DrizzlePackagesRepository', () => {
       });
 
       expect(result.result.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('findDetailsById', () => {
+    it('should return null when id does not exist', async () => {
+      const result = await repository.findDetailsById(randomUUID());
+
+      expect(result).toBeNull();
+    });
+
+    it('should return PackageDetails with embedded recipient and author', async () => {
+      const { author, recipient } = await seedUsers();
+
+      const pkg = makePackage({
+        authorId: author.id,
+        recipientId: recipient.id,
+        deliveryPersonId: null,
+        histories: new PackageHistoryList([]),
+      });
+      await repository.register(pkg);
+
+      const result = await repository.findDetailsById(pkg.id.toString());
+
+      expect(result).not.toBeNull();
+      expect(result).toBeInstanceOf(PackageDetails);
+      expect(result?.packageId.toString()).toEqual(pkg.id.toString());
+      expect(result?.recipient.name).toEqual(recipient.name);
+      expect(result?.author.name).toEqual(author.name);
+      expect(result?.deliveryPerson).toBeNull();
+    });
+  });
+
+  describe('findDetailsByCode', () => {
+    it('should return null when code does not exist', async () => {
+      const result = await repository.findDetailsByCode(
+        'NONEXISTENTCODE00000000000'
+      );
+
+      expect(result).toBeNull();
+    });
+
+    it('should return PackageDetails with embedded recipient, author and delivery person', async () => {
+      const { author, recipient, deliveryPerson } = await seedUsers();
+
+      const pkg = makePackage({
+        authorId: author.id,
+        recipientId: recipient.id,
+        deliveryPersonId: deliveryPerson.id,
+        histories: new PackageHistoryList([]),
+      });
+      await repository.register(pkg);
+
+      const result = await repository.findDetailsByCode(pkg.code.value);
+
+      expect(result).not.toBeNull();
+      expect(result).toBeInstanceOf(PackageDetails);
+      expect(result?.packageId.toString()).toEqual(pkg.id.toString());
+      expect(result?.recipient.name).toEqual(recipient.name);
+      expect(result?.author.name).toEqual(author.name);
+      expect(result?.deliveryPerson?.name).toEqual(deliveryPerson.name);
+      expect(result?.attachment).toBeNull();
+      expect(result?.histories).toHaveLength(0);
+    });
+
+    it('should return PackageDetails without delivery person when not assigned', async () => {
+      const { author, recipient } = await seedUsers();
+
+      const pkg = makePackage({
+        authorId: author.id,
+        recipientId: recipient.id,
+        deliveryPersonId: null,
+        histories: new PackageHistoryList([]),
+      });
+      await repository.register(pkg);
+
+      const result = await repository.findDetailsByCode(pkg.code.value);
+
+      expect(result?.deliveryPerson).toBeNull();
     });
   });
 

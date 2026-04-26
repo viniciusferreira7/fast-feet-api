@@ -11,6 +11,7 @@ import {
   like,
   type SQL,
 } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/pg-core';
 import { Pagination } from '@/core/entities/value-object/pagination';
 import {
   type FindManyPackagesParams,
@@ -18,10 +19,11 @@ import {
   PackagesRepository,
 } from '@/domain/delivery/application/repositories/packages-repository';
 import type { Package } from '@/domain/delivery/enterprise/entities/package';
+import type { PackageDetails } from '@/domain/delivery/enterprise/entities/value-object/package-details';
 import { type Status } from '@/domain/delivery/enterprise/entities/value-object/package-status';
 import { DrizzleService } from '../drizzle.service';
 import { DrizzlePackageMapper } from '../mappers/drizzle-package-mapper';
-import { packageHistories, packages } from '../schema';
+import { attachments, packageHistories, packages, users } from '../schema';
 
 @Injectable()
 export class DrizzlePackagesRepository implements PackagesRepository {
@@ -79,6 +81,57 @@ export class DrizzlePackagesRepository implements PackagesRepository {
     if (!row) return null;
 
     return this.hydratePackage(row);
+  }
+
+  public async findDetailsById(id: string): Promise<PackageDetails | null> {
+    return this.hydrateDetails(eq(packages.id, id));
+  }
+
+  public async findDetailsByCode(code: string): Promise<PackageDetails | null> {
+    return this.hydrateDetails(eq(packages.code, code));
+  }
+
+  private async hydrateDetails(
+    condition: SQL<unknown>
+  ): Promise<PackageDetails | null> {
+    const recipient = alias(users, 'recipient');
+    const author = alias(users, 'author');
+    const deliveryPerson = alias(users, 'delivery_person');
+
+    const [row] = await this.drizzleService.db
+      .select({
+        package: packages,
+        recipient,
+        author,
+        deliveryPerson,
+        attachment: attachments,
+      })
+      .from(packages)
+      .innerJoin(recipient, eq(packages.recipientId, recipient.id))
+      .innerJoin(author, eq(packages.authorId, author.id))
+      .leftJoin(
+        deliveryPerson,
+        eq(packages.deliveryPersonId, deliveryPerson.id)
+      )
+      .leftJoin(attachments, eq(packages.attachmentId, attachments.id))
+      .where(condition);
+
+    if (!row) return null;
+
+    const histories = await this.drizzleService.db
+      .select()
+      .from(packageHistories)
+      .where(eq(packageHistories.packageId, row.package.id))
+      .orderBy(asc(packageHistories.createdAt));
+
+    return DrizzlePackageMapper.toDetailsDomain({
+      package: row.package,
+      recipient: row.recipient,
+      author: row.author,
+      deliveryPerson: row.deliveryPerson,
+      attachment: row.attachment,
+      histories,
+    });
   }
 
   public async update(data: Package): Promise<Package | null> {
