@@ -1,3 +1,10 @@
+# [1.40.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.39.0...v1.40.0) (2026-04-28)
+
+
+### Features
+
+* **pipes:** create zod validation pipe to use on controllers ([10df377](https://github.com/viniciusferreira7/fast-feet-api/commit/10df377e51235a807ba5db6c35e0c8381432f7bc))
+
 # [1.39.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.38.0...v1.39.0) (2026-04-26)
 
 
