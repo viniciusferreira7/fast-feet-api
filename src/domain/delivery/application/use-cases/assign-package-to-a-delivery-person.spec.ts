@@ -8,13 +8,13 @@ import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
-import { AssignPackageToADeliveryPerson } from './assign-package-to-a-delivery-person';
+import { AssignPackageToADeliveryPersonUseCase } from './assign-package-to-a-delivery-person';
 
 let packagesRepository: InMemoryPackagesRepository;
 let packageHistoryRepository: InMemoryPackagesHistoryRepository;
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
-let sut: AssignPackageToADeliveryPerson;
+let sut: AssignPackageToADeliveryPersonUseCase;
 
 describe('Assign Package to a Delivery Person', () => {
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('Assign Package to a Delivery Person', () => {
     );
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
-    sut = new AssignPackageToADeliveryPerson(
+    sut = new AssignPackageToADeliveryPersonUseCase(
       packagesRepository,
       deliveryPeopleRepository,
       adminPeopleRepository

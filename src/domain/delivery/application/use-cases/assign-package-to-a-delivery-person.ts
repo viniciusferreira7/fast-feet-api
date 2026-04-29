@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { Package } from '../../enterprise/entities/package';
@@ -19,8 +20,8 @@ type AssignPackageToADeliveryPersonUseCaseResponse = Either<
     package: Package;
   }
 >;
-
-export class AssignPackageToADeliveryPerson {
+@Injectable()
+export class AssignPackageToADeliveryPersonUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
