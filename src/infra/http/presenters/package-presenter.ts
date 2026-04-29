@@ -1,7 +1,7 @@
 import type { Package } from '@/domain/delivery/enterprise/entities/package';
 import type { Status } from '@/domain/delivery/enterprise/entities/value-object/package-status';
 
-interface PackagePresenterToHttp {
+export interface PackagePresenterToHttp {
   id: string;
   name: string;
   code: string;
