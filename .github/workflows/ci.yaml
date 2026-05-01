@@ -95,9 +95,7 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
           POSTGRES_DB: ${{ secrets.DATABASE_NAME }}
         options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
+          --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s
           --health-retries=5
         ports:
           - 5432:5432
@@ -144,6 +142,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
           CLIENT_API_KEY: ${{ secrets.CLIENT_API_KEY }}
+          ADMIN_ROOT_CPF: ${{ secrets.ADMIN_ROOT_CPF }}
           ADMIN_ROOT_EMAIL: ${{ secrets.ADMIN_ROOT_EMAIL }}
           ADMIN_ROOT_PASSWORD: ${{ secrets.ADMIN_ROOT_PASSWORD }}
           PASSWORD_MIN_LENGTH: ${{ secrets.PASSWORD_MIN_LENGTH }}
