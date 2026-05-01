@@ -38,6 +38,10 @@ export const envSchema = z
     AWS_SECRETE_ACCESS_KEY_ID: z.string(),
     OTLP_TRACE_EXPORT_ENDPOINT: z.url().optional(),
     LOG_LEVEL: z.string().optional(),
+    ADMIN_ROOT_EMAIL: z.email(),
+    ADMIN_ROOT_PASSWORD: z.string().min(8),
+    PASSWORD_MIN_LENGTH: z.coerce.number().int().min(6).default(8),
+    PASSWORD_MIN_SCORE: z.coerce.number().int().min(1).max(4).default(3),
   })
   .superRefine((data, ctx) => {
     if (data.NODE_ENV === 'test') {
