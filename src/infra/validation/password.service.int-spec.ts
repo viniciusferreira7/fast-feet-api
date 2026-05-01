@@ -36,7 +36,7 @@ describe('PasswordService', () => {
   });
 
   it('should include feedback suggestions in the error message', () => {
-    const result = service.validate('abc');
+    const result = service.validate('abcdefgh');
 
     expect(result.isLeft()).toBe(true);
     if (result.isLeft()) {
