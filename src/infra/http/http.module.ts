@@ -5,6 +5,7 @@ import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-ca
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 import { ValidationModule } from '../validation/validation.module';
+import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { AssignPackageToADeliveryPersonController } from './controllers/assign-package-to-a-delivery-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { FetchHttpClient } from './fetch-http-client';
@@ -20,6 +21,7 @@ import { FetchHttpClient } from './fetch-http-client';
       provide: HttpClient,
       useClass: FetchHttpClient,
     },
+    RoleGuard,
     AssignPackageToADeliveryPersonUseCase,
     RegisterAdminPersonUseCase,
   ],
