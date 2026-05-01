@@ -7,7 +7,7 @@ export default defineConfig({
     include: ['**/*.int-spec.ts'],
     globals: true,
     root: './',
-    setupFiles: ['./test/setup-for-infra-tests.ts'],
+    setupFiles: ['./test/setup-for-infra-tests.ts', './test/seed-admin.ts'],
     fileParallelism: false,
     testTimeout: 100_000,
     hookTimeout: 100_000,
