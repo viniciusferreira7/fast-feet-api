@@ -10,19 +10,19 @@ import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
-import { RegisterAdminPerson } from './register-admin-person';
+import { RegisterAdminPersonUseCase } from './register-admin-person';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let passwordValidator: FakePasswordValidator;
 let hashGenerator: FakeHasher;
-let sut: RegisterAdminPerson;
+let sut: RegisterAdminPersonUseCase;
 
 describe('Register Admin Person', () => {
   beforeEach(() => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     passwordValidator = new FakePasswordValidator();
     hashGenerator = new FakeHasher();
-    sut = new RegisterAdminPerson(
+    sut = new RegisterAdminPersonUseCase(
       adminPeopleRepository,
       passwordValidator,
       hashGenerator

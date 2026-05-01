@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
@@ -6,7 +7,7 @@ import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { PasswordValidator } from '../validation/password-validator';
+import { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterAdminPersonUseCaseRequest {
@@ -27,7 +28,8 @@ type RegisterAdminPersonUseCaseResponse = Either<
   }
 >;
 
-export class RegisterAdminPerson {
+@Injectable()
+export class RegisterAdminPersonUseCase {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly passwordValidator: PasswordValidator,
