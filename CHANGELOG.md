@@ -1,3 +1,28 @@
+# [1.41.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.40.0...v1.41.0) (2026-05-01)
+
+
+### Bug Fixes
+
+* **auth:** align Role decorator metadata key with RoleGuard and fix case comparison ([846cf5b](https://github.com/viniciusferreira7/fast-feet-api/commit/846cf5b89c207f1fc59b1dcb34dbbf44906e4b11))
+* **auth:** restore Reflector as value import to preserve DI token at runtime ([782230f](https://github.com/viniciusferreira7/fast-feet-api/commit/782230f3c65a95e476017d92ff0a026525af1ad4))
+* **http:** add missing RoleGuard, use case provider, and Swagger to RegisterAdminPersonController ([5f46897](https://github.com/viniciusferreira7/fast-feet-api/commit/5f46897ddc7a4cea49776d8da0136e7a4dac16da))
+* **http:** import DatabaseModule, CryptographyModule and ValidationModule to resolve use case dependencies ([3d90fc7](https://github.com/viniciusferreira7/fast-feet-api/commit/3d90fc73e01bc483642b657c75bddff5fbc96d1d))
+* **http:** register RoleGuard as provider in HttpModule to allow Reflector injection ([948b533](https://github.com/viniciusferreira7/fast-feet-api/commit/948b533e6f8c98e0f56187dcf85cd1e09e89a08e))
+* **test:** update feedback suggestions test to use password that passes length check ([21b98ef](https://github.com/viniciusferreira7/fast-feet-api/commit/21b98efa95fe45f7cd81f0e62f27e37b82c08e33))
+
+
+### Features
+
+* **env:** add ADMIN_ROOT_CPF env var and missing password vars to example files ([98e2b19](https://github.com/viniciusferreira7/fast-feet-api/commit/98e2b192b7644973f3d011332fe93d65e259d12a))
+* **env:** add cpf schema to validate admin root cpf ([3c7cf28](https://github.com/viniciusferreira7/fast-feet-api/commit/3c7cf28c2691e5b8cb530780aa2db12cc60b1eff))
+* **env:** add PASSWORD_MIN_LENGTH and PASSWORD_MIN_SCORE for configurable password strength ([451d2f4](https://github.com/viniciusferreira7/fast-feet-api/commit/451d2f40ee62b1b27cc9fe06ca2222ba8c7156fa))
+* **http:** add AssignPackageToADeliveryPersonUseCase on HttpModule ([3fdcda4](https://github.com/viniciusferreira7/fast-feet-api/commit/3fdcda4f19e13de8f205f6e57244ce648bf18189))
+* **http:** export AdminPersonPresenterToHttp interface ([500f2ae](https://github.com/viniciusferreira7/fast-feet-api/commit/500f2ae977510b116da9fe8d20a1dd4588184fd6))
+* **http:** implement AssignPackageToADeliveryPerson controller with Swagger annotations ([ecaa5cc](https://github.com/viniciusferreira7/fast-feet-api/commit/ecaa5cc290668ed2cf6aac42e253795aa4f6de65))
+* **http:** register RegisterAdminPersonController in HttpModule ([1dca0ce](https://github.com/viniciusferreira7/fast-feet-api/commit/1dca0ceab7521c285e6159246030a88de2781524))
+* **infra:** add cpf and password zod schemas to shared utils ([faad4ce](https://github.com/viniciusferreira7/fast-feet-api/commit/faad4ce18115239422ba3b5b9de81fc06ef3d48f))
+* **use-cases:** require authorId to register a new admin person ([dbd6dd1](https://github.com/viniciusferreira7/fast-feet-api/commit/dbd6dd173a50250a28198e4d92c30cdf2604ec8f))
+
 # [1.40.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.39.0...v1.40.0) (2026-04-28)
 
 
