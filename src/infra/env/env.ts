@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { cpfSchema } from '../utils/zod-schemas/cpf-schema';
 
 const isBase64 = (str: string) => {
   try {
@@ -38,9 +39,7 @@ export const envSchema = z
     AWS_SECRETE_ACCESS_KEY_ID: z.string(),
     OTLP_TRACE_EXPORT_ENDPOINT: z.url().optional(),
     LOG_LEVEL: z.string().optional(),
-    ADMIN_ROOT_CPF: z.string().regex(/^\d{11}$/, {
-      message: 'ADMIN_ROOT_CPF must be exactly 11 numeric digits',
-    }),
+    ADMIN_ROOT_CPF: cpfSchema,
     ADMIN_ROOT_EMAIL: z.email(),
     ADMIN_ROOT_PASSWORD: z.string().min(8),
     PASSWORD_MIN_LENGTH: z.coerce.number().int().min(6).default(8),
