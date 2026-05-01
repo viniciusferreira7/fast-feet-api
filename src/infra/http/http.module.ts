@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HttpClient } from '@/domain/delivery/application/http/http-client';
 import { AssignPackageToADeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/assign-package-to-a-delivery-person';
+import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { AssignPackageToADeliveryPersonController } from './controllers/assign-package-to-a-delivery-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { FetchHttpClient } from './fetch-http-client';
@@ -12,6 +13,7 @@ import { FetchHttpClient } from './fetch-http-client';
       useClass: FetchHttpClient,
     },
     AssignPackageToADeliveryPersonUseCase,
+    RegisterAdminPersonUseCase,
   ],
   exports: [HttpClient],
   controllers: [
