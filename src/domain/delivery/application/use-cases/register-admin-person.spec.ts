@@ -1,8 +1,10 @@
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import { FakeHasher } from 'test/cryptography/fake-hasher';
+import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { FakePasswordValidator } from 'test/validation/fake-password-validator';
 import { left } from '@/core/either';
+import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { AdminPerson } from '../../enterprise/entities/admin-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
 import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
@@ -28,11 +30,15 @@ describe('Register Admin Person', () => {
   });
 
   it('should be able to register a new admin person', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
+
     const result = await sut.execute({
       name: 'John Doe',
       cpf: generateCpf(),
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -45,11 +51,15 @@ describe('Register Admin Person', () => {
   });
 
   it('should hash admin person password upon registration', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
+
     const result = await sut.execute({
       name: 'John Doe',
       cpf: generateCpf(),
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -59,6 +69,8 @@ describe('Register Admin Person', () => {
   });
 
   it('should not be able to register with same CPF twice', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
     const cpf = generateCpf();
 
     await sut.execute({
@@ -66,6 +78,7 @@ describe('Register Admin Person', () => {
       cpf,
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     const result = await sut.execute({
@@ -73,6 +86,7 @@ describe('Register Admin Person', () => {
       cpf,
       email: 'jane@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
@@ -82,11 +96,15 @@ describe('Register Admin Person', () => {
   });
 
   it('should not be able to register with same email twice', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
+
     await sut.execute({
       name: 'John Doe',
       cpf: generateCpf(),
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     const result = await sut.execute({
@@ -94,6 +112,7 @@ describe('Register Admin Person', () => {
       cpf: generateCpf(),
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
@@ -103,11 +122,15 @@ describe('Register Admin Person', () => {
   });
 
   it('should not be able to register with invalid CPF', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
+
     const result = await sut.execute({
       name: 'John Doe',
       cpf: 'invalid-cpf',
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
@@ -117,6 +140,8 @@ describe('Register Admin Person', () => {
   });
 
   it('should store admin person in repository', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
     const cpf = generateCpf();
 
     await sut.execute({
@@ -124,14 +149,19 @@ describe('Register Admin Person', () => {
       cpf,
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
-    expect(adminPeopleRepository.adminPeople).toHaveLength(1);
-    expect(adminPeopleRepository.adminPeople[0].name).toBe('John Doe');
-    expect(adminPeopleRepository.adminPeople[0].cpf.value).toBe(cpf);
+    expect(adminPeopleRepository.adminPeople).toHaveLength(2);
+    const registered = adminPeopleRepository.adminPeople.find(
+      (p) => p.name === 'John Doe'
+    );
+    expect(registered?.cpf.value).toBe(cpf);
   });
 
   it('should create admin person with correct CPF value object', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
     const cpfRaw = generateCpf();
 
     const result = await sut.execute({
@@ -139,6 +169,7 @@ describe('Register Admin Person', () => {
       cpf: cpfRaw,
       email: 'john@example.com',
       password: '123456',
+      authorId: author.id.toString(),
     });
 
     expect(result.isRight()).toBe(true);
@@ -149,6 +180,8 @@ describe('Register Admin Person', () => {
   });
 
   it('should not be able to register with weak password', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
     vi.spyOn(passwordValidator, 'validate').mockReturnValueOnce(
       left(new WeakPasswordError())
     );
@@ -158,6 +191,7 @@ describe('Register Admin Person', () => {
       cpf: generateCpf(),
       email: 'john@example.com',
       password: 'weak',
+      authorId: author.id.toString(),
     });
 
     expect(result.isLeft()).toBe(true);
@@ -167,6 +201,8 @@ describe('Register Admin Person', () => {
   });
 
   it('should validate password strength before registration', async () => {
+    const author = makeAdminPerson();
+    await adminPeopleRepository.register(author);
     const validateSpy = vi.spyOn(passwordValidator, 'validate');
 
     await sut.execute({
@@ -174,8 +210,24 @@ describe('Register Admin Person', () => {
       cpf: generateCpf(),
       email: 'john@example.com',
       password: 'strongPassword123',
+      authorId: author.id.toString(),
     });
 
     expect(validateSpy).toHaveBeenCalledWith('strongPassword123');
+  });
+
+  it('should not be able to register if author admin does not exist', async () => {
+    const result = await sut.execute({
+      name: 'John Doe',
+      cpf: generateCpf(),
+      email: 'john@example.com',
+      password: '123456',
+      authorId: 'non-existent-admin-id',
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+    }
   });
 });
