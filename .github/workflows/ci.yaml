@@ -121,6 +121,7 @@ jobs:
       - name: Run integration tests
         run: pnpm run test:int
         env:
+          SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
           NODE_ENV: "test"
           DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
@@ -171,6 +172,7 @@ jobs:
           - 5432:5432
 
     env:
+      SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
       NODE_ENV: "test"
       DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
       DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}

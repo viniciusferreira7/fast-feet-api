@@ -11,6 +11,7 @@ const isBase64 = (str: string) => {
 
 export const envSchema = z
   .object({
+    SERVICE_NAME: z.string().default('fast-feet-api'),
     NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
     PORT: z.coerce.number().default(3000),
     JWT_PRIVATE_KEY: z.string().refine(isBase64, {
