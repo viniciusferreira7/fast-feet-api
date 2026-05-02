@@ -12,10 +12,10 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import z from 'zod';
@@ -57,7 +57,20 @@ export class AssignPackageToADeliveryPersonController {
   @UsePipes(new ZodValidationPipe(assignPackageToADeliveryPersonSchema))
   @HttpCode(200)
   @ApiOperation({ summary: 'Assign a package to a delivery person' })
-  @ApiParam({ name: 'packagesId', description: 'Package ID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['deliveryPersonId', 'description'],
+      properties: {
+        deliveryPersonId: {
+          type: 'string',
+          format: 'uuid',
+          example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+        },
+        description: { type: 'string', example: 'Fragile item, handle with care' },
+      },
+    },
+  })
   @ApiOkResponse({ description: 'Package assigned successfully' })
   @ApiNotFoundResponse({ description: 'Package or delivery person not found' })
   @ApiBadRequestResponse({ description: 'Invalid package status transition' })

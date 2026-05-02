@@ -11,6 +11,7 @@ import {
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiOperation,
@@ -54,6 +55,24 @@ export class RegisterAdminPersonController {
   @UsePipes(new ZodValidationPipe(registerAdminSchema))
   @HttpCode(201)
   @ApiOperation({ summary: 'Register a new admin person' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['name', 'cpf', 'email', 'password'],
+      properties: {
+        name: { type: 'string', example: 'John Doe' },
+        cpf: { type: 'string', example: '123.456.789-09' },
+        email: { type: 'string', format: 'email', example: 'john@example.com' },
+        password: {
+          type: 'string',
+          format: 'password',
+          description:
+            'Min 8 chars, must include uppercase, lowercase, number, and special character',
+          example: 'Str0ng!Pass',
+        },
+      },
+    },
+  })
   @ApiCreatedResponse({ description: 'Admin registered successfully' })
   @ApiConflictResponse({ description: 'CPF or email already in use' })
   @ApiBadRequestResponse({
