@@ -1,3 +1,17 @@
+# [1.42.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.41.0...v1.42.0) (2026-05-05)
+
+
+### Bug Fixes
+
+* **use-case:** rename AuthenticateAdminPerson to AuthenticateAdminPersonUseCase ([40d94de](https://github.com/viniciusferreira7/fast-feet-api/commit/40d94dea73044e0676fd6fa4ae0c33e576d69b46))
+
+
+### Features
+
+* **controller:** add authenticate admin person controller with Swagger annotations ([ccf26e0](https://github.com/viniciusferreira7/fast-feet-api/commit/ccf26e006db93b775122311aab4823d213112f44))
+* **env:** add new validation for CORS_ORIGIN ([fcc6bdd](https://github.com/viniciusferreira7/fast-feet-api/commit/fcc6bdd7f6f1547b7848f027e9292cebeb40fdb3))
+* **http:** register AuthenticateAdminPersonUseCase and controller in HttpModule ([5b96288](https://github.com/viniciusferreira7/fast-feet-api/commit/5b96288963382d4c432522398fe49d86da1d61b6))
+
 # [1.41.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.40.0...v1.41.0) (2026-05-01)
 
 
