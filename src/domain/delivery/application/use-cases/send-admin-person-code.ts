@@ -1,7 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
-import type { EmailSender } from '../email/email-sender';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { EmailSender } from '../email/email-sender';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -14,6 +15,7 @@ export type SendAdminPersonCodeUseCaseResponse = Either<
   { adminPerson: AdminPerson }
 >;
 
+@Injectable()
 export class SendAdminPersonCodeUseCase {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
