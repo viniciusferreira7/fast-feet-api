@@ -20,7 +20,7 @@ export const envSchema = z
     JWT_PUBLIC_KEY: z.string().refine(isBase64, {
       message: 'JWT_PUBLIC_KEY must be a valid base64 string',
     }),
-    CORS_ORIGIN: z.url(),
+    CORS_ORIGIN: z.union([z.literal('*'), z.url()]),
     ARGON2_PEPPER: z.string(),
     RESEND_API_KEY: z.string(),
     EMAIL: z.string(),
@@ -74,6 +74,22 @@ export const envSchema = z
           path: ['OTLP_TRACE_EXPORT_ENDPOINT'],
         });
       }
+    }
+
+    if (data.NODE_ENV !== 'test' && data.CORS_ORIGIN === '*') {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'CORS_ORIGIN cannot be "*" outside test environment',
+        path: ['CORS_ORIGIN'],
+      });
+    }
+
+    if (data.NODE_ENV === 'test' && data.CORS_ORIGIN !== '*') {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'CORS_ORIGIN must be "*" in test environment',
+        path: ['CORS_ORIGIN'],
+      });
     }
   });
 
