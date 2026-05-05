@@ -5,21 +5,21 @@ import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { InMemoryAdminPeopleRepository } from 'test/repositories/in-memory-admin-people-repository';
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
-import { AuthenticateAdminPerson } from './authenticate-admin-person';
+import { AuthenticateAdminPersonUseCase } from './authenticate-admin-person';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let fakeHasher: FakeHasher;
 let fakeEncrypter: FakeEncrypter;
-let sut: AuthenticateAdminPerson;
+let sut: AuthenticateAdminPersonUseCase;
 
 describe('Authenticate Admin Person', () => {
   beforeEach(() => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     fakeHasher = new FakeHasher();
     fakeEncrypter = new FakeEncrypter();
-    sut = new AuthenticateAdminPerson(
+    sut = new AuthenticateAdminPersonUseCase(
       adminPeopleRepository,
       fakeHasher,
       fakeEncrypter

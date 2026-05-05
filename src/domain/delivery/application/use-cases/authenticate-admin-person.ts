@@ -1,7 +1,7 @@
 import { type Either, left, right } from '@/core/either';
-import type { Encrypter } from '../cryptography/encrypter';
-import type { HashComparer } from '../cryptography/hash-comparer';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { Encrypter } from '../cryptography/encrypter';
+import { HashComparer } from '../cryptography/hash-comparer';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -15,7 +15,7 @@ export type AuthenticateAdminPersonUseCaseResponse = Either<
   { accessToken: string }
 >;
 
-export class AuthenticateAdminPerson {
+export class AuthenticateAdminPersonUseCase {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly hashComparer: HashComparer,
