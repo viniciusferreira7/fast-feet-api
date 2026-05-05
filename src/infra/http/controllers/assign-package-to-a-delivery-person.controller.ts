@@ -67,7 +67,10 @@ export class AssignPackageToADeliveryPersonController {
           format: 'uuid',
           example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
         },
-        description: { type: 'string', example: 'Fragile item, handle with care' },
+        description: {
+          type: 'string',
+          example: 'Fragile item, handle with care',
+        },
       },
     },
   })
