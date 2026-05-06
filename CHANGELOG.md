@@ -1,3 +1,24 @@
+# [1.43.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.42.0...v1.43.0) (2026-05-06)
+
+
+### Bug Fixes
+
+* **controller:** remove password complexity validation from login endpoint ([bf707a7](https://github.com/viniciusferreira7/fast-feet-api/commit/bf707a786cd7c1c5aad2dbd23f1e533e41ee4853))
+* **repository:** insert email_code row before updating user FK in DrizzleAdminPeopleRepository ([4677a83](https://github.com/viniciusferreira7/fast-feet-api/commit/4677a83cf649ae585b728cab19227156fc0ea351))
+* **token:** add on token type and role ([d535272](https://github.com/viniciusferreira7/fast-feet-api/commit/d53527282a66cca3fecd82ec7d2fa48b09cc81fe))
+* **use-case:** add @Injectable and fix imports in SendAdminPersonCodeUseCase ([5efa873](https://github.com/viniciusferreira7/fast-feet-api/commit/5efa873ae2fb3984fdfc1aa6bdd8fced26e13e48))
+* **use-case:** add @Injectable to AuthenticateAdminPersonUseCase ([fa232a7](https://github.com/viniciusferreira7/fast-feet-api/commit/fa232a74f853b31a8ad952eba1131d95c64591c8))
+* **use-case:** change type import to regular import in ValidateRecipientPersonCodeUseCase ([440cbff](https://github.com/viniciusferreira7/fast-feet-api/commit/440cbff42f2f9c5357fdad23117718079a9d37c8))
+* **use-case:** include type and role in JWT payload for AuthenticateAdminPersonUseCase ([10339f3](https://github.com/viniciusferreira7/fast-feet-api/commit/10339f3506b4713ba9305cf653f3a2d6412527fe))
+
+
+### Features
+
+* **auth:** require API token on send-code, validate-code, and login admin endpoints ([1bd70fe](https://github.com/viniciusferreira7/fast-feet-api/commit/1bd70fea5878e472c63bcbd6aec7d134b98949cf))
+* **controller:** add send admin person code controller with Swagger annotations ([dd229b7](https://github.com/viniciusferreira7/fast-feet-api/commit/dd229b768c7a7527beb660dd2b7392f190f5a266))
+* **controller:** add ValidateAdminPersonCodeController with Swagger, @Public, and ZodValidationPipe ([f835fb2](https://github.com/viniciusferreira7/fast-feet-api/commit/f835fb26c6ea90dedfd8bd4a0dd04e793cda937f))
+* **http:** register SendAdminPersonCodeUseCase and EmailModule in HttpModule ([b4ab14c](https://github.com/viniciusferreira7/fast-feet-api/commit/b4ab14c7bc763438c98f04b2da554e1e5fc79e51))
+
 # [1.42.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.41.0...v1.42.0) (2026-05-05)
 
 
