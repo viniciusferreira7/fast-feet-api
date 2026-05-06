@@ -18,12 +18,11 @@ import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/us
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 import { cpfSchema } from '@/infra/utils/zod-schemas/cpf-schema';
-import { passwordSchema } from '@/infra/utils/zod-schemas/password-schema';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 
 const authenticateAdminSchema = z.object({
   cpf: cpfSchema,
-  password: passwordSchema,
+  password: z.string().min(1),
 });
 
 type AuthenticateAdminSchema = z.infer<typeof authenticateAdminSchema>;
