@@ -48,7 +48,9 @@ export class AuthenticateRecipientPerson {
     }
 
     const accessToken = await this.encrypter.encrypt({
+      type: 'user',
       sub: recipientPerson.id.toString(),
+      role: 'recipient',
     });
 
     return right({ accessToken });

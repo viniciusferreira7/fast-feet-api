@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { EmailSender } from '@/domain/delivery/application/email/email-sender';
 import { AppModule } from '@/infra/app.module';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
@@ -9,6 +10,7 @@ import { EmailModule } from '@/infra/email/email.module';
 import { EnvModule } from '@/infra/env/env.module';
 import { HttpModule } from '@/infra/http/http.module';
 import { ValidationModule } from '@/infra/validation/validation.module';
+import { FakeEmailSender } from '../email/fake-email-sender';
 
 export async function makeModuleRef(): Promise<TestingModule> {
   const databaseUrl = process.env.CI
@@ -27,6 +29,10 @@ export async function makeModuleRef(): Promise<TestingModule> {
     ],
     providers: [],
   })
+    // TODO: Replace FakeEmailSender with real implementation once Resend
+    // domain/email verification is configured.
+    .overrideProvider(EmailSender)
+    .useClass(FakeEmailSender)
     .overrideProvider(DrizzleService)
     .useFactory({
       factory() {

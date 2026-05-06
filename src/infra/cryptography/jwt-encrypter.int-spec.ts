@@ -21,11 +21,12 @@ describe('JwtEncrypter', () => {
   });
 
   it('should produce a token with the given payload', async () => {
-    const payload = { sub: 'user-id-123', role: 'admin' };
+    const payload = { type: 'user', sub: 'user-id-123', role: 'admin' };
     const token = await encrypter.encrypt(payload);
 
     const decoded = jwtService.verify<typeof payload>(token);
 
+    expect(decoded.type).toBe(payload.type);
     expect(decoded.sub).toBe(payload.sub);
     expect(decoded.role).toBe(payload.role);
   });

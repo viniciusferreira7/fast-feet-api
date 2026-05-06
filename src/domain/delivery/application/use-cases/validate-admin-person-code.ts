@@ -1,9 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 
 interface ValidateAdminPersonCodeUseCaseRequest {
@@ -19,6 +20,7 @@ type ValidateAdminPersonCodeUseCaseResponse = Either<
   { adminPerson: AdminPerson }
 >;
 
+@Injectable()
 export class ValidateAdminPersonCodeUseCase {
   constructor(private readonly adminPeopleRepository: AdminPeopleRepository) {}
 

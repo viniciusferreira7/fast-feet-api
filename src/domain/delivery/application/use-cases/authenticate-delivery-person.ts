@@ -55,7 +55,9 @@ export class AuthenticateDeliveryPerson {
     }
 
     const accessToken = await this.encrypter.encrypt({
+      type: 'user',
       sub: deliveryPerson.id.toString(),
+      role: 'delivery',
     });
 
     return right({ accessToken });

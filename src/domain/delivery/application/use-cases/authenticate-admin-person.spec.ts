@@ -168,7 +168,9 @@ describe('Authenticate Admin Person', () => {
     });
 
     expect(encryptSpy).toHaveBeenCalledWith({
+      type: 'user',
       sub: adminPerson.id.toString(),
+      role: 'admin',
     });
   });
 

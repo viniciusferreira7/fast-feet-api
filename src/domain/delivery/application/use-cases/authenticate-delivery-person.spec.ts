@@ -169,7 +169,9 @@ describe('Authenticate Delivery Person', () => {
     });
 
     expect(encryptSpy).toHaveBeenCalledWith({
+      type: 'user',
       sub: deliveryPerson.id.toString(),
+      role: 'delivery',
     });
   });
 

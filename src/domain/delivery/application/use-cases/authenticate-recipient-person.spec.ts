@@ -168,7 +168,9 @@ describe('Authenticate Recipient Person', () => {
     });
 
     expect(encryptSpy).toHaveBeenCalledWith({
+      type: 'user',
       sub: recipientPerson.id.toString(),
+      role: 'recipient',
     });
   });
 

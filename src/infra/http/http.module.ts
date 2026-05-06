@@ -4,7 +4,7 @@ import { AssignPackageToADeliveryPersonUseCase } from '@/domain/delivery/applica
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
-import { ValidateRecipientPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-recipient-person-code';
+import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
@@ -34,7 +34,7 @@ import { FetchHttpClient } from './fetch-http-client';
     RegisterAdminPersonUseCase,
     AuthenticateAdminPersonUseCase,
     SendAdminPersonCodeUseCase,
-    ValidateRecipientPersonCodeUseCase,
+    ValidateAdminPersonCodeUseCase,
   ],
   exports: [HttpClient],
   controllers: [

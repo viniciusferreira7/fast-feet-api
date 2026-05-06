@@ -18,7 +18,7 @@ export class EmailService implements EmailSender {
   async send(title: string, content: string, to: string): Promise<boolean> {
     try {
       const createEmailResponse = await this.resend.emails.send({
-        from: `Fast Feet ${this.email}`,
+        from: `Fast Feet <${this.email}>`,
         to: to,
         subject: title,
         html: buildEmailHtml(title, content),

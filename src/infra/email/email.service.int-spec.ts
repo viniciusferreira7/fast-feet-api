@@ -74,7 +74,7 @@ describe('EmailService', () => {
     );
 
     expect(sendSpy).toHaveBeenCalledWith({
-      from: 'Fast Feet onboarding@resend.dev',
+      from: 'Fast Feet <onboarding@resend.dev>',
       to: 'user@example.com',
       subject: 'Order update',
       html: expect.stringContaining('<p>Your package arrived</p>'),
