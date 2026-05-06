@@ -4,6 +4,7 @@ import { AssignPackageToADeliveryPersonUseCase } from '@/domain/delivery/applica
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
+import { ValidateRecipientPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-recipient-person-code';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
@@ -13,6 +14,7 @@ import { AssignPackageToADeliveryPersonController } from './controllers/assign-p
 import { AuthenticateAdminPersonController } from './controllers/authenticate-admin-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { SendAdminPersonCodeController } from './controllers/send-admin-person-code.controller';
+import { ValidateAdminPersonCodeController } from './controllers/validate-admin-person-code.controller';
 import { FetchHttpClient } from './fetch-http-client';
 
 @Module({
@@ -32,6 +34,7 @@ import { FetchHttpClient } from './fetch-http-client';
     RegisterAdminPersonUseCase,
     AuthenticateAdminPersonUseCase,
     SendAdminPersonCodeUseCase,
+    ValidateRecipientPersonCodeUseCase,
   ],
   exports: [HttpClient],
   controllers: [
@@ -39,6 +42,7 @@ import { FetchHttpClient } from './fetch-http-client';
     RegisterAdminPersonController,
     AuthenticateAdminPersonController,
     SendAdminPersonCodeController,
+    ValidateAdminPersonCodeController,
   ],
 })
 export class HttpModule {}
