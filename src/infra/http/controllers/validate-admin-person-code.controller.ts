@@ -19,13 +19,7 @@ import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { EmailCodeExpiredError } from '@/domain/delivery/errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
-import { Public } from '@/infra/auth/decorators/public.decorator';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
-
-//TODO: After complete this controller, start creation of e2e for admin,
-// create helpers for e2e to not repeat same code blocks,
-// like create, send code, validate code, and authenticate
-// to use on another e2e tests, but create full flow on this tests said before
 
 const validateAdminPersonCodeSchema = z.object({
   email: z.email(),
@@ -45,7 +39,6 @@ export class ValidateAdminPersonCodeController {
 
   @Put()
   @HttpCode(200)
-  @Public()
   @UsePipes(new ZodValidationPipe(validateAdminPersonCodeSchema))
   @ApiOperation({ summary: 'Validate email verification code for an admin' })
   @ApiBody({

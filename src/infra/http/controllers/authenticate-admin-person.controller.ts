@@ -17,7 +17,6 @@ import z from 'zod';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
-import { Public } from '@/infra/auth/decorators/public.decorator';
 import { cpfSchema } from '@/infra/utils/zod-schemas/cpf-schema';
 import { passwordSchema } from '@/infra/utils/zod-schemas/password-schema';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
@@ -37,7 +36,6 @@ export class AuthenticateAdminPersonController {
   ) {}
 
   @Post()
-  @Public()
   @HttpCode(200)
   @UsePipes(new ZodValidationPipe(authenticateAdminSchema))
   @ApiOperation({ summary: 'Authenticate an admin person' })

@@ -48,9 +48,13 @@ export async function registerAdmin(
 
 export async function sendAdminCode(
   app: INestApplication,
-  email: string
+  email: string,
+  apiToken: string
 ): Promise<Response> {
-  return request(app.getHttpServer()).post('/admins/code').send({ email });
+  return request(app.getHttpServer())
+    .post('/admins/code')
+    .set('Authorization', `Bearer ${apiToken}`)
+    .send({ email });
 }
 
 export async function getAdminEmailCode(
@@ -75,18 +79,24 @@ export async function getAdminEmailCode(
 export async function validateAdminCode(
   app: INestApplication,
   email: string,
-  code: string
+  code: string,
+  apiToken: string
 ): Promise<Response> {
-  return request(app.getHttpServer()).put('/admins/code').send({ email, code });
+  return request(app.getHttpServer())
+    .put('/admins/code')
+    .set('Authorization', `Bearer ${apiToken}`)
+    .send({ email, code });
 }
 
 export async function loginAdmin(
   app: INestApplication,
   cpf: string,
-  password: string
+  password: string,
+  apiToken: string
 ): Promise<string> {
   const response = await request(app.getHttpServer())
     .post('/admins/login')
+    .set('Authorization', `Bearer ${apiToken}`)
     .send({ cpf, password });
 
   return response.body.access_token as string;
@@ -96,6 +106,7 @@ export async function createAuthenticatedAdmin(
   app: INestApplication,
   drizzleService: DrizzleService,
   adminToken: string,
+  apiToken: string,
   options: RegisterAdminOptions = {}
 ): Promise<AdminCredentials> {
   const { email, cpf, password } = await registerAdmin(
@@ -104,13 +115,13 @@ export async function createAuthenticatedAdmin(
     options
   );
 
-  await sendAdminCode(app, email);
+  await sendAdminCode(app, email, apiToken);
 
   const code = await getAdminEmailCode(drizzleService, email);
 
-  await validateAdminCode(app, email, code);
+  await validateAdminCode(app, email, code, apiToken);
 
-  const accessToken = await loginAdmin(app, cpf, password);
+  const accessToken = await loginAdmin(app, cpf, password, apiToken);
 
   return { email, cpf, password, accessToken };
 }

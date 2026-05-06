@@ -19,7 +19,6 @@ import z from 'zod';
 import { TimeToSendNewEmailCodeError } from '@/domain/delivery/application/use-cases/errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
-import { Public } from '@/infra/auth/decorators/public.decorator';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 
 const sendAdminPersonCodeSchema = z.object({
@@ -37,7 +36,6 @@ export class SendAdminPersonCodeController {
 
   @Post()
   @HttpCode(201)
-  @Public()
   @UsePipes(new ZodValidationPipe(sendAdminPersonCodeSchema))
   @ApiOperation({ summary: 'Send email verification code to an admin' })
   @ApiBody({

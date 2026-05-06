@@ -3,13 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { eq } from 'drizzle-orm';
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import request from 'supertest';
-import { makeModuleRef } from 'test/factories/make-module-ref';
 import {
   getAdminEmailCode,
   loginAdmin,
   sendAdminCode,
   validateAdminCode,
 } from 'test/e2e/admin-flow';
+import { makeModuleRef } from 'test/factories/make-module-ref';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { users } from '@/infra/database/drizzle/schema';
 import { EnvService } from '@/infra/env/env.service';
@@ -23,6 +23,7 @@ describe('Register Admin Person (E2E)', () => {
   let envService: EnvService;
   let adminId: string;
   let adminToken: string;
+  let apiToken: string;
 
   beforeAll(async () => {
     const moduleRef = await makeModuleRef();
@@ -37,6 +38,7 @@ describe('Register Admin Person (E2E)', () => {
 
   beforeEach(async () => {
     const rootEmail = envService.get('ADMIN_ROOT_EMAIL');
+    apiToken = envService.get('CLIENT_API_KEY') ?? '';
 
     const [admin] = await drizzleService.db
       .select()
@@ -45,13 +47,14 @@ describe('Register Admin Person (E2E)', () => {
 
     adminId = admin.id;
 
-    await sendAdminCode(app, rootEmail);
+    await sendAdminCode(app, rootEmail, apiToken);
     const code = await getAdminEmailCode(drizzleService, rootEmail);
-    await validateAdminCode(app, rootEmail, code);
+    await validateAdminCode(app, rootEmail, code, apiToken);
     adminToken = await loginAdmin(
       app,
       envService.get('ADMIN_ROOT_CPF'),
-      envService.get('ADMIN_ROOT_PASSWORD')
+      envService.get('ADMIN_ROOT_PASSWORD'),
+      apiToken
     );
   });
 
