@@ -6,7 +6,6 @@ import {
   HttpCode,
   Post,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -52,7 +51,6 @@ export class RegisterAdminPersonController {
 
   @Post()
   @Role('Admin')
-  @UsePipes(new ZodValidationPipe(registerAdminSchema))
   @HttpCode(201)
   @ApiOperation({ summary: 'Register a new admin person' })
   @ApiBody({
@@ -80,7 +78,7 @@ export class RegisterAdminPersonController {
   })
   async handler(
     @CurrentUser() currentUser: UserPayload,
-    @Body() body: RegisterAdminSchema
+    @Body(new ZodValidationPipe(registerAdminSchema)) body: RegisterAdminSchema
   ) {
     const result = await this.registerAdminPersonUseCase.execute({
       name: body.name,
