@@ -51,10 +51,12 @@ export async function sendAdminCode(
   email: string,
   apiToken: string
 ): Promise<Response> {
-  return request(app.getHttpServer())
+  const res = await request(app.getHttpServer())
     .post('/admins/code')
     .set('Authorization', `Bearer ${apiToken}`)
     .send({ email });
+
+  return res;
 }
 
 export async function getAdminEmailCode(
@@ -82,10 +84,12 @@ export async function validateAdminCode(
   code: string,
   apiToken: string
 ): Promise<Response> {
-  return request(app.getHttpServer())
+  const res = await request(app.getHttpServer())
     .put('/admins/code')
     .set('Authorization', `Bearer ${apiToken}`)
     .send({ email, code });
+
+  return res;
 }
 
 export async function loginAdmin(

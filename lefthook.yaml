@@ -13,6 +13,6 @@ pre-push:
       run: git pull origin $(git branch --show-current)
 
     test:
-      run: pnpm test:unit && pnpm test:int
+      run: pnpm test:unit && pnpm test:int && pnpm test:e2e
 
    
