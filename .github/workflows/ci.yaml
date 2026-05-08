@@ -1,11 +1,9 @@
-name: CI
-
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    types: [ opened, synchronize, ready_for_review ]
-    branches: [ "main" ]
+    types: [opened, synchronize, ready_for_review]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -54,6 +52,7 @@ jobs:
     name: Run unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [quality]
 
     permissions:
       contents: read
@@ -83,6 +82,7 @@ jobs:
     name: Run integration tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: [quality, test-unit]
 
     permissions:
       contents: read
@@ -154,6 +154,7 @@ jobs:
     if: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: [quality, test-unit, test-integration]
 
     permissions:
       contents: read
@@ -185,12 +186,20 @@ jobs:
       CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}
+      POSTAL_CODE_EXTERNAL_SERVICE_URL: ${{ secrets.POSTAL_CODE_EXTERNAL_SERVICE_URL }}
+      JSON_PLACEHOLDER_URL: ${{ secrets.JSON_PLACEHOLDER_URL }}
+      HTTPBIN_URL: ${{ secrets.HTTPBIN_URL }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       CLOUDFLARE_ACCOUNT_TOKEN: ${{ secrets.CLOUDFLARE_ACCOUNT_TOKEN }}
       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRETE_ACCESS_KEY_ID: ${{ secrets.AWS_SECRETE_ACCESS_KEY_ID }}
       CLIENT_API_KEY: ${{ secrets.CLIENT_API_KEY }}
+      ADMIN_ROOT_CPF: ${{ secrets.ADMIN_ROOT_CPF }}
+      ADMIN_ROOT_EMAIL: ${{ secrets.ADMIN_ROOT_EMAIL }}
+      ADMIN_ROOT_PASSWORD: ${{ secrets.ADMIN_ROOT_PASSWORD }}
+      PASSWORD_MIN_LENGTH: ${{ secrets.PASSWORD_MIN_LENGTH }}
+      PASSWORD_MIN_SCORE: ${{ secrets.PASSWORD_MIN_SCORE }}
 
     steps:
       - name: Checkout code
@@ -220,8 +229,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # needs: [quality, test-unit, test-integration, test-e2e] FIXME:
-    needs: [ quality, test-unit, test-integration ]
+    needs: [quality, test-unit, test-integration, test-e2e]
     if: github.ref == 'refs/heads/main'
 
     permissions:
@@ -258,8 +266,7 @@ jobs:
     name: Build Application
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # needs: [quality, test-unit, test-integration, test-e2e, release] //FIXME:
-    needs: [ quality, test-unit, test-integration, release ]
+    needs: [quality, test-unit, test-integration, test-e2e, release]
     if: github.ref == 'refs/heads/main'
 
     permissions:

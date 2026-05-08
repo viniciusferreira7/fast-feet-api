@@ -72,7 +72,6 @@ describe('Register Admin Person (E2E)', () => {
         email: 'jane@example.com',
         password: STRONG_PASSWORD,
       });
-
     expect(response.statusCode).toBe(201);
     expect(response.body.admin).toEqual(
       expect.objectContaining({
