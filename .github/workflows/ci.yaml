@@ -151,7 +151,6 @@ jobs:
 
   test-e2e:
     name: E2E Tests
-    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality, test-unit, test-integration]
