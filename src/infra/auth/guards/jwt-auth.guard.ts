@@ -1,6 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { jwtRejectedCounter } from '@/infra/observability/metrics';
 import { log } from '../../logger';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
@@ -36,6 +37,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         { err, info, method: req?.method, url: req?.url },
         '[Auth] unauthorized request'
       );
+      jwtRejectedCounter.add(1);
     }
     return super.handleRequest(err, user, info, context);
   }

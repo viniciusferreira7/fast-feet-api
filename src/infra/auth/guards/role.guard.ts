@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { roleRejectedCounter } from '@/infra/observability/metrics';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -23,17 +24,21 @@ export class RoleGuard implements CanActivate {
 
     const user = context.switchToHttp().getRequest().user;
 
-    if (!user || !user.role)
+    if (!user || !user.role) {
+      roleRejectedCounter.add(1);
       throw new ForbiddenException('User role not found');
+    }
 
     const hasRole = requiredRoles.some(
       (r) => r.toLowerCase() === user.role.toLowerCase()
     );
 
-    if (!hasRole)
+    if (!hasRole) {
+      roleRejectedCounter.add(1);
       throw new ForbiddenException(
         `Access denied. Required roles: ${requiredRoles.join(', ')}`
       );
+    }
 
     return true;
   }
