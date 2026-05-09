@@ -13,11 +13,13 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
-import { envSchema } from './env/env';
+import { envSchema } from '../env/env';
 
 const env = envSchema.parse(process.env);
 
-const metricsExporter = new OTLPMetricExporter();
+const metricsExporter = new OTLPMetricExporter({
+  url: env.OTLP_METRICS_EXPORT_ENDPOINT,
+});
 const metricReader = new PeriodicExportingMetricReader({
   exporter: metricsExporter,
   exportIntervalMillis: 10_000,
