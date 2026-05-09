@@ -26,6 +26,10 @@ import { CurrentUser } from '@/infra/auth/decorators/current-user.decorator';
 import { Role } from '@/infra/auth/decorators/role.decorator';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
+import {
+  assignPackageToDeliveryPersonErrorCounter,
+  assignPackageToDeliveryPersonSuccessCounter,
+} from '@/infra/observability/metrics';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 import { PackagePresenter } from '../presenters/package-presenter';
 
@@ -90,6 +94,7 @@ export class AssignPackageToADeliveryPersonController {
     });
 
     if (result.isLeft()) {
+      assignPackageToDeliveryPersonErrorCounter.add(1);
       const error = result.value;
       switch (error.constructor) {
         case ResourceNotFoundError:
@@ -101,6 +106,7 @@ export class AssignPackageToADeliveryPersonController {
       }
     }
 
+    assignPackageToDeliveryPersonSuccessCounter.add(1);
     const { package: packageRecord } = result.value;
 
     return { package: PackagePresenter.toHttp(packageRecord) };

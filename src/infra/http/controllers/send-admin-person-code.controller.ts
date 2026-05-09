@@ -19,6 +19,10 @@ import z from 'zod';
 import { TimeToSendNewEmailCodeError } from '@/domain/delivery/application/use-cases/errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
+import {
+  sendAdminPersonCodeErrorCounter,
+  sendAdminPersonCodeSuccessCounter,
+} from '@/infra/observability/metrics';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 
 const sendAdminPersonCodeSchema = z.object({
@@ -60,6 +64,7 @@ export class SendAdminPersonCodeController {
     });
 
     if (result.isLeft()) {
+      sendAdminPersonCodeErrorCounter.add(1);
       const error = result.value;
       switch (error.constructor) {
         case WrongCredentialsError:
@@ -72,6 +77,7 @@ export class SendAdminPersonCodeController {
       }
     }
 
+    sendAdminPersonCodeSuccessCounter.add(1);
     return { message: `The code was sent to ${body.email}` };
   }
 }

@@ -19,6 +19,10 @@ import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { EmailCodeExpiredError } from '@/domain/delivery/errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
+import {
+  validateAdminPersonCodeErrorCounter,
+  validateAdminPersonCodeSuccessCounter,
+} from '@/infra/observability/metrics';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 
 const validateAdminPersonCodeSchema = z.object({
@@ -71,6 +75,7 @@ export class ValidateAdminPersonCodeController {
     });
 
     if (result.isLeft()) {
+      validateAdminPersonCodeErrorCounter.add(1);
       const error = result.value;
       switch (error.constructor) {
         case ResourceNotFoundError:
@@ -87,6 +92,7 @@ export class ValidateAdminPersonCodeController {
       }
     }
 
+    validateAdminPersonCodeSuccessCounter.add(1);
     return { message: 'Code validated successfully' };
   }
 }

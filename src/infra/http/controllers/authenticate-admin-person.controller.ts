@@ -17,6 +17,10 @@ import z from 'zod';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
+import {
+  authenticateAdminPersonErrorCounter,
+  authenticateAdminPersonSuccessCounter,
+} from '@/infra/observability/metrics';
 import { cpfSchema } from '@/infra/utils/zod-schemas/cpf-schema';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
 
@@ -73,6 +77,7 @@ export class AuthenticateAdminPersonController {
     });
 
     if (result.isLeft()) {
+      authenticateAdminPersonErrorCounter.add(1);
       const error = result.value;
 
       switch (error.constructor) {
@@ -86,6 +91,7 @@ export class AuthenticateAdminPersonController {
       }
     }
 
+    authenticateAdminPersonSuccessCounter.add(1);
     return { access_token: result.value.accessToken };
   }
 }
