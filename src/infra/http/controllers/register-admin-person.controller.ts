@@ -26,6 +26,10 @@ import { CurrentUser } from '@/infra/auth/decorators/current-user.decorator';
 import { Role } from '@/infra/auth/decorators/role.decorator';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
+import {
+  registerAdminPersonErrorCounter,
+  registerAdminPersonSuccessCounter,
+} from '@/infra/observability/metrics';
 import { cpfSchema } from '@/infra/utils/zod-schemas/cpf-schema';
 import { passwordSchema } from '@/infra/utils/zod-schemas/password-schema';
 import { ZodValidationPipe } from '../pipes/zod-validation-pipes';
@@ -89,6 +93,8 @@ export class RegisterAdminPersonController {
     });
 
     if (result.isLeft()) {
+      registerAdminPersonErrorCounter.add(1);
+
       const error = result.value;
       switch (error.constructor) {
         case InvalidateCpfError:
@@ -105,6 +111,9 @@ export class RegisterAdminPersonController {
     }
 
     const { adminPerson } = result.value;
+
+    registerAdminPersonSuccessCounter.add(1);
+    //FIXME: Add metrics on guards too
 
     return { admin: AdminPersonPresenter.toHttp(adminPerson) };
   }
