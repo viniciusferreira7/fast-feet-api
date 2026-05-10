@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     root: './',
     setupFiles: ['./test/setup-for-infra-tests.ts', './test/seed-admin.ts'],
+    fileParallelism: false,
     testTimeout: 1_000_000, // 1_000 seconds
     hookTimeout: 1_000_000, // 1_000 seconds
   },
