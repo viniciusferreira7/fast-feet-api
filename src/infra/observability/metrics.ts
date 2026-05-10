@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 
-dotenv.config({ path: '.env', override: true });
+dotenv.config({ path: '.env' });
 
 import { metrics as metricsApi } from '@opentelemetry/api';
 import { envSchema } from '../env/env';
