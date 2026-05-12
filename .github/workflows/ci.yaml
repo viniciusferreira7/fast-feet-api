@@ -49,7 +49,7 @@ jobs:
         run: pnpm run check:type
 
   test-unit:
-    name: Run unit tests
+    name: Unit tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [quality]
@@ -79,7 +79,7 @@ jobs:
         run: pnpm run test:unit
 
   test-integration:
-    name: Run integration tests
+    name: Integration tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [quality, test-unit]
