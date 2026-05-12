@@ -51,7 +51,7 @@ describe('Send Admin Person Code (E2E)', () => {
     expect(response.statusCode).toBe(409);
   });
 
-  it.only('[POST] /admins/code — should return 201 after previous code is consumed', async () => {
+  it('[POST] /admins/code — should return 201 after previous code is consumed', async () => {
     await sendAdminCode(app, rootEmail, apiToken);
     const code = await getAdminEmailCode(drizzleService, rootEmail);
     await validateAdminCode(app, rootEmail, code, apiToken);
@@ -63,8 +63,6 @@ describe('Send Admin Person Code (E2E)', () => {
     );
 
     const response = await sendAdminCode(app, rootEmail, apiToken);
-
-    console.log({ body: response.body });
 
     expect(response.statusCode).toBe(201);
     expect(response.body.message).toContain(rootEmail);
