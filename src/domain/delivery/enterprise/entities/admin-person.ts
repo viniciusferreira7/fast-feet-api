@@ -115,7 +115,10 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
   }
 
   public static create(
-    props: Optional<AdminPersonProps, 'createdAt' | 'updatedAt' | 'emailVerifiedAt'>,
+    props: Optional<
+      AdminPersonProps,
+      'createdAt' | 'updatedAt' | 'emailVerifiedAt'
+    >,
     id?: UniqueEntityId
   ) {
     return new AdminPerson(

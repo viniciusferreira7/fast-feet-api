@@ -110,7 +110,10 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
   }
 
   public static create(
-    props: Optional<RecipientPersonProps, 'createdAt' | 'updatedAt' | 'emailVerifiedAt'>,
+    props: Optional<
+      RecipientPersonProps,
+      'createdAt' | 'updatedAt' | 'emailVerifiedAt'
+    >,
     id?: UniqueEntityId
   ) {
     return new RecipientPerson(
