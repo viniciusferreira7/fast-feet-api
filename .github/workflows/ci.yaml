@@ -219,7 +219,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run database migrations
-        run: pnpm run drizzle-kit migrate
+        run: pnpm run db:migrate
 
       - name: Run E2E tests
         run: pnpm run test:e2e
