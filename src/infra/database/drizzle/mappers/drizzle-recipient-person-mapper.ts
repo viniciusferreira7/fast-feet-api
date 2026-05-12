@@ -47,6 +47,7 @@ export class DrizzleRecipientPersonMapper {
       updatedAt: recipientPerson.updatedAt,
       version: userVersion,
       emailCode: emailVerification?.id.toString() ?? null,
+      emailVerifiedAt: recipientPerson.emailVerifiedAt ?? null,
     };
 
     const recipientProfile: RecipientProfileRaw = {
@@ -88,6 +89,7 @@ export class DrizzleRecipientPersonMapper {
         email: raw.users.email,
         password: raw.users.password,
         emailVerification,
+        emailVerifiedAt: raw.users.emailVerifiedAt ?? null,
         createdAt: raw.users.createdAt,
         updatedAt: raw.users.updatedAt,
       },

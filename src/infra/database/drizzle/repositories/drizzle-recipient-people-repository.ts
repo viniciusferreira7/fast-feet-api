@@ -117,7 +117,8 @@ export class DrizzleRecipientPeopleRepository
         email: recipientPerson.email,
         password: recipientPerson.password,
         role: recipientPerson.role,
-        emailCode: emailCode?.id,
+        emailCode: emailCode?.id ?? null,
+        emailVerifiedAt: recipientPerson.emailVerifiedAt,
         version: recipientPerson.version,
       })
       .where(

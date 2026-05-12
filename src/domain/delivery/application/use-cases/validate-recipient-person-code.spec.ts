@@ -4,7 +4,6 @@ import { ResourceNotFoundError } from '../../../../core/errors/resource-not-foun
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
-import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { ValidateRecipientPersonCodeUseCase } from './validate-recipient-person-code';
 
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;
@@ -121,43 +120,6 @@ describe('Validate Recipient Person Code', () => {
     }
   });
 
-  it('should return error when email has not been verified after code validation', async () => {
-    const emailVerificationResult = EmailVerification.create({
-      validatedAt: null,
-    });
-
-    if (emailVerificationResult.isLeft()) {
-      throw new Error('Failed to create email verification');
-    }
-
-    vi.spyOn(emailVerificationResult.value, 'validateCode').mockImplementation(
-      (code: string) => {
-        return emailVerificationResult.value.verificationCode.validateCode(
-          code
-        );
-      }
-    );
-
-    const recipientPerson = makeRecipientPerson({
-      email: 'recipient@example.com',
-      emailVerification: emailVerificationResult.value,
-    });
-
-    await recipientPeopleRepository.register(recipientPerson);
-
-    const code = emailVerificationResult.value.verificationCode.code;
-
-    const result = await sut.execute({
-      email: 'recipient@example.com',
-      code,
-    });
-
-    expect(result.isLeft()).toBe(true);
-    if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(EmailCodeHasNotBeenVerifiedError);
-    }
-  });
-
   it('should update recipient person in repository after successful validation', async () => {
     const emailVerificationResult = EmailVerification.create({
       validatedAt: null,
@@ -189,7 +151,8 @@ describe('Validate Recipient Person Code', () => {
 
     expect(updatedRecipientPerson).toBeTruthy();
     expect(updatedRecipientPerson?.isEmailValidated).toBe(true);
-    expect(updatedRecipientPerson?.emailVerification?.validatedAt).toBeTruthy();
+    expect(updatedRecipientPerson?.emailVerifiedAt).toBeTruthy();
+    expect(updatedRecipientPerson?.emailVerification).toBeNull();
   });
 
   it('should validate code within expiration time (5 minutes)', async () => {
@@ -272,7 +235,7 @@ describe('Validate Recipient Person Code', () => {
     expect(result.isRight()).toBe(true);
   });
 
-  it('should set validatedAt timestamp when code is successfully validated', async () => {
+  it('should set emailVerifiedAt and clear emailVerification when code is successfully validated', async () => {
     const emailVerificationResult = EmailVerification.create({
       validatedAt: null,
     });
@@ -301,14 +264,14 @@ describe('Validate Recipient Person Code', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      const validatedAt =
-        result.value.recipientPerson.emailVerification?.validatedAt;
-      expect(validatedAt).toBeTruthy();
-      if (validatedAt) {
-        const validatedTime = validatedAt.getTime();
-        expect(validatedTime).toBeGreaterThanOrEqual(before);
-        expect(validatedTime).toBeLessThanOrEqual(after);
+      const emailVerifiedAt = result.value.recipientPerson.emailVerifiedAt;
+      expect(emailVerifiedAt).toBeTruthy();
+      if (emailVerifiedAt) {
+        const verifiedTime = emailVerifiedAt.getTime();
+        expect(verifiedTime).toBeGreaterThanOrEqual(before);
+        expect(verifiedTime).toBeLessThanOrEqual(after);
       }
+      expect(result.value.recipientPerson.emailVerification).toBeNull();
     }
   });
 });

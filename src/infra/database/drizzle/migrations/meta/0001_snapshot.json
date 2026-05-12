@@ -1,6 +1,6 @@
 {
-  "id": "8a8f0609-8582-4391-bd36-ecbd931f6273",
-  "prevId": "9979623c-eb34-4ee3-8024-298d63050ebf",
+  "id": "edc010e2-dc1f-49ed-bd3c-3494beb2c583",
+  "prevId": "8a8f0609-8582-4391-bd36-ecbd931f6273",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -35,7 +35,9 @@
         "attachments_url_unique": {
           "name": "attachments_url_unique",
           "nullsNotDistinct": false,
-          "columns": ["url"]
+          "columns": [
+            "url"
+          ]
         }
       },
       "policies": {},
@@ -89,8 +91,12 @@
           "name": "delivery_profiles_user_id_users_id_fk",
           "tableFrom": "delivery_profiles",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -138,7 +144,9 @@
         "email_codes_code_unique": {
           "name": "email_codes_code_unique",
           "nullsNotDistinct": false,
-          "columns": ["code"]
+          "columns": [
+            "code"
+          ]
         }
       },
       "policies": {},
@@ -238,8 +246,12 @@
           "name": "notifications_recipient_id_users_id_fk",
           "tableFrom": "notifications",
           "tableTo": "users",
-          "columnsFrom": ["recipient_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "recipient_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -351,8 +363,12 @@
           "name": "package_histories_delivery_id_users_id_fk",
           "tableFrom": "package_histories",
           "tableTo": "users",
-          "columnsFrom": ["delivery_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "delivery_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -360,8 +376,12 @@
           "name": "package_histories_author_id_users_id_fk",
           "tableFrom": "package_histories",
           "tableTo": "users",
-          "columnsFrom": ["author_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -369,8 +389,12 @@
           "name": "package_histories_package_id_packages_id_fk",
           "tableFrom": "package_histories",
           "tableTo": "packages",
-          "columnsFrom": ["package_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -526,8 +550,12 @@
           "name": "packages_attachment_id_attachments_id_fk",
           "tableFrom": "packages",
           "tableTo": "attachments",
-          "columnsFrom": ["attachment_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "attachment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -535,8 +563,12 @@
           "name": "packages_recipient_id_users_id_fk",
           "tableFrom": "packages",
           "tableTo": "users",
-          "columnsFrom": ["recipient_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "recipient_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -544,8 +576,12 @@
           "name": "packages_delivery_id_users_id_fk",
           "tableFrom": "packages",
           "tableTo": "users",
-          "columnsFrom": ["delivery_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "delivery_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -553,8 +589,12 @@
           "name": "packages_author_id_users_id_fk",
           "tableFrom": "packages",
           "tableTo": "users",
-          "columnsFrom": ["author_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "author_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -564,12 +604,16 @@
         "packages_code_unique": {
           "name": "packages_code_unique",
           "nullsNotDistinct": false,
-          "columns": ["code"]
+          "columns": [
+            "code"
+          ]
         },
         "packages_attachment_id_unique": {
           "name": "packages_attachment_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["attachment_id"]
+          "columns": [
+            "attachment_id"
+          ]
         }
       },
       "policies": {},
@@ -600,8 +644,12 @@
           "name": "recipient_profiles_user_id_users_id_fk",
           "tableFrom": "recipient_profiles",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -679,6 +727,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "email_verified_at": {
+          "name": "email_verified_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -703,8 +757,12 @@
           "name": "users_email_code_email_codes_id_fk",
           "tableFrom": "users",
           "tableTo": "email_codes",
-          "columnsFrom": ["email_code"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "email_code"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -714,12 +772,16 @@
         "users_cpf_unique": {
           "name": "users_cpf_unique",
           "nullsNotDistinct": false,
-          "columns": ["cpf"]
+          "columns": [
+            "cpf"
+          ]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -752,7 +814,11 @@
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": ["ADMIN", "DELIVERY", "RECIPIENT"]
+      "values": [
+        "ADMIN",
+        "DELIVERY",
+        "RECIPIENT"
+      ]
     }
   },
   "schemas": {},

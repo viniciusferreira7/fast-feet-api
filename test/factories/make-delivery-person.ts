@@ -6,7 +6,6 @@ import {
   DeliveryPerson,
   type DeliveryPersonProps,
 } from '@/domain/delivery/enterprise/entities/delivery-person';
-import { EmailVerification } from '@/domain/delivery/enterprise/entities/email-verification';
 import { Cpf } from '@/domain/delivery/enterprise/entities/value-object/cpf';
 
 export function makeDeliveryPerson(
@@ -21,23 +20,14 @@ export function makeDeliveryPerson(
     );
   }
 
-  const emailVerificationResult = EmailVerification.create({
-    validatedAt: new Date(),
-  });
-
-  if (emailVerificationResult.isLeft()) {
-    throw new Error(
-      `Failed to create email verification for delivery person factory: ${emailVerificationResult.value.message}`
-    );
-  }
-
   const deliveryPerson = DeliveryPerson.create(
     {
       name: faker.person.fullName(),
       cpf: cpfResult.value,
       email: faker.internet.email(),
       password: faker.internet.password(),
-      emailVerification: emailVerificationResult.value,
+      emailVerification: null,
+      emailVerifiedAt: new Date(),
       ...override,
     },
     id

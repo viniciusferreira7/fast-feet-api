@@ -4,7 +4,6 @@ import { ResourceNotFoundError } from '../../../../core/errors/resource-not-foun
 import { EmailVerification } from '../../enterprise/entities/email-verification';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
-import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { ValidateAdminPersonCodeUseCase } from './validate-admin-person-code';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
@@ -121,43 +120,6 @@ describe('Validate Admin Person Code', () => {
     }
   });
 
-  it('should return error when email has not been verified after code validation', async () => {
-    const emailVerificationResult = EmailVerification.create({
-      validatedAt: null,
-    });
-
-    if (emailVerificationResult.isLeft()) {
-      throw new Error('Failed to create email verification');
-    }
-
-    vi.spyOn(emailVerificationResult.value, 'validateCode').mockImplementation(
-      (code: string) => {
-        return emailVerificationResult.value.verificationCode.validateCode(
-          code
-        );
-      }
-    );
-
-    const adminPerson = makeAdminPerson({
-      email: 'admin@example.com',
-      emailVerification: emailVerificationResult.value,
-    });
-
-    await adminPeopleRepository.register(adminPerson);
-
-    const code = emailVerificationResult.value.verificationCode.code;
-
-    const result = await sut.execute({
-      email: 'admin@example.com',
-      code,
-    });
-
-    expect(result.isLeft()).toBe(true);
-    if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(EmailCodeHasNotBeenVerifiedError);
-    }
-  });
-
   it('should update admin person in repository after successful validation', async () => {
     const emailVerificationResult = EmailVerification.create({
       validatedAt: null,
@@ -188,7 +150,8 @@ describe('Validate Admin Person Code', () => {
 
     expect(updatedAdminPerson).toBeTruthy();
     expect(updatedAdminPerson?.isEmailValidated).toBe(true);
-    expect(updatedAdminPerson?.emailVerification?.validatedAt).toBeTruthy();
+    expect(updatedAdminPerson?.emailVerifiedAt).toBeTruthy();
+    expect(updatedAdminPerson?.emailVerification).toBeNull();
   });
 
   it('should validate code within expiration time (5 minutes)', async () => {
@@ -271,7 +234,7 @@ describe('Validate Admin Person Code', () => {
     expect(result.isRight()).toBe(true);
   });
 
-  it('should set validatedAt timestamp when code is successfully validated', async () => {
+  it('should set emailVerifiedAt and clear emailVerification when code is successfully validated', async () => {
     const emailVerificationResult = EmailVerification.create({
       validatedAt: null,
     });
@@ -300,14 +263,14 @@ describe('Validate Admin Person Code', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      const validatedAt =
-        result.value.adminPerson.emailVerification?.validatedAt;
-      expect(validatedAt).toBeTruthy();
-      if (validatedAt) {
-        const validatedTime = validatedAt.getTime();
-        expect(validatedTime).toBeGreaterThanOrEqual(before);
-        expect(validatedTime).toBeLessThanOrEqual(after);
+      const emailVerifiedAt = result.value.adminPerson.emailVerifiedAt;
+      expect(emailVerifiedAt).toBeTruthy();
+      if (emailVerifiedAt) {
+        const verifiedTime = emailVerifiedAt.getTime();
+        expect(verifiedTime).toBeGreaterThanOrEqual(before);
+        expect(verifiedTime).toBeLessThanOrEqual(after);
       }
+      expect(result.value.adminPerson.emailVerification).toBeNull();
     }
   });
 });

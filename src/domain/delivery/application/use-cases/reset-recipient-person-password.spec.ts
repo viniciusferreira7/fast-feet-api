@@ -108,6 +108,7 @@ describe('Reset Recipient Person Password', () => {
       email: 'recipient@example.com',
       password: 'old-password-hashed',
       emailVerification: null,
+      emailVerifiedAt: null,
     });
 
     await recipientPeopleRepository.register(recipientPerson);

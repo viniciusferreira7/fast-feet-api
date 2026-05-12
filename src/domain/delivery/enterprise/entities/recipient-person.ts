@@ -13,6 +13,7 @@ export interface RecipientPersonProps {
   email: string;
   password: string;
   emailVerification: EmailVerification | null;
+  emailVerifiedAt: Date | null;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -41,8 +42,12 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
     return this.props.emailVerification;
   }
 
+  get emailVerifiedAt() {
+    return this.props.emailVerifiedAt;
+  }
+
   get isEmailValidated() {
-    return !!this.props?.emailVerification?.validatedAt;
+    return !!this.props.emailVerifiedAt;
   }
 
   private touch() {
@@ -65,6 +70,7 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
 
     this.props.email = newEmail;
     this.props.emailVerification = null;
+    this.props.emailVerifiedAt = null;
 
     this.touch();
 
@@ -97,8 +103,14 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
     return false;
   }
 
+  public markEmailAsValidated(): void {
+    this.props.emailVerifiedAt = new Date();
+    this.props.emailVerification = null;
+    this.touch();
+  }
+
   public static create(
-    props: Optional<RecipientPersonProps, 'createdAt' | 'updatedAt'>,
+    props: Optional<RecipientPersonProps, 'createdAt' | 'updatedAt' | 'emailVerifiedAt'>,
     id?: UniqueEntityId
   ) {
     return new RecipientPerson(
@@ -106,6 +118,7 @@ export class RecipientPerson extends AggregateRoot<RecipientPersonProps> {
         ...props,
         createdAt: props?.createdAt ?? new Date(),
         updatedAt: props?.updatedAt ?? null,
+        emailVerifiedAt: props?.emailVerifiedAt ?? null,
       },
       id
     );

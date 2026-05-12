@@ -130,6 +130,7 @@ describe('Reset Delivery Person Password', () => {
       email: 'john@example.com',
       password: 'old-password-hashed',
       emailVerification: null,
+      emailVerifiedAt: null,
     });
 
     await deliveryPeopleRepository.register(deliveryPerson);

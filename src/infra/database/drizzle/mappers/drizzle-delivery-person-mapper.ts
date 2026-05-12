@@ -58,6 +58,7 @@ export class DrizzleDeliveryPersonMapper {
       updatedAt: deliveryPerson.updatedAt,
       version: userVersion,
       emailCode: emailVerification?.id.toString() ?? null,
+      emailVerifiedAt: deliveryPerson.emailVerifiedAt ?? null,
     };
 
     const deliveryProfile: DeliveryProfileRaw = {
@@ -105,6 +106,7 @@ export class DrizzleDeliveryPersonMapper {
         email: raw.users.email,
         password: raw.users.password,
         emailVerification,
+        emailVerifiedAt: raw.users.emailVerifiedAt ?? null,
         isActive: raw.delivery_profiles?.isActive ?? true,
         createdAt: raw.users.createdAt,
         updatedAt: raw.users.updatedAt,

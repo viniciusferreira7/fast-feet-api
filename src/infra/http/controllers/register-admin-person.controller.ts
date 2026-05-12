@@ -113,7 +113,6 @@ export class RegisterAdminPersonController {
     const { adminPerson } = result.value;
 
     registerAdminPersonSuccessCounter.add(1);
-    //FIXME: Add metrics on guards too
 
     return { admin: AdminPersonPresenter.toHttp(adminPerson) };
   }

@@ -108,6 +108,7 @@ describe('Reset Admin Person Password', () => {
       email: 'admin@example.com',
       password: 'old-password-hashed',
       emailVerification: null,
+      emailVerifiedAt: null,
     });
 
     await adminPeopleRepository.register(adminPerson);

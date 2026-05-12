@@ -4,7 +4,6 @@ import type { RecipientPerson } from '../../enterprise/entities/recipient-person
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
-import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 
 interface ValidateRecipientPersonCodeUseCaseRequest {
   code: string;
@@ -12,10 +11,7 @@ interface ValidateRecipientPersonCodeUseCaseRequest {
 }
 
 type ValidateRecipientPersonCodeUseCaseResponse = Either<
-  | ResourceNotFoundError
-  | EmailCodeExpiredError
-  | InvalidEmailCodeError
-  | EmailCodeHasNotBeenVerifiedError,
+  ResourceNotFoundError | EmailCodeExpiredError | InvalidEmailCodeError,
   { recipientPerson: RecipientPerson }
 >;
 
@@ -43,9 +39,7 @@ export class ValidateRecipientPersonCodeUseCase {
       return left(new InvalidEmailCodeError());
     }
 
-    if (!recipientPerson.isEmailValidated) {
-      return left(new EmailCodeHasNotBeenVerifiedError());
-    }
+    recipientPerson.markEmailAsValidated();
 
     await this.recipientPeopleRepository.update(recipientPerson);
 

@@ -6,7 +6,6 @@ import {
   AdminPerson,
   type AdminPersonProps,
 } from '@/domain/delivery/enterprise/entities/admin-person';
-import { EmailVerification } from '@/domain/delivery/enterprise/entities/email-verification';
 import { Cpf } from '@/domain/delivery/enterprise/entities/value-object/cpf';
 
 export function makeAdminPerson(
@@ -21,23 +20,14 @@ export function makeAdminPerson(
     );
   }
 
-  const emailVerificationResult = EmailVerification.create({
-    validatedAt: new Date(),
-  });
-
-  if (emailVerificationResult.isLeft()) {
-    throw new Error(
-      `Failed to create email verification for admin person factory: ${emailVerificationResult.value.message}`
-    );
-  }
-
   const adminPerson = AdminPerson.create(
     {
       name: faker.person.fullName(),
       cpf: cpfResult.value,
       email: faker.internet.email(),
       password: faker.internet.password(),
-      emailVerification: emailVerificationResult.value,
+      emailVerification: null,
+      emailVerifiedAt: new Date(),
       ...override,
     },
     id

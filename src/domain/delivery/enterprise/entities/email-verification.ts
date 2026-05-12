@@ -48,13 +48,14 @@ export class EmailVerification extends Entity<EmailVerificationProps> {
   public timeInMinutesToExpireCode() {
     const differenceInMilliseconds =
       Date.now() - this.props.createdAt.getTime();
+
     const FIVE_MINUTES = 1000 * 60 * 5;
 
-    const time = Math.round(
-      Math.ceil(differenceInMilliseconds - FIVE_MINUTES) / 60 / 60
-    );
+    const remainingTime = FIVE_MINUTES - differenceInMilliseconds;
 
-    return time;
+    const timeInMinutes = Math.ceil(remainingTime / (1000 * 60));
+
+    return timeInMinutes > 0 ? timeInMinutes : 0;
   }
 
   /**

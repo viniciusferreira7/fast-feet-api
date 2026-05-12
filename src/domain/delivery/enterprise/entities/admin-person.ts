@@ -13,6 +13,7 @@ export interface AdminPersonProps {
   email: string;
   password: string;
   emailVerification: EmailVerification | null;
+  emailVerifiedAt: Date | null;
   createdAt: Date;
   updatedAt: Date | null;
 }
@@ -41,8 +42,12 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
     return this.props.emailVerification;
   }
 
+  get emailVerifiedAt() {
+    return this.props.emailVerifiedAt;
+  }
+
   get isEmailValidated() {
-    return !!this.props?.emailVerification?.validatedAt;
+    return !!this.props.emailVerifiedAt;
   }
 
   private touch() {
@@ -65,6 +70,7 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
 
     this.props.email = newEmail;
     this.props.emailVerification = null;
+    this.props.emailVerifiedAt = null;
 
     this.touch();
 
@@ -85,6 +91,17 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
     return right(this.password);
   }
 
+  public clearEmailVerification(): void {
+    this.props.emailVerification = null;
+    this.touch();
+  }
+
+  public markEmailAsValidated(): void {
+    this.props.emailVerifiedAt = new Date();
+    this.props.emailVerification = null;
+    this.touch();
+  }
+
   public createNewEmailVerification(): boolean {
     const emailVerification = EmailVerification.create({});
 
@@ -98,7 +115,7 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
   }
 
   public static create(
-    props: Optional<AdminPersonProps, 'createdAt' | 'updatedAt'>,
+    props: Optional<AdminPersonProps, 'createdAt' | 'updatedAt' | 'emailVerifiedAt'>,
     id?: UniqueEntityId
   ) {
     return new AdminPerson(
@@ -106,6 +123,7 @@ export class AdminPerson extends AggregateRoot<AdminPersonProps> {
         ...props,
         createdAt: props?.createdAt ?? new Date(),
         updatedAt: props?.updatedAt ?? null,
+        emailVerifiedAt: props?.emailVerifiedAt ?? null,
       },
       id
     );

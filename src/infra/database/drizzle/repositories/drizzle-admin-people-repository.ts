@@ -107,7 +107,8 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
         email: adminPerson.email,
         password: adminPerson.password,
         role: adminPerson.role,
-        emailCode: emailCode?.id,
+        emailCode: emailCode?.id ?? null,
+        emailVerifiedAt: adminPerson.emailVerifiedAt,
         version: adminPerson.version,
       })
       .where(

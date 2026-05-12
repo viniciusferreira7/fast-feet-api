@@ -8,6 +8,13 @@
       "when": 1776442478869,
       "tag": "0000_fluffy_titania",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778594933185,
+      "tag": "0001_lovely_blade",
+      "breakpoints": true
     }
   ]
 }

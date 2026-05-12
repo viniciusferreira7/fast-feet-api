@@ -216,7 +216,8 @@ export class DrizzleDeliveryPeopleRepository
         email: deliveryPerson.email,
         password: deliveryPerson.password,
         role: deliveryPerson.role,
-        emailCode: emailCode?.id,
+        emailCode: emailCode?.id ?? null,
+        emailVerifiedAt: deliveryPerson.emailVerifiedAt,
         version: deliveryPerson.version,
       })
       .where(

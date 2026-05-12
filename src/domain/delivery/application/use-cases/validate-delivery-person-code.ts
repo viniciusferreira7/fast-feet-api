@@ -5,7 +5,6 @@ import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
-import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 
 interface ValidDeliveryPersonUseCaseRequest {
   code: string;
@@ -16,7 +15,6 @@ type ValidDeliveryPersonUseCaseResponse = Either<
   | ResourceNotFoundError
   | EmailCodeExpiredError
   | InvalidEmailCodeError
-  | EmailCodeHasNotBeenVerifiedError
   | DeliveryPersonProfileIsDisableError,
   { deliveryPerson: DeliveryPerson }
 >;
@@ -49,9 +47,7 @@ export class ValidDeliveryPersonUseCase {
       return left(new InvalidEmailCodeError());
     }
 
-    if (!deliveryPerson.isEmailValidated) {
-      return left(new EmailCodeHasNotBeenVerifiedError());
-    }
+    deliveryPerson.markEmailAsValidated();
 
     await this.deliveryPeopleRepository.update(deliveryPerson);
 

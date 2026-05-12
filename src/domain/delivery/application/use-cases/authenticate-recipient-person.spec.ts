@@ -194,6 +194,7 @@ describe('Authenticate Recipient Person', () => {
       cpf: cpfResult.value,
       password: await fakeHasher.hash('123456'),
       emailVerification: emailVerificationResult.value,
+      emailVerifiedAt: null,
     });
 
     await recipientPeopleRepository.register(recipientPerson);

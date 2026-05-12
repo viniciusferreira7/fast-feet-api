@@ -35,6 +35,7 @@ export const users = pgTable(
     version: integer('version').default(1).notNull(),
 
     emailCode: uuid('email_code').references(() => emailsCodes.id),
+    emailVerifiedAt: timestamp('email_verified_at', { withTimezone: true }),
   },
   (table) => [
     check('cpf_numeric_check', sql`${table.cpf} ~ '^[0-9]{11}$'`),

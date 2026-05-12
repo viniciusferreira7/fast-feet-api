@@ -222,6 +222,7 @@ describe('Authenticate Delivery Person', () => {
       cpf: cpfResult.value,
       password: await fakeHasher.hash('123456'),
       emailVerification: emailVerificationResult.value,
+      emailVerifiedAt: null,
     });
 
     await deliveryPeopleRepository.register(deliveryPerson);

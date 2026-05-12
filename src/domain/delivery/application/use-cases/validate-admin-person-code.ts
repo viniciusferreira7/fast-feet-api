@@ -5,7 +5,6 @@ import type { AdminPerson } from '../../enterprise/entities/admin-person';
 import { EmailCodeExpiredError } from '../../errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '../../errors/invalid-email-code-error';
 import { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 
 interface ValidateAdminPersonCodeUseCaseRequest {
   code: string;
@@ -13,10 +12,7 @@ interface ValidateAdminPersonCodeUseCaseRequest {
 }
 
 type ValidateAdminPersonCodeUseCaseResponse = Either<
-  | ResourceNotFoundError
-  | EmailCodeExpiredError
-  | InvalidEmailCodeError
-  | EmailCodeHasNotBeenVerifiedError,
+  ResourceNotFoundError | EmailCodeExpiredError | InvalidEmailCodeError,
   { adminPerson: AdminPerson }
 >;
 
@@ -42,9 +38,7 @@ export class ValidateAdminPersonCodeUseCase {
       return left(new InvalidEmailCodeError());
     }
 
-    if (!adminPerson.isEmailValidated) {
-      return left(new EmailCodeHasNotBeenVerifiedError());
-    }
+    adminPerson.markEmailAsValidated();
 
     await this.adminPeopleRepository.update(adminPerson);
 

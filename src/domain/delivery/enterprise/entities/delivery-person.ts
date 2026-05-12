@@ -15,6 +15,7 @@ export interface DeliveryPersonProps {
   password: string;
   createdAt: Date;
   emailVerification: EmailVerification | null;
+  emailVerifiedAt: Date | null;
   updatedAt: Date | null;
   isActive: boolean;
 }
@@ -48,8 +49,12 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
     return this.props.emailVerification;
   }
 
+  get emailVerifiedAt() {
+    return this.props.emailVerifiedAt;
+  }
+
   get isEmailValidated() {
-    return !!this.props?.emailVerification?.validatedAt;
+    return !!this.props.emailVerifiedAt;
   }
 
   get isActive() {
@@ -86,8 +91,8 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
     }
 
     this.props.email = newEmail;
-
     this.props.emailVerification = null;
+    this.props.emailVerifiedAt = null;
 
     this.touch();
 
@@ -122,10 +127,16 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
     return false;
   }
 
+  public markEmailAsValidated(): void {
+    this.props.emailVerifiedAt = new Date();
+    this.props.emailVerification = null;
+    this.touch();
+  }
+
   public static create(
     props: Optional<
       DeliveryPersonProps,
-      'createdAt' | 'updatedAt' | 'isActive'
+      'createdAt' | 'updatedAt' | 'isActive' | 'emailVerifiedAt'
     >,
     id?: UniqueEntityId
   ) {
@@ -135,6 +146,7 @@ export class DeliveryPerson extends AggregateRoot<DeliveryPersonProps> {
         createdAt: props?.createdAt ?? new Date(),
         updatedAt: props?.updatedAt ?? null,
         isActive: props.isActive ?? true,
+        emailVerifiedAt: props?.emailVerifiedAt ?? null,
       },
       id
     );
