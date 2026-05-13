@@ -20,7 +20,7 @@ import {
 import z from 'zod';
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
-import type { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
+import { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
 import { WeakPasswordError } from '@/domain/delivery/errors/weak-password-error';
 import { CurrentUser } from '@/infra/auth/decorators/current-user.decorator';
 import { Role } from '@/infra/auth/decorators/role.decorator';

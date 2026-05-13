@@ -3,6 +3,7 @@ import { HttpClient } from '@/domain/delivery/application/http/http-client';
 import { AssignPackageToADeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/assign-package-to-a-delivery-person';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
+import { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
@@ -36,6 +37,7 @@ import { FetchHttpClient } from './fetch-http-client';
     AuthenticateAdminPersonUseCase,
     SendAdminPersonCodeUseCase,
     ValidateAdminPersonCodeUseCase,
+    ResetAdminPersonPasswordUseCase,
   ],
   exports: [HttpClient],
   controllers: [
