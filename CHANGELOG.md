@@ -1,3 +1,25 @@
+# [1.44.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.43.0...v1.44.0) (2026-05-13)
+
+
+### Bug Fixes
+
+* **ci:** use correct db:migrate script in e2e migration step ([eebb80c](https://github.com/viniciusferreira7/fast-feet-api/commit/eebb80cba21a4fd00dcc7baf1e571b85ebed3cc6))
+* **controller:** add pipe on body instead of handler ([b2ee0d5](https://github.com/viniciusferreira7/fast-feet-api/commit/b2ee0d5f1e2c5b169ea72ea427baaf9e82c68a89))
+* decouple email verification status from active email code ([23b49be](https://github.com/viniciusferreira7/fast-feet-api/commit/23b49be0b5e78f7e5435ac42d54b9b7599859d30))
+* **http:** register ResetAdminPersonPasswordUseCase as provider and fix type import ([ba1217b](https://github.com/viniciusferreira7/fast-feet-api/commit/ba1217bd26aa15213b5fcfb9fc662dc771886aa3))
+* **metrics:** fix counter creation and centralize all counters in metrics module ([59fa9c0](https://github.com/viniciusferreira7/fast-feet-api/commit/59fa9c033e70dde79bbaf7e7e4702b2923f79396))
+* remove override prop from dot env into metrics and tracer ([70f75b3](https://github.com/viniciusferreira7/fast-feet-api/commit/70f75b329b70b71abd40eb03bb918503d76a75cb))
+
+
+### Features
+
+* add prop to not run tests e2e in parallelism ([95ade86](https://github.com/viniciusferreira7/fast-feet-api/commit/95ade8669abb657989cb52460aa867c4b9d19ee2))
+* **controller:** add reset-admin-person-password controller ([6aed489](https://github.com/viniciusferreira7/fast-feet-api/commit/6aed4893735a933410d900918e011f7402cb773c))
+* **metrics:** add rejection counters to auth guards ([ba0a3c9](https://github.com/viniciusferreira7/fast-feet-api/commit/ba0a3c99e7bbf4227dd93050ea0726cc2c0ccd36))
+* **metrics:** add success/error counters to all controllers ([bd085d7](https://github.com/viniciusferreira7/fast-feet-api/commit/bd085d7d63f091af98ff38dbc48bf66c7c010eaf))
+* **observability:** add counters for reset-admin-person-password ([d40a4ed](https://github.com/viniciusferreira7/fast-feet-api/commit/d40a4eda36251ac66e82e91efc834fa37b173874))
+* **use-case:** make ResetAdminPersonPasswordUseCase injectable ([ac6a427](https://github.com/viniciusferreira7/fast-feet-api/commit/ac6a4271624a52d982c11f7b09641bcc55b80e26))
+
 # [1.43.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.42.0...v1.43.0) (2026-05-06)
 
 
