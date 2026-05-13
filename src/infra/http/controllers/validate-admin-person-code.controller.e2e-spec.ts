@@ -94,7 +94,8 @@ describe('Validate Admin Person Code (E2E)', () => {
       .from(users)
       .where(eq(users.email, rootEmail));
 
-    if (!user.emailCode) throw new Error(`No email code found for ${rootEmail}`);
+    if (!user.emailCode)
+      throw new Error(`No email code found for ${rootEmail}`);
 
     await drizzleService.db
       .update(emailsCodes)
