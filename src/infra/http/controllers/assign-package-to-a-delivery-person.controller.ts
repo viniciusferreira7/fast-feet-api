@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -58,7 +57,6 @@ export class AssignPackageToADeliveryPersonController {
 
   @Patch()
   @Role('Admin')
-  @UsePipes(new ZodValidationPipe(assignPackageToADeliveryPersonSchema))
   @HttpCode(200)
   @ApiOperation({ summary: 'Assign a package to a delivery person' })
   @ApiBody({
@@ -84,7 +82,8 @@ export class AssignPackageToADeliveryPersonController {
   async handler(
     @CurrentUser() currentUser: UserPayload,
     @Param('packageId') packageId: string,
-    @Body() body: AssignPackageToADeliveryPersonSchema
+    @Body(new ZodValidationPipe(assignPackageToADeliveryPersonSchema))
+    body: AssignPackageToADeliveryPersonSchema
   ) {
     const result = await this.assignPackageToADeliveryPersonUseCase.execute({
       packageId,
