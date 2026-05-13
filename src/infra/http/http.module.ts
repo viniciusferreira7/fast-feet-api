@@ -13,6 +13,7 @@ import { ValidationModule } from '../validation/validation.module';
 import { AssignPackageToADeliveryPersonController } from './controllers/assign-package-to-a-delivery-person.controller';
 import { AuthenticateAdminPersonController } from './controllers/authenticate-admin-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
+import { ResetAdminPersonPasswordController } from './controllers/reset-admin-person-password.controller';
 import { SendAdminPersonCodeController } from './controllers/send-admin-person-code.controller';
 import { ValidateAdminPersonCodeController } from './controllers/validate-admin-person-code.controller';
 import { FetchHttpClient } from './fetch-http-client';
@@ -43,6 +44,7 @@ import { FetchHttpClient } from './fetch-http-client';
     AuthenticateAdminPersonController,
     SendAdminPersonCodeController,
     ValidateAdminPersonCodeController,
+    ResetAdminPersonPasswordController,
   ],
 })
 export class HttpModule {}
