@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
 import { WeakPasswordError } from '../../errors/weak-password-error';
-import type { HashComparer } from '../cryptography/hash-comparer';
-import type { HashGenerator } from '../cryptography/hash-generator';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { PasswordValidator } from '../validation/password-validator';
+import { HashComparer } from '../cryptography/hash-comparer';
+import { HashGenerator } from '../cryptography/hash-generator';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { PasswordValidator } from '../validation/password-validator';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -19,7 +20,8 @@ type ResetAdminPersonPasswordUseCaseResponse = Either<
   { adminPerson: AdminPerson }
 >;
 
-export class ResetAdminPersonPassword {
+@Injectable()
+export class ResetAdminPersonPasswordUseCase {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly passwordValidator: PasswordValidator,

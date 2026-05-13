@@ -6,13 +6,13 @@ import { left } from '@/core/either';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
-import { ResetAdminPersonPassword } from './reset-admin-person-password';
+import { ResetAdminPersonPasswordUseCase } from './reset-admin-person-password';
 
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let passwordValidator: FakePasswordValidator;
 let hashGenerator: FakeHasher;
 let hashComparer: FakeHasher;
-let sut: ResetAdminPersonPassword;
+let sut: ResetAdminPersonPasswordUseCase;
 
 describe('Reset Admin Person Password', () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('Reset Admin Person Password', () => {
     passwordValidator = new FakePasswordValidator();
     hashGenerator = new FakeHasher();
     hashComparer = new FakeHasher();
-    sut = new ResetAdminPersonPassword(
+    sut = new ResetAdminPersonPasswordUseCase(
       adminPeopleRepository,
       passwordValidator,
       hashGenerator,
