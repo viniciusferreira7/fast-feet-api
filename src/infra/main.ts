@@ -10,6 +10,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import packageJson from '../../package.json';
 import { AppModule } from './app.module';
 import { EnvService } from './env/env.service';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
@@ -17,6 +18,7 @@ import { log } from './logger';
 
 process.on('unhandledRejection', (reason) => {
   log.error(reason, '[Unhandled Rejection]');
+  console.log(reason);
 });
 
 process.on('uncaughtException', (err) => {
@@ -35,6 +37,7 @@ async function bootstrap() {
 
   const port = envService.get('PORT');
 
+  app.setGlobalPrefix('api');
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -93,19 +96,19 @@ async function bootstrap() {
     .setDescription(
       'A robust package delivery management system built with NestJS, following Domain-Driven Design (DDD) and Clean Architecture principles.'
     )
-    .setVersion('1.0')
+    .setVersion(packageJson.version)
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   await app
-    .listen(process.env.PORT ?? 3000)
+    .listen(port ?? 3333)
     .then(() => {
       log.info(`🚀  API running on port ${port}`);
-      log.info(`📚  Swagger documentation: <http://localhost:${port}/api>`);
+      log.info(`📚  Swagger documentation: <http://localhost:${port}/api/docs>`);
     })
-    .catch(log.error);
+    .catch((err) => log.error(err));
 }
 bootstrap();
