@@ -1,9 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { AdminPerson } from '../../enterprise/entities/admin-person';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { EmailSender } from '../email/email-sender';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { EmailAlreadyInUseError } from './errors/email-already-in-use-error';
 
 interface UpdateAdminPersonUseCaseRequest {
@@ -17,11 +19,13 @@ type UpdateAdminPersonUseCaseResponse = Either<
   { adminPerson: AdminPerson }
 >;
 
+@Injectable()
 export class UpdateAdminPersonUseCase {
   constructor(
     private readonly adminPeopleRepository: AdminPeopleRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
-    private readonly recipientPeopleRepository: RecipientPeopleRepository
+    private readonly recipientPeopleRepository: RecipientPeopleRepository,
+    private readonly emailSender: EmailSender
   ) {}
 
   async execute({
@@ -55,6 +59,16 @@ export class UpdateAdminPersonUseCase {
       }
 
       adminPerson.updateEmail(email);
+
+      const codeWasCreated = adminPerson.createNewEmailVerification();
+
+      if (codeWasCreated && adminPerson.emailVerification) {
+        await this.emailSender.send(
+          'Fast Feet sent a code confirmation',
+          `Your new code is ${adminPerson.emailVerification.code}`,
+          adminPerson.email
+        );
+      }
     }
 
     if (name) {

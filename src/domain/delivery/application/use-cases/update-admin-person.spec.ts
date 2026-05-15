@@ -1,3 +1,4 @@
+import { FakeEmailSender } from 'test/email/fake-email-sender';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
@@ -11,6 +12,7 @@ import { UpdateAdminPersonUseCase } from './update-admin-person';
 let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;
+let emailSender: FakeEmailSender;
 let sut: UpdateAdminPersonUseCase;
 
 describe('Update Admin Person', () => {
@@ -18,10 +20,12 @@ describe('Update Admin Person', () => {
     adminPeopleRepository = new InMemoryAdminPeopleRepository();
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     recipientPeopleRepository = new InMemoryRecipientPeopleRepository();
+    emailSender = new FakeEmailSender();
     sut = new UpdateAdminPersonUseCase(
       adminPeopleRepository,
       deliveryPeopleRepository,
-      recipientPeopleRepository
+      recipientPeopleRepository,
+      emailSender
     );
   });
 
@@ -169,5 +173,67 @@ describe('Update Admin Person', () => {
     });
 
     expect(result.isRight()).toBe(true);
+  });
+
+  it('should clear emailVerifiedAt when email is updated', async () => {
+    const adminPerson = makeAdminPerson({
+      emailVerifiedAt: new Date(),
+    });
+    await adminPeopleRepository.register(adminPerson);
+
+    const result = await sut.execute({
+      id: adminPerson.id.toString(),
+      email: 'new@example.com',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.adminPerson.emailVerifiedAt).toBeNull();
+    }
+  });
+
+  it('should send a verification code to the new email when email is updated', async () => {
+    const adminPerson = makeAdminPerson();
+    await adminPeopleRepository.register(adminPerson);
+
+    await sut.execute({
+      id: adminPerson.id.toString(),
+      email: 'new@example.com',
+    });
+
+    expect(emailSender.sentEmails).toHaveLength(1);
+    expect(emailSender.sentEmails[0]).toEqual({
+      title: 'Fast Feet sent a code confirmation',
+      content: expect.stringContaining('Your new code is'),
+      to: 'new@example.com',
+    });
+  });
+
+  it('should create a new email verification when email is updated', async () => {
+    const adminPerson = makeAdminPerson({ emailVerification: null });
+    await adminPeopleRepository.register(adminPerson);
+
+    const result = await sut.execute({
+      id: adminPerson.id.toString(),
+      email: 'new@example.com',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.adminPerson.emailVerification).toBeTruthy();
+      expect(result.value.adminPerson.emailVerification?.code).toBeTruthy();
+    }
+  });
+
+  it('should not send a verification code when only name is updated', async () => {
+    const adminPerson = makeAdminPerson();
+    await adminPeopleRepository.register(adminPerson);
+
+    await sut.execute({
+      id: adminPerson.id.toString(),
+      name: 'New Name',
+    });
+
+    expect(emailSender.sentEmails).toHaveLength(0);
   });
 });
