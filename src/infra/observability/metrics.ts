@@ -62,6 +62,14 @@ const resetAdminPersonPasswordSuccessCounter = customMetrics.createCounter(
   'reset_admin_person_password_success'
 );
 
+//Update admin person
+const updateAdminPersonErrorCounter = customMetrics.createCounter(
+  'update_admin_person_error'
+);
+const updateAdminPersonSuccessCounter = customMetrics.createCounter(
+  'update_admin_person_success'
+);
+
 export {
   customMetrics,
   jwtRejectedCounter,
@@ -78,4 +86,6 @@ export {
   validateAdminPersonCodeSuccessCounter,
   resetAdminPersonPasswordErrorCounter,
   resetAdminPersonPasswordSuccessCounter,
+  updateAdminPersonErrorCounter,
+  updateAdminPersonSuccessCounter,
 };
