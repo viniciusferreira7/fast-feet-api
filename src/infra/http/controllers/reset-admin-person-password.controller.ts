@@ -42,7 +42,7 @@ const resetPasswordSchema = z.object({
 type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 
 @ApiTags('Admins')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('admins/reset-password')
 @UseGuards(RoleGuard)
 @Role('Admin')

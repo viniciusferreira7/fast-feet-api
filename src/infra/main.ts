@@ -97,7 +97,19 @@ async function bootstrap() {
       'A robust package delivery management system built with NestJS, following Domain-Driven Design (DDD) and Clean Architecture principles.'
     )
     .setVersion(packageJson.version)
-    .addBearerAuth()
+    .addTag('Admins', 'Admin person management endpoints')
+    .addTag('Packages', 'Package management endpoints')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth'
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -107,7 +119,9 @@ async function bootstrap() {
     .listen(port ?? 3333)
     .then(() => {
       log.info(`🚀  API running on port ${port}`);
-      log.info(`📚  Swagger documentation: <http://localhost:${port}/api/docs>`);
+      log.info(
+        `📚  Swagger documentation: <http://localhost:${port}/api/docs>`
+      );
     })
     .catch((err) => log.error(err));
 }

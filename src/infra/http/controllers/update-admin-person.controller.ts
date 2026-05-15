@@ -41,7 +41,7 @@ const updateAdminSchema = z.object({
 type UpdateAdminSchema = z.infer<typeof updateAdminSchema>;
 
 @ApiTags('Admins')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('admins')
 @UseGuards(RoleGuard)
 @Role('Admin')

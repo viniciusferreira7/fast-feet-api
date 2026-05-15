@@ -47,7 +47,7 @@ type AssignPackageToADeliveryPersonSchema = z.infer<
 >;
 
 @ApiTags('Packages')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @UseGuards(RoleGuard)
 @Controller('packages/:packagesId')
 export class AssignPackageToADeliveryPersonController {
