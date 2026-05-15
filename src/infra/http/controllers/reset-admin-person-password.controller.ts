@@ -44,6 +44,8 @@ type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 @ApiTags('Admins')
 @ApiBearerAuth()
 @Controller('admins/reset-password')
+@UseGuards(RoleGuard)
+@Role('Admin')
 export class ResetAdminPersonPasswordController {
   constructor(
     private readonly resetAdminPersonPasswordUseCase: ResetAdminPersonPasswordUseCase
@@ -51,8 +53,6 @@ export class ResetAdminPersonPasswordController {
 
   @Patch()
   @HttpCode(204)
-  @UseGuards(RoleGuard)
-  @Role('Admin')
   @ApiOperation({ summary: 'Reset the password of an admin' })
   @ApiBody({
     schema: {

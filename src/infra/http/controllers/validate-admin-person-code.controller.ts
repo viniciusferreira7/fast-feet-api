@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   Put,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import {
@@ -19,6 +20,8 @@ import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { EmailCodeExpiredError } from '@/domain/delivery/errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
+import { Role } from '@/infra/auth/decorators/role.decorator';
+import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import {
   validateAdminPersonCodeErrorCounter,
   validateAdminPersonCodeSuccessCounter,
@@ -36,6 +39,8 @@ type ValidateAdminPersonCodeSchema = z.infer<
 
 @ApiTags('Admins')
 @Controller('admins/code')
+@UseGuards(RoleGuard)
+@Role('Admin')
 export class ValidateAdminPersonCodeController {
   constructor(
     private readonly validateAdminPersonCodeUseCase: ValidateAdminPersonCodeUseCase

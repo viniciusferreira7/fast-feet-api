@@ -5,6 +5,7 @@ import {
   Controller,
   HttpCode,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import {
@@ -19,6 +20,8 @@ import z from 'zod';
 import { TimeToSendNewEmailCodeError } from '@/domain/delivery/application/use-cases/errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
+import { Role } from '@/infra/auth/decorators/role.decorator';
+import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import {
   sendAdminPersonCodeErrorCounter,
   sendAdminPersonCodeSuccessCounter,
@@ -33,6 +36,8 @@ type SendAdminPersonCodeSchema = z.infer<typeof sendAdminPersonCodeSchema>;
 
 @ApiTags('Admins')
 @Controller('admins/code')
+@UseGuards(RoleGuard)
+@Role('Admin')
 export class SendAdminPersonCodeController {
   constructor(
     private readonly sendAdminPersonCodeUseCase: SendAdminPersonCodeUseCase

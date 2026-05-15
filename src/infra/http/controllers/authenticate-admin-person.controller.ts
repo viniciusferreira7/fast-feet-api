@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   Post,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import {
@@ -17,6 +18,8 @@ import z from 'zod';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
+import { Role } from '@/infra/auth/decorators/role.decorator';
+import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import {
   authenticateAdminPersonErrorCounter,
   authenticateAdminPersonSuccessCounter,
@@ -33,6 +36,8 @@ type AuthenticateAdminSchema = z.infer<typeof authenticateAdminSchema>;
 
 @ApiTags('Admins')
 @Controller('admins/login')
+@UseGuards(RoleGuard)
+@Role('Admin')
 export class AuthenticateAdminPersonController {
   constructor(
     private readonly authenticateAdminPersonUseCase: AuthenticateAdminPersonUseCase
