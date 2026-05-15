@@ -13,6 +13,7 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
+import packageJson from '../../../package.json';
 import { envSchema } from '../env/env';
 
 const env = envSchema.parse(process.env);
@@ -32,7 +33,7 @@ const serviceName = env.SERVICE_NAME;
 
 const resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: serviceName,
-  [ATTR_SERVICE_VERSION]: '1.0.0',
+  [ATTR_SERVICE_VERSION]: packageJson.version,
 });
 
 const mergedResource = resource;
