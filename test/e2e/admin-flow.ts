@@ -119,6 +119,17 @@ export async function resetAdminPassword(
     .send({ email, password, newPassword });
 }
 
+export async function updateAdmin(
+  app: INestApplication,
+  accessToken: string,
+  data: { name?: string; email?: string }
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch('/admins')
+    .set('Authorization', `Bearer ${accessToken}`)
+    .send(data);
+}
+
 export async function createAuthenticatedAdmin(
   app: INestApplication,
   drizzleService: DrizzleService,
