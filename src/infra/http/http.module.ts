@@ -5,6 +5,7 @@ import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/us
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
+import { UpdateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/update-admin-person';
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
@@ -16,6 +17,7 @@ import { AuthenticateAdminPersonController } from './controllers/authenticate-ad
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { ResetAdminPersonPasswordController } from './controllers/reset-admin-person-password.controller';
 import { SendAdminPersonCodeController } from './controllers/send-admin-person-code.controller';
+import { UpdateAdminPersonController } from './controllers/update-admin-person.controller';
 import { ValidateAdminPersonCodeController } from './controllers/validate-admin-person-code.controller';
 import { FetchHttpClient } from './fetch-http-client';
 
@@ -38,6 +40,7 @@ import { FetchHttpClient } from './fetch-http-client';
     SendAdminPersonCodeUseCase,
     ValidateAdminPersonCodeUseCase,
     ResetAdminPersonPasswordUseCase,
+    UpdateAdminPersonUseCase,
   ],
   exports: [HttpClient],
   controllers: [
@@ -47,6 +50,7 @@ import { FetchHttpClient } from './fetch-http-client';
     SendAdminPersonCodeController,
     ValidateAdminPersonCodeController,
     ResetAdminPersonPasswordController,
+    UpdateAdminPersonController,
   ],
 })
 export class HttpModule {}
