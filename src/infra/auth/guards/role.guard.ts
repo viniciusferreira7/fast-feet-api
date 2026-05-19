@@ -24,7 +24,8 @@ export class RoleGuard implements CanActivate {
 
     const user = context.switchToHttp().getRequest().user;
 
-    if (!user?.role) {
+    // biome-ignore lint/complexity/useOptionalChain: If change fo optional chain, it will cause error
+    if (!user || !user.role) {
       roleRejectedCounter.add(1);
       throw new ForbiddenException('User role not found');
     }

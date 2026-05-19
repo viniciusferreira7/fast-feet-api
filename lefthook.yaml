@@ -21,11 +21,5 @@ pre-push:
     typecheck:
       run: pnpm check:type
 
-    unit-tests:
-      run: pnpm test:unit
-
-    integration-tests:
-      run: pnpm test:int
-
-    e2e-tests:
-      run: pnpm test:e2e
+    tests:
+      run: pnpm test:unit && pnpm test:int && pnpm test:e2e
