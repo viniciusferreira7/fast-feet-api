@@ -12,7 +12,6 @@ export class ZodValidationPipe implements PipeTransform {
       return parsedValue;
     } catch (error: unknown) {
       if (error instanceof ZodError) {
-        console.log({ error }, 'Error here');
         throw new BadRequestException({
           errors: fromZodError(error),
           message: 'Validation failed',
@@ -23,5 +22,3 @@ export class ZodValidationPipe implements PipeTransform {
     }
   }
 }
-
-//TODO: All e2e tests are falling and returning 400

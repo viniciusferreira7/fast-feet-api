@@ -18,7 +18,6 @@ import { log } from './logger';
 
 process.on('unhandledRejection', (reason) => {
   log.error(reason, '[Unhandled Rejection]');
-  console.log(reason);
 });
 
 process.on('uncaughtException', (err) => {
