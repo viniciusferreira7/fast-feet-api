@@ -56,9 +56,12 @@ async function main(): Promise<void> {
         const testFiles = findTestFiles(type);
 
         const selection = await p.multiselect<string>({
-          message: `[${runner.label}] Select test files  (none = run all, type to filter)`,
-          options: testFiles,
-          required: false,
+          message: `[${runner.label}] Select test files  (type to filter)`,
+          options: [
+            { value: '__all__', label: 'Run all', hint: 'full suite' },
+            ...testFiles,
+          ],
+          initialValues: ['__all__'],
         });
 
         if (p.isCancel(selection)) {
@@ -66,11 +69,11 @@ async function main(): Promise<void> {
           break;
         }
 
+        const chosen = selection as string[];
+        const runAll = chosen.includes('__all__') || chosen.length === 0;
         configs.push({
           value,
-          files: (selection as string[]).length
-            ? (selection as string[])
-            : undefined,
+          files: runAll ? undefined : chosen,
         });
       }
 
