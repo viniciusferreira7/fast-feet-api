@@ -1,3 +1,28 @@
+# [1.45.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.44.0...v1.45.0) (2026-05-19)
+
+
+### Bug Fixes
+
+* **http:** move @Role to class level in register-admin-person controller ([9488d24](https://github.com/viniciusferreira7/fast-feet-api/commit/9488d248eb13428b652373b7329a385f3e947fe8))
+* **http:** replace RoleGuard with CurrentAPiKey on api-key-protected endpoints ([beb4be4](https://github.com/viniciusferreira7/fast-feet-api/commit/beb4be42f3094ff32247a8ef6c254aa644ef2dbc))
+
+
+### Features
+
+* **cli:** add exec wrapper and test file discovery utils ([3d2e53f](https://github.com/viniciusferreira7/fast-feet-api/commit/3d2e53fbfaf6d4fba891be1002db2434adc4a76e))
+* **cli:** add explicit run all option pre-selected in test file picker ([2093076](https://github.com/viniciusferreira7/fast-feet-api/commit/20930761ba8f4fe33c3970e64a2beeb39337f4a8))
+* **cli:** add flow runner definitions with multi-file support ([124d230](https://github.com/viniciusferreira7/fast-feet-api/commit/124d23045867cc739578f9b6e688ec56deef8c6b))
+* **cli:** add interactive test runner with multiselect flow and file picker ([6c665fe](https://github.com/viniciusferreira7/fast-feet-api/commit/6c665fe9ca73ae70814b1a1686f1bcaff47a067d))
+* **cli:** stream output in real-time, add watch mode and elapsed time ([e350506](https://github.com/viniciusferreira7/fast-feet-api/commit/e350506639d5183290de6976331f95bd3e5d9083))
+* **http:** add global api prefix, fix swagger path and catch binding ([e933da0](https://github.com/viniciusferreira7/fast-feet-api/commit/e933da0759924a7f87d17e40d4f748cdd1b06aa6))
+* **http:** add swagger annotations to update admin person controller ([ace734f](https://github.com/viniciusferreira7/fast-feet-api/commit/ace734ffa61206c38c643718573610434d8cbe43))
+* **http:** register UpdateAdminPersonUseCase and controller in HttpModule ([3ff6137](https://github.com/viniciusferreira7/fast-feet-api/commit/3ff61379e8e197bd09fbb4d94585827f9c68393d))
+* **observability:** add metrics counters for update admin person ([a19cb48](https://github.com/viniciusferreira7/fast-feet-api/commit/a19cb483de20699ae797690b1bdfc67b85a24197))
+* **scripts:** add watch mode and streaming output to CLI runner ([445139c](https://github.com/viniciusferreira7/fast-feet-api/commit/445139c3ceaf62d613bc6bd41836e0f193df9107))
+* **swagger:** add tags and named bearer auth scheme to DocumentBuilder ([5a25c50](https://github.com/viniciusferreira7/fast-feet-api/commit/5a25c5066689e86c918e41d51e128ab16b31962f))
+* **tracer:** add version of application on tracer ([f6405d2](https://github.com/viniciusferreira7/fast-feet-api/commit/f6405d2128296ae41ebaccf3337068b77a5d03d3))
+* **use-case:** send email verification code on admin person email update ([5b07077](https://github.com/viniciusferreira7/fast-feet-api/commit/5b070775681e76ea57185402385307cf67a73363))
+
 # [1.44.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.43.0...v1.44.0) (2026-05-13)
 
 
