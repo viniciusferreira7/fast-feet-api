@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { AdminPeopleRepository } from '@/domain/delivery/application/repositories/admin-people-repository';
 import { DrizzleService } from '../drizzle.service';
 import { users } from '../schema';
@@ -16,11 +16,9 @@ describe('DrizzleAdminPeopleRepository', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     repository = moduleRef.get(AdminPeopleRepository);
     drizzleService = moduleRef.get(DrizzleService);
-
-    await app.init();
   });
 
   afterEach(async () => {

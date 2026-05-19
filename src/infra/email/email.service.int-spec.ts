@@ -1,5 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { EmailService } from './email.service';
 
 describe('EmailService', () => {
@@ -9,11 +9,8 @@ describe('EmailService', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
-
+    app = await startApp(moduleRef);
     emailService = moduleRef.get(EmailService);
-
-    await app.init();
   });
 
   it('should return true when email is sent successfully', async () => {

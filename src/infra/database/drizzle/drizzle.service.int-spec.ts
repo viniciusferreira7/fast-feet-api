@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { DrizzleService } from './drizzle.service';
 
 let service: DrizzleService;
@@ -10,10 +10,8 @@ describe('DrizzleService', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     service = moduleRef.get<DrizzleService>(DrizzleService);
-
-    await app.init();
   });
 
   it('should be defined', () => {

@@ -1,3 +1,5 @@
+import type { INestApplication } from '@nestjs/common';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -48,4 +50,13 @@ export async function makeModuleRef(): Promise<TestingModule> {
     .compile();
 
   return moduleRef;
+}
+
+export async function startApp(
+  moduleRef: TestingModule
+): Promise<INestApplication> {
+  const app = moduleRef.createNestApplication(new FastifyAdapter());
+  await app.init();
+  await app.getHttpAdapter().getInstance().ready();
+  return app;
 }

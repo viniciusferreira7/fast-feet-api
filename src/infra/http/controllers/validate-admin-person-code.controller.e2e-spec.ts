@@ -6,7 +6,7 @@ import {
   sendAdminCode,
   validateAdminCode,
 } from 'test/e2e/admin-flow';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { emailsCodes, users } from '@/infra/database/drizzle/schema';
 import { EnvService } from '@/infra/env/env.service';
@@ -21,11 +21,9 @@ describe('Validate Admin Person Code (E2E)', () => {
   beforeAll(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     drizzleService = moduleRef.get(DrizzleService);
     envService = moduleRef.get(EnvService);
-
-    await app.init();
   });
 
   beforeEach(() => {

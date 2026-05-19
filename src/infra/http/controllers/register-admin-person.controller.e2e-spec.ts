@@ -9,7 +9,7 @@ import {
   sendAdminCode,
   validateAdminCode,
 } from 'test/e2e/admin-flow';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { users } from '@/infra/database/drizzle/schema';
 import { EnvService } from '@/infra/env/env.service';
@@ -28,12 +28,10 @@ describe('Register Admin Person (E2E)', () => {
   beforeAll(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     jwt = moduleRef.get(JwtService);
     drizzleService = moduleRef.get(DrizzleService);
     envService = moduleRef.get(EnvService);
-
-    await app.init();
   });
 
   beforeEach(async () => {
@@ -59,7 +57,11 @@ describe('Register Admin Person (E2E)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    try {
+      await app.close();
+    } catch (error) {
+      console.log({ error });
+    }
   });
 
   it('[POST] /admins — should register a new admin and return 201', async () => {

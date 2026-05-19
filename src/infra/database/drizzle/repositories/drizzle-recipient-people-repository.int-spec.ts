@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { RecipientPeopleRepository } from '@/domain/delivery/application/repositories/recipient-people-repository';
 import { DrizzleService } from '../drizzle.service';
@@ -16,11 +16,9 @@ describe('DrizzleRecipientPeopleRepository', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     repository = moduleRef.get(RecipientPeopleRepository);
     drizzleService = moduleRef.get(DrizzleService);
-
-    await app.init();
   });
 
   afterEach(async () => {

@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { makeDeliveryPerson } from 'test/factories/make-delivery-person';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { makePackage } from 'test/factories/make-package';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
@@ -24,13 +24,11 @@ describe('DrizzlePackagesRepository', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     repository = moduleRef.get(PackagesRepository);
     adminRepository = moduleRef.get(AdminPeopleRepository);
     recipientRepository = moduleRef.get(RecipientPeopleRepository);
     deliveryRepository = moduleRef.get(DeliveryPeopleRepository);
-
-    await app.init();
   });
 
   afterEach(async () => {

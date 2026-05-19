@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { EmailVerificationsRepository } from '@/domain/delivery/application/repositories/email-verifications-repository';
 import { EmailVerification } from '@/domain/delivery/enterprise/entities/email-verification';
 import { DrizzleService } from '../drizzle.service';
@@ -15,11 +15,9 @@ describe('DrizzleEmailVerificationsRepository', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     repository = moduleRef.get(EmailVerificationsRepository);
     drizzleService = moduleRef.get(DrizzleService);
-
-    await app.init();
   });
 
   afterEach(async () => {

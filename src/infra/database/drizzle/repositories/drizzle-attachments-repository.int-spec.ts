@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { makeAttachment } from 'test/factories/make-attachment';
-import { makeModuleRef } from 'test/factories/make-module-ref';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { AttachmentsRepository } from '@/domain/delivery/application/repositories/attachments-repository';
 import { DrizzleAttachmentsRepository } from './drizzle-attachments-repository';
 
@@ -12,10 +12,8 @@ describe('DrizzleAttachmentsRepository', () => {
   beforeEach(async () => {
     const moduleRef = await makeModuleRef();
 
-    app = moduleRef.createNestApplication();
+    app = await startApp(moduleRef);
     repository = moduleRef.get(AttachmentsRepository);
-
-    await app.init();
   });
 
   afterEach(async () => {
