@@ -86,6 +86,36 @@ pnpm run test:e2e           # Run E2E tests
 pnpm run test:e2e:watch     # Run E2E tests in watch mode
 ```
 
+## 🖥️ Developer CLI
+
+An interactive terminal UI for running checks and tests without memorising script names.
+
+```bash
+pnpm run cli
+```
+
+### Flow
+
+| Step | What happens | Esc behaviour |
+|---|---|---|
+| **1 – Select flows** | Multiselect: Lint, Type Check, Unit Tests, Integration Tests, E2E Tests | Exits the CLI |
+| **2 – Configure test files** | For each test-type flow, pick files from a filterable list or skip to run all | Returns to step 1 |
+| **3 – Confirm** | Shows a summary note of every flow and its selected files | Returns to step 2 |
+| **4 – Run** | Spinner per flow; failed output is shown inline | — |
+| **5 – Run again?** | Loop back to step 1 or exit | Exits the CLI |
+
+### File picker
+
+For Unit, Integration, and E2E flows a **multiselect** is shown with every matching file in the project. Start typing to filter in real time. Leaving the selection empty runs the full suite via the pnpm script (which includes Docker pre-setup for int/e2e).
+
+| Type | Pattern | pnpm script (full suite) |
+|---|---|---|
+| Unit | `src/**/*.spec.ts` | `test:unit` |
+| Integration | `**/*.int-spec.ts` | `test:int` |
+| E2E | `**/*.e2e-spec.ts` | `test:e2e` |
+
+> **Note:** Selecting specific files for int/e2e skips the Docker pre-setup script — make sure the test containers are already running (`pnpm run docker:up`).
+
 ## 🐳 Docker
 
 ### Build
