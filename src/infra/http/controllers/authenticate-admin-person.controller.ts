@@ -4,8 +4,6 @@ import {
   Controller,
   HttpCode,
   Post,
-  UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -18,8 +16,8 @@ import z from 'zod';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
 import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/use-cases/errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
-import { Role } from '@/infra/auth/decorators/role.decorator';
-import { RoleGuard } from '@/infra/auth/guards/role.guard';
+import { CurrentAPiKey } from '@/infra/auth/decorators/current-api-key.decorator';
+import { type ApiPayload } from '@/infra/auth/jwt.strategy';
 import {
   authenticateAdminPersonErrorCounter,
   authenticateAdminPersonSuccessCounter,
@@ -36,8 +34,6 @@ type AuthenticateAdminSchema = z.infer<typeof authenticateAdminSchema>;
 
 @ApiTags('Admins')
 @Controller('admins/login')
-@UseGuards(RoleGuard)
-@Role('Admin')
 export class AuthenticateAdminPersonController {
   constructor(
     private readonly authenticateAdminPersonUseCase: AuthenticateAdminPersonUseCase
@@ -45,7 +41,6 @@ export class AuthenticateAdminPersonController {
 
   @Post()
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(authenticateAdminSchema))
   @ApiOperation({ summary: 'Authenticate an admin person' })
   @ApiBody({
     schema: {
@@ -75,7 +70,11 @@ export class AuthenticateAdminPersonController {
   @ApiBadRequestResponse({
     description: 'Wrong credentials or email not verified',
   })
-  async handler(@Body() body: AuthenticateAdminSchema) {
+  async handler(
+    @CurrentAPiKey() _apiKey: ApiPayload,
+    @Body(new ZodValidationPipe(authenticateAdminSchema))
+    body: AuthenticateAdminSchema
+  ) {
     const result = await this.authenticateAdminPersonUseCase.execute({
       cpf: body.cpf,
       password: body.password,

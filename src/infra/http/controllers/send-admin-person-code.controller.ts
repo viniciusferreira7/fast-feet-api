@@ -5,8 +5,6 @@ import {
   Controller,
   HttpCode,
   Post,
-  UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -20,8 +18,8 @@ import z from 'zod';
 import { TimeToSendNewEmailCodeError } from '@/domain/delivery/application/use-cases/errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from '@/domain/delivery/application/use-cases/errors/wrong-credentials-error';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
-import { Role } from '@/infra/auth/decorators/role.decorator';
-import { RoleGuard } from '@/infra/auth/guards/role.guard';
+import { CurrentAPiKey } from '@/infra/auth/decorators/current-api-key.decorator';
+import { type ApiPayload } from '@/infra/auth/jwt.strategy';
 import {
   sendAdminPersonCodeErrorCounter,
   sendAdminPersonCodeSuccessCounter,
@@ -36,8 +34,6 @@ type SendAdminPersonCodeSchema = z.infer<typeof sendAdminPersonCodeSchema>;
 
 @ApiTags('Admins')
 @Controller('admins/code')
-@UseGuards(RoleGuard)
-@Role('Admin')
 export class SendAdminPersonCodeController {
   constructor(
     private readonly sendAdminPersonCodeUseCase: SendAdminPersonCodeUseCase
@@ -45,7 +41,6 @@ export class SendAdminPersonCodeController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(sendAdminPersonCodeSchema))
   @ApiOperation({ summary: 'Send email verification code to an admin' })
   @ApiBody({
     schema: {
@@ -63,7 +58,11 @@ export class SendAdminPersonCodeController {
   @ApiCreatedResponse({ description: 'Code sent successfully' })
   @ApiConflictResponse({ description: 'Existing code has not expired yet' })
   @ApiBadRequestResponse({ description: 'Email not found' })
-  async handler(@Body() body: SendAdminPersonCodeSchema) {
+  async handler(
+    @CurrentAPiKey() _apiKey: ApiPayload,
+    @Body(new ZodValidationPipe(sendAdminPersonCodeSchema))
+    body: SendAdminPersonCodeSchema
+  ) {
     const result = await this.sendAdminPersonCodeUseCase.execute({
       email: body.email,
     });

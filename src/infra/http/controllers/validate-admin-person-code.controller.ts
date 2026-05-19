@@ -4,8 +4,6 @@ import {
   Controller,
   HttpCode,
   Put,
-  UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -20,8 +18,8 @@ import { EmailCodeHasNotBeenVerifiedError } from '@/domain/delivery/application/
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { EmailCodeExpiredError } from '@/domain/delivery/errors/email-code-expired-error';
 import { InvalidEmailCodeError } from '@/domain/delivery/errors/invalid-email-code-error';
-import { Role } from '@/infra/auth/decorators/role.decorator';
-import { RoleGuard } from '@/infra/auth/guards/role.guard';
+import { CurrentAPiKey } from '@/infra/auth/decorators/current-api-key.decorator';
+import { type ApiPayload } from '@/infra/auth/jwt.strategy';
 import {
   validateAdminPersonCodeErrorCounter,
   validateAdminPersonCodeSuccessCounter,
@@ -39,8 +37,6 @@ type ValidateAdminPersonCodeSchema = z.infer<
 
 @ApiTags('Admins')
 @Controller('admins/code')
-@UseGuards(RoleGuard)
-@Role('Admin')
 export class ValidateAdminPersonCodeController {
   constructor(
     private readonly validateAdminPersonCodeUseCase: ValidateAdminPersonCodeUseCase
@@ -48,7 +44,6 @@ export class ValidateAdminPersonCodeController {
 
   @Put()
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(validateAdminPersonCodeSchema))
   @ApiOperation({ summary: 'Validate email verification code for an admin' })
   @ApiBody({
     schema: {
@@ -73,7 +68,11 @@ export class ValidateAdminPersonCodeController {
     description:
       'Admin not found, code expired, invalid code, or code already verified',
   })
-  async handler(@Body() body: ValidateAdminPersonCodeSchema) {
+  async handler(
+    @CurrentAPiKey() _apiKey: ApiPayload,
+    @Body(new ZodValidationPipe(validateAdminPersonCodeSchema))
+    body: ValidateAdminPersonCodeSchema
+  ) {
     const result = await this.validateAdminPersonCodeUseCase.execute({
       email: body.email,
       code: body.code,
