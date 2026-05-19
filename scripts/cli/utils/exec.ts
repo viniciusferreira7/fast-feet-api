@@ -1,7 +1,7 @@
-import { spawnSync } from 'node:child_process'
+import { spawnSync } from 'node:child_process';
 
 export interface ExecResult {
-  success: boolean
+  success: boolean;
 }
 
 export function execStream(command: string): ExecResult {
@@ -9,6 +9,6 @@ export function execStream(command: string): ExecResult {
     shell: true,
     stdio: 'inherit',
     env: { ...process.env, FORCE_COLOR: '1' },
-  })
-  return { success: (result.status ?? 1) === 0 }
+  });
+  return { success: (result.status ?? 1) === 0 };
 }

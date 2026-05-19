@@ -1,22 +1,22 @@
-import { type ExecResult, execStream } from '../utils/exec.js'
+import { type ExecResult, execStream } from '../utils/exec.js';
 
-export type FlowValue = 'lint' | 'type-check' | 'unit' | 'int' | 'e2e'
+export type FlowValue = 'lint' | 'type-check' | 'unit' | 'int' | 'e2e';
 
 export interface FlowConfig {
-  value: FlowValue
-  files?: string[]
-  watch?: boolean
+  value: FlowValue;
+  files?: string[];
+  watch?: boolean;
 }
 
 export interface RunnerDef {
-  value: FlowValue
-  label: string
-  hint: string
-  isTestRunner: boolean
-  run(config: FlowConfig): ExecResult
+  value: FlowValue;
+  label: string;
+  hint: string;
+  isTestRunner: boolean;
+  run(config: FlowConfig): ExecResult;
 }
 
-const vitest = './node_modules/.bin/vitest'
+const vitest = './node_modules/.bin/vitest';
 
 export const runners: RunnerDef[] = [
   {
@@ -53,10 +53,12 @@ export const runners: RunnerDef[] = [
     run: ({ files, watch }) =>
       watch
         ? execStream(
-            `${vitest} --config ./vitest.config.int.ts${files?.length ? ` ${files.join(' ')}` : ''}`,
+            `${vitest} --config ./vitest.config.int.ts${files?.length ? ` ${files.join(' ')}` : ''}`
           )
         : files?.length
-          ? execStream(`${vitest} run --config ./vitest.config.int.ts ${files.join(' ')}`)
+          ? execStream(
+              `${vitest} run --config ./vitest.config.int.ts ${files.join(' ')}`
+            )
           : execStream('pnpm run test:int'),
   },
   {
@@ -67,15 +69,17 @@ export const runners: RunnerDef[] = [
     run: ({ files, watch }) =>
       watch
         ? execStream(
-            `${vitest} --config ./vitest.config.e2e.ts${files?.length ? ` ${files.join(' ')}` : ''}`,
+            `${vitest} --config ./vitest.config.e2e.ts${files?.length ? ` ${files.join(' ')}` : ''}`
           )
         : files?.length
-          ? execStream(`${vitest} run --config ./vitest.config.e2e.ts ${files.join(' ')}`)
+          ? execStream(
+              `${vitest} run --config ./vitest.config.e2e.ts ${files.join(' ')}`
+            )
           : execStream('pnpm run test:e2e'),
   },
-]
+];
 
 export function getRunner(value: FlowValue): RunnerDef {
   // biome-ignore lint/style/noNonNullAssertion: value is always a known FlowValue
-  return runners.find((r) => r.value === value)!
+  return runners.find((r) => r.value === value)!;
 }
