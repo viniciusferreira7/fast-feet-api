@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
+import { EmailSender } from '../email/email-sender';
 import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
 import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
 import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
@@ -17,11 +19,13 @@ type UpdateRecipientPersonUseCaseResponse = Either<
   { recipientPerson: RecipientPerson }
 >;
 
+@Injectable()
 export class UpdateRecipientPersonUseCase {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,
     private readonly adminPeopleRepository: AdminPeopleRepository,
-    private readonly deliveryPeopleRepository: DeliveryPeopleRepository
+    private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
+    private readonly emailSender: EmailSender
   ) {}
 
   async execute({
@@ -55,6 +59,16 @@ export class UpdateRecipientPersonUseCase {
       }
 
       recipientPerson.updateEmail(email);
+
+      const codeWasCreated = recipientPerson.createNewEmailVerification();
+
+      if (codeWasCreated && recipientPerson.emailVerification) {
+        await this.emailSender.send(
+          'Fast Feet sent a code confirmation',
+          `Your new code is ${recipientPerson.emailVerification.code}`,
+          recipientPerson.email
+        );
+      }
     }
 
     if (name) {
