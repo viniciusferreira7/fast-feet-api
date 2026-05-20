@@ -43,8 +43,8 @@ type UpdateAdminSchema = z.infer<typeof updateAdminSchema>;
 @ApiTags('Admins')
 @ApiBearerAuth('JWT-auth')
 @Controller('admins')
-@UseGuards(RoleGuard)
 @Role('Admin')
+@UseGuards(RoleGuard)
 export class UpdateAdminPersonController {
   constructor(
     private readonly updateAdminPersonUseCase: UpdateAdminPersonUseCase

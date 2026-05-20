@@ -46,8 +46,8 @@ type RegisterAdminSchema = z.infer<typeof registerAdminSchema>;
 
 @ApiTags('Admins')
 @ApiBearerAuth('JWT-auth')
-@UseGuards(RoleGuard)
 @Role('Admin')
+@UseGuards(RoleGuard)
 @Controller('/admins')
 export class RegisterAdminPersonController {
   constructor(

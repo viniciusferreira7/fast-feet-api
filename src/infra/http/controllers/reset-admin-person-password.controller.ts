@@ -44,8 +44,8 @@ type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
 @ApiTags('Admins')
 @ApiBearerAuth('JWT-auth')
 @Controller('admins/reset-password')
-@UseGuards(RoleGuard)
 @Role('Admin')
+@UseGuards(RoleGuard)
 export class ResetAdminPersonPasswordController {
   constructor(
     private readonly resetAdminPersonPasswordUseCase: ResetAdminPersonPasswordUseCase
