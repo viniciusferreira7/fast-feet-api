@@ -70,12 +70,22 @@ const updateAdminPersonSuccessCounter = customMetrics.createCounter(
   'update_admin_person_success'
 );
 
+//Get by id admin person
+const getByIdAdminPersonErrorCounter = customMetrics.createCounter(
+  'get_by_id_admin_person_error'
+);
+const getByIdAdminPersonSuccessCounter = customMetrics.createCounter(
+  'get_by_id_admin_person_success'
+);
+
 export {
   assignPackageToDeliveryPersonErrorCounter,
   assignPackageToDeliveryPersonSuccessCounter,
   authenticateAdminPersonErrorCounter,
   authenticateAdminPersonSuccessCounter,
   customMetrics,
+  getByIdAdminPersonErrorCounter,
+  getByIdAdminPersonSuccessCounter,
   jwtRejectedCounter,
   registerAdminPersonErrorCounter,
   registerAdminPersonSuccessCounter,

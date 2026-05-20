@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { HttpClient } from '@/domain/delivery/application/http/http-client';
 import { AssignPackageToADeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/assign-package-to-a-delivery-person';
 import { AuthenticateAdminPersonUseCase } from '@/domain/delivery/application/use-cases/authenticate-admin-person';
+import { GetByIdAdminPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-admin-person';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
 import { SendAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/send-admin-person-code';
@@ -14,6 +15,7 @@ import { EmailModule } from '@/infra/email/email.module';
 import { ValidationModule } from '../validation/validation.module';
 import { AssignPackageToADeliveryPersonController } from './controllers/assign-package-to-a-delivery-person.controller';
 import { AuthenticateAdminPersonController } from './controllers/authenticate-admin-person.controller';
+import { GetByIdAdminPersonController } from './controllers/get-by-id-admin-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { ResetAdminPersonPasswordController } from './controllers/reset-admin-person-password.controller';
 import { SendAdminPersonCodeController } from './controllers/send-admin-person-code.controller';
@@ -40,6 +42,7 @@ import { FetchHttpClient } from './fetch-http-client';
     SendAdminPersonCodeUseCase,
     ValidateAdminPersonCodeUseCase,
     ResetAdminPersonPasswordUseCase,
+    GetByIdAdminPersonUseCase,
     UpdateAdminPersonUseCase,
   ],
   exports: [HttpClient],
@@ -51,6 +54,7 @@ import { FetchHttpClient } from './fetch-http-client';
     ValidateAdminPersonCodeController,
     ResetAdminPersonPasswordController,
     UpdateAdminPersonController,
+    GetByIdAdminPersonController,
   ],
 })
 export class HttpModule {}
