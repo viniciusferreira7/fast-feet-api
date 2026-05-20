@@ -1,3 +1,16 @@
+# [1.46.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.45.0...v1.46.0) (2026-05-20)
+
+
+### Bug Fixes
+
+* **controllers:** change order of guard and role ([e064674](https://github.com/viniciusferreira7/fast-feet-api/commit/e06467486a862fffdb014190f64407c0ff6145b0))
+
+
+### Features
+
+* **admin:** add get-by-id admin controller with swagger, metrics, and module wiring ([fc5c6d3](https://github.com/viniciusferreira7/fast-feet-api/commit/fc5c6d3a6afd39636baba04c92d58aac0984e084))
+* **use-cases:** add email sender and re-verification flow on email update for delivery and recipient ([0e7b65b](https://github.com/viniciusferreira7/fast-feet-api/commit/0e7b65b2eb680e04f661548fb1ebace64bb511cd))
+
 # [1.45.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.44.0...v1.45.0) (2026-05-19)
 
 
