@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import request from 'supertest';
@@ -93,7 +94,7 @@ describe('Reset Recipient Person Password (E2E)', () => {
 
     const ghostToken = jwt.sign({
       type: 'user',
-      sub: 'fake-id',
+      sub: randomUUID(),
       role: 'recipient',
     });
 
@@ -126,7 +127,7 @@ describe('Reset Recipient Person Password (E2E)', () => {
   it('[PATCH] /recipients/reset-password — should return 403 when requester is not a recipient', async () => {
     const adminToken = jwt.sign({
       type: 'user',
-      sub: 'some-admin-id',
+      sub: randomUUID(),
       role: 'admin',
     });
 

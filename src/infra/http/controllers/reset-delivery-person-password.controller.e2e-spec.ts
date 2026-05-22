@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { eq } from 'drizzle-orm';
@@ -123,7 +124,7 @@ describe('Reset Delivery Person Password (E2E)', () => {
 
     const ghostToken = jwt.sign({
       type: 'user',
-      sub: 'fake-id',
+      sub: randomUUID(),
       role: 'delivery',
     });
 

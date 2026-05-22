@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { eq } from 'drizzle-orm';
@@ -121,7 +122,7 @@ describe('Update Recipient Person (E2E)', () => {
   it('[PATCH] /recipients — should return 403 when requester is not a recipient', async () => {
     const adminToken = jwt.sign({
       type: 'user',
-      sub: 'some-admin-id',
+      sub: randomUUID(),
       role: 'admin',
     });
 

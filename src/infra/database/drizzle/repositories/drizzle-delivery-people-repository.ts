@@ -208,6 +208,16 @@ export class DrizzleDeliveryPeopleRepository
       row.delivery_profiles.version + 1
     );
 
+    if (emailCode) {
+      await this.drizzleService.db
+        .insert(emailsCodes)
+        .values(emailCode)
+        .onConflictDoUpdate({
+          target: emailsCodes.id,
+          set: { validatedAt: emailCode.validatedAt },
+        });
+    }
+
     await this.drizzleService.db
       .update(users)
       .set({

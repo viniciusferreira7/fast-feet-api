@@ -36,7 +36,7 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
       .select()
       .from(users)
       .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-      .where(eq(users.cpf, cpf));
+      .where(and(eq(users.cpf, cpf), eq(users.role, 'ADMIN')));
 
     if (!row) return null;
 
@@ -51,7 +51,7 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
       .select()
       .from(users)
       .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-      .where(eq(users.email, email));
+      .where(and(eq(users.email, email), eq(users.role, 'ADMIN')));
 
     if (!row) return null;
 
@@ -66,7 +66,7 @@ export class DrizzleAdminPeopleRepository implements AdminPeopleRepository {
       .select()
       .from(users)
       .leftJoin(emailsCodes, eq(users.emailCode, emailsCodes.id))
-      .where(eq(users.id, id));
+      .where(and(eq(users.id, id), eq(users.role, 'ADMIN')));
 
     if (!row) return null;
 
