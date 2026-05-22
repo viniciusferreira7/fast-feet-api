@@ -1,6 +1,6 @@
 import type { Notification } from '@/domain/notification/enterprise/entities/notification';
 
-interface NotificationPresenterToHttp {
+export interface NotificationPresenterToHttp {
   id: string;
   recipient_id: string;
   title: string;

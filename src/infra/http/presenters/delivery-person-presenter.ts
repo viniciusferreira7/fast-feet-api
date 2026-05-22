@@ -1,6 +1,6 @@
 import type { DeliveryPerson } from '@/domain/delivery/enterprise/entities/delivery-person';
 
-interface DeliveryPersonPresenterToHttp {
+export interface DeliveryPersonPresenterToHttp {
   id: string;
   name: string;
   cpf: string;

@@ -9,23 +9,23 @@ import {
   type PackageHistoryPresenterToHttp,
 } from './package-history-presenter';
 
-interface PackageDetailsRecipientToHttp {
+export interface PackageDetailsRecipientToHttp {
   id: string;
   name: string;
   email: string;
 }
 
-interface PackageDetailsAuthorToHttp {
+export interface PackageDetailsAuthorToHttp {
   id: string;
   name: string;
 }
 
-interface PackageDetailsDeliveryPersonToHttp {
+export interface PackageDetailsDeliveryPersonToHttp {
   id: string;
   name: string;
 }
 
-interface PackageDetailsPresenterToHttp {
+export interface PackageDetailsPresenterToHttp {
   id: string;
   name: string;
   code: string;

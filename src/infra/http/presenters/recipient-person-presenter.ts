@@ -1,6 +1,6 @@
 import type { RecipientPerson } from '@/domain/delivery/enterprise/entities/recipient-person';
 
-interface RecipientPersonPresenterToHttp {
+export interface RecipientPersonPresenterToHttp {
   id: string;
   name: string;
   cpf: string;
