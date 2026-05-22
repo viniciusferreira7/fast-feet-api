@@ -1,3 +1,16 @@
+# [1.47.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.46.0...v1.47.0) (2026-05-22)
+
+
+### Bug Fixes
+
+* **db:** add emailsCodes upsert in delivery/recipient update, add role filter to admin repo find methods, fix ghost JWT sub to use valid UUID in e2e specs ([8e6f85e](https://github.com/viniciusferreira7/fast-feet-api/commit/8e6f85e0d2f4bc9f7e769def678b381c1a99100f))
+
+
+### Features
+
+* **http:** add delivery and recipient person controllers with snake_case body/query params ([c829b90](https://github.com/viniciusferreira7/fast-feet-api/commit/c829b90fec423af5e93a1504f02b49eb547df33a))
+* **metrics:** add observability counters for delivery and recipient person operations ([5b872c5](https://github.com/viniciusferreira7/fast-feet-api/commit/5b872c55dee94173681d0788b007f21ad0115612))
+
 # [1.46.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.45.0...v1.46.0) (2026-05-20)
 
 
