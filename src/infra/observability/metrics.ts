@@ -78,24 +78,192 @@ const getByIdAdminPersonSuccessCounter = customMetrics.createCounter(
   'get_by_id_admin_person_success'
 );
 
+// register delivery person
+const registerDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'register_delivery_person_error'
+);
+const registerDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'register_delivery_person_success'
+);
+
+// authenticate delivery person
+const authenticateDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'authenticate_delivery_person_error'
+);
+const authenticateDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'authenticate_delivery_person_success'
+);
+
+// send delivery person code
+const sendDeliveryPersonCodeErrorCounter = customMetrics.createCounter(
+  'send_delivery_person_code_error'
+);
+const sendDeliveryPersonCodeSuccessCounter = customMetrics.createCounter(
+  'send_delivery_person_code_success'
+);
+
+// validate delivery person code
+const validateDeliveryPersonCodeErrorCounter = customMetrics.createCounter(
+  'validate_delivery_person_code_error'
+);
+const validateDeliveryPersonCodeSuccessCounter = customMetrics.createCounter(
+  'validate_delivery_person_code_success'
+);
+
+// reset delivery person password
+const resetDeliveryPersonPasswordErrorCounter = customMetrics.createCounter(
+  'reset_delivery_person_password_error'
+);
+const resetDeliveryPersonPasswordSuccessCounter = customMetrics.createCounter(
+  'reset_delivery_person_password_success'
+);
+
+// update delivery person
+const updateDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'update_delivery_person_error'
+);
+const updateDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'update_delivery_person_success'
+);
+
+// get by id delivery person
+const getByIdDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'get_by_id_delivery_person_error'
+);
+const getByIdDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'get_by_id_delivery_person_success'
+);
+
+// delete delivery person
+const deleteDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'delete_delivery_person_error'
+);
+const deleteDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'delete_delivery_person_success'
+);
+
+// fetch many delivery person
+const fetchManyDeliveryPersonErrorCounter = customMetrics.createCounter(
+  'fetch_many_delivery_person_error'
+);
+const fetchManyDeliveryPersonSuccessCounter = customMetrics.createCounter(
+  'fetch_many_delivery_person_success'
+);
+
+// fetch packages near by delivery person
+const fetchPackagesNearByDeliveryPersonErrorCounter =
+  customMetrics.createCounter('fetch_packages_near_by_delivery_person_error');
+const fetchPackagesNearByDeliveryPersonSuccessCounter =
+  customMetrics.createCounter('fetch_packages_near_by_delivery_person_success');
+
+// register recipient person
+const registerRecipientPersonErrorCounter = customMetrics.createCounter(
+  'register_recipient_person_error'
+);
+const registerRecipientPersonSuccessCounter = customMetrics.createCounter(
+  'register_recipient_person_success'
+);
+
+// authenticate recipient person
+const authenticateRecipientPersonErrorCounter = customMetrics.createCounter(
+  'authenticate_recipient_person_error'
+);
+const authenticateRecipientPersonSuccessCounter = customMetrics.createCounter(
+  'authenticate_recipient_person_success'
+);
+
+// send recipient person code
+const sendRecipientPersonCodeErrorCounter = customMetrics.createCounter(
+  'send_recipient_person_code_error'
+);
+const sendRecipientPersonCodeSuccessCounter = customMetrics.createCounter(
+  'send_recipient_person_code_success'
+);
+
+// validate recipient person code
+const validateRecipientPersonCodeErrorCounter = customMetrics.createCounter(
+  'validate_recipient_person_code_error'
+);
+const validateRecipientPersonCodeSuccessCounter = customMetrics.createCounter(
+  'validate_recipient_person_code_success'
+);
+
+// reset recipient person password
+const resetRecipientPersonPasswordErrorCounter = customMetrics.createCounter(
+  'reset_recipient_person_password_error'
+);
+const resetRecipientPersonPasswordSuccessCounter = customMetrics.createCounter(
+  'reset_recipient_person_password_success'
+);
+
+// update recipient person
+const updateRecipientPersonErrorCounter = customMetrics.createCounter(
+  'update_recipient_person_error'
+);
+const updateRecipientPersonSuccessCounter = customMetrics.createCounter(
+  'update_recipient_person_success'
+);
+
+// get by id recipient person
+const getByIdRecipientPersonErrorCounter = customMetrics.createCounter(
+  'get_by_id_recipient_person_error'
+);
+const getByIdRecipientPersonSuccessCounter = customMetrics.createCounter(
+  'get_by_id_recipient_person_success'
+);
+
 export {
   assignPackageToDeliveryPersonErrorCounter,
   assignPackageToDeliveryPersonSuccessCounter,
   authenticateAdminPersonErrorCounter,
   authenticateAdminPersonSuccessCounter,
+  authenticateDeliveryPersonErrorCounter,
+  authenticateDeliveryPersonSuccessCounter,
+  authenticateRecipientPersonErrorCounter,
+  authenticateRecipientPersonSuccessCounter,
   customMetrics,
+  deleteDeliveryPersonErrorCounter,
+  deleteDeliveryPersonSuccessCounter,
+  fetchManyDeliveryPersonErrorCounter,
+  fetchManyDeliveryPersonSuccessCounter,
+  fetchPackagesNearByDeliveryPersonErrorCounter,
+  fetchPackagesNearByDeliveryPersonSuccessCounter,
   getByIdAdminPersonErrorCounter,
   getByIdAdminPersonSuccessCounter,
+  getByIdDeliveryPersonErrorCounter,
+  getByIdDeliveryPersonSuccessCounter,
+  getByIdRecipientPersonErrorCounter,
+  getByIdRecipientPersonSuccessCounter,
   jwtRejectedCounter,
   registerAdminPersonErrorCounter,
   registerAdminPersonSuccessCounter,
+  registerDeliveryPersonErrorCounter,
+  registerDeliveryPersonSuccessCounter,
+  registerRecipientPersonErrorCounter,
+  registerRecipientPersonSuccessCounter,
   resetAdminPersonPasswordErrorCounter,
   resetAdminPersonPasswordSuccessCounter,
+  resetDeliveryPersonPasswordErrorCounter,
+  resetDeliveryPersonPasswordSuccessCounter,
+  resetRecipientPersonPasswordErrorCounter,
+  resetRecipientPersonPasswordSuccessCounter,
   roleRejectedCounter,
   sendAdminPersonCodeErrorCounter,
   sendAdminPersonCodeSuccessCounter,
+  sendDeliveryPersonCodeErrorCounter,
+  sendDeliveryPersonCodeSuccessCounter,
+  sendRecipientPersonCodeErrorCounter,
+  sendRecipientPersonCodeSuccessCounter,
   updateAdminPersonErrorCounter,
   updateAdminPersonSuccessCounter,
+  updateDeliveryPersonErrorCounter,
+  updateDeliveryPersonSuccessCounter,
+  updateRecipientPersonErrorCounter,
+  updateRecipientPersonSuccessCounter,
   validateAdminPersonCodeErrorCounter,
   validateAdminPersonCodeSuccessCounter,
+  validateDeliveryPersonCodeErrorCounter,
+  validateDeliveryPersonCodeSuccessCounter,
+  validateRecipientPersonCodeErrorCounter,
+  validateRecipientPersonCodeSuccessCounter,
 };
