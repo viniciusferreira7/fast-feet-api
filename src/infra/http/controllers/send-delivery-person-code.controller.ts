@@ -31,7 +31,9 @@ const sendDeliveryPersonCodeSchema = z.object({
   email: z.email(),
 });
 
-type SendDeliveryPersonCodeSchema = z.infer<typeof sendDeliveryPersonCodeSchema>;
+type SendDeliveryPersonCodeSchema = z.infer<
+  typeof sendDeliveryPersonCodeSchema
+>;
 
 @ApiTags('Delivery People')
 @Controller('delivery-people/code')
@@ -42,7 +44,9 @@ export class SendDeliveryPersonCodeController {
 
   @Post()
   @HttpCode(201)
-  @ApiOperation({ summary: 'Send email verification code to a delivery person' })
+  @ApiOperation({
+    summary: 'Send email verification code to a delivery person',
+  })
   @ApiBody({
     schema: {
       type: 'object',

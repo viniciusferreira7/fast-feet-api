@@ -108,7 +108,9 @@ export class FetchManyDeliveryPersonController {
       page: deliveryPeople.page,
       total_pages: deliveryPeople.totalPages,
       per_page: deliveryPeople.perPage,
-      delivery_people: deliveryPeople.result.map(DeliveryPersonPresenter.toHttp),
+      delivery_people: deliveryPeople.result.map(
+        DeliveryPersonPresenter.toHttp
+      ),
     };
   }
 }

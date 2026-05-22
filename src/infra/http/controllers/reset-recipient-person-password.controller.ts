@@ -71,8 +71,7 @@ export class ResetRecipientPersonPasswordController {
   })
   @ApiNoContentResponse({ description: 'Password reset successfully' })
   @ApiBadRequestResponse({
-    description:
-      'Wrong credentials, email not verified, or weak new password',
+    description: 'Wrong credentials, email not verified, or weak new password',
   })
   @ApiForbiddenResponse({ description: 'Requester is not a recipient' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })

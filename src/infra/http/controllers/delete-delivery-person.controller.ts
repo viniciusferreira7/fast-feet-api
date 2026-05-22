@@ -19,9 +19,9 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { DeleteDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/delete-delivery-person';
 import { CannotDisableDeliveryPersonWithActivePackagesError } from '@/domain/delivery/application/use-cases/errors/cannot-disable-delivery-person-with-active-packages-error';
 import { OnlyAdminCanPerformThisActionError } from '@/domain/delivery/application/use-cases/errors/only-admin-can-perform-this-action-error';
-import { DeleteDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/delete-delivery-person';
 import { DeliveryPersonAlreadyDisabledError } from '@/domain/delivery/errors/delivery-person-already-disabled-error';
 import { CurrentUser } from '@/infra/auth/decorators/current-user.decorator';
 import { Role } from '@/infra/auth/decorators/role.decorator';
@@ -46,7 +46,9 @@ export class DeleteDeliveryPersonController {
   @HttpCode(204)
   @ApiOperation({ summary: 'Disable (soft-delete) a delivery person by CPF' })
   @ApiParam({ name: 'cpf', description: 'Delivery person CPF', type: 'string' })
-  @ApiNoContentResponse({ description: 'Delivery person disabled successfully' })
+  @ApiNoContentResponse({
+    description: 'Delivery person disabled successfully',
+  })
   @ApiBadRequestResponse({
     description: 'Delivery person not found or already disabled',
   })

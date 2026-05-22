@@ -42,7 +42,9 @@ const registerDeliveryPersonSchema = z.object({
   password: passwordSchema,
 });
 
-type RegisterDeliveryPersonSchema = z.infer<typeof registerDeliveryPersonSchema>;
+type RegisterDeliveryPersonSchema = z.infer<
+  typeof registerDeliveryPersonSchema
+>;
 
 @ApiTags('Delivery People')
 @ApiBearerAuth('JWT-auth')
@@ -50,7 +52,9 @@ type RegisterDeliveryPersonSchema = z.infer<typeof registerDeliveryPersonSchema>
 @UseGuards(RoleGuard)
 @Controller('/delivery-people')
 export class RegisterDeliveryPersonController {
-  constructor(private readonly registerDeliveryPerson: RegisterDeliveryPerson) {}
+  constructor(
+    private readonly registerDeliveryPerson: RegisterDeliveryPerson
+  ) {}
 
   @Post()
   @HttpCode(201)
@@ -73,7 +77,9 @@ export class RegisterDeliveryPersonController {
       },
     },
   })
-  @ApiCreatedResponse({ description: 'Delivery person registered successfully' })
+  @ApiCreatedResponse({
+    description: 'Delivery person registered successfully',
+  })
   @ApiConflictResponse({ description: 'CPF or email already in use' })
   @ApiBadRequestResponse({
     description: 'Invalid CPF, weak password, or author not found',

@@ -50,7 +50,11 @@ export class AuthenticateRecipientPersonController {
       required: ['cpf', 'password'],
       properties: {
         cpf: { type: 'string', example: '123.456.789-09' },
-        password: { type: 'string', format: 'password', example: 'Str0ng!Pass' },
+        password: {
+          type: 'string',
+          format: 'password',
+          example: 'Str0ng!Pass',
+        },
       },
     },
   })

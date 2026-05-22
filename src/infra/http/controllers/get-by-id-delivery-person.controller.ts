@@ -48,8 +48,7 @@ export class GetByIdDeliveryPersonController {
   @ApiOkResponse({ description: 'Delivery person found' })
   @ApiNotAcceptableResponse({ description: 'Delivery person not found' })
   @ApiForbiddenResponse({
-    description:
-      'Requester is not an admin or the delivery person themselves',
+    description: 'Requester is not an admin or the delivery person themselves',
   })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid access token' })
   async handler(
