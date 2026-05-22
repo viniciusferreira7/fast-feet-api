@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { Cpf } from '../../enterprise/entities/value-object/cpf';
@@ -5,7 +6,7 @@ import { InvalidateCpfError } from '../../errors/invalidate-cpf-error';
 import { WeakPasswordError } from '../../errors/weak-password-error';
 import { HashGenerator } from '../cryptography/hash-generator';
 import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
-import type { PasswordValidator } from '../validation/password-validator';
+import { PasswordValidator } from '../validation/password-validator';
 import { PersonAlreadyExistsError } from './errors/person-already-exists-error';
 
 interface RegisterRecipientPersonUseCaseRequest {
@@ -22,6 +23,7 @@ type RegisterRecipientPersonUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class RegisterRecipientPerson {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,

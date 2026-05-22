@@ -1,7 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { Encrypter } from '../cryptography/encrypter';
-import type { HashComparer } from '../cryptography/hash-comparer';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { Encrypter } from '../cryptography/encrypter';
+import { HashComparer } from '../cryptography/hash-comparer';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -15,6 +16,7 @@ export type AuthenticateRecipientPersonUseCaseResponse = Either<
   { accessToken: string }
 >;
 
+@Injectable()
 export class AuthenticateRecipientPerson {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,

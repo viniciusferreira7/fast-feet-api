@@ -1,14 +1,15 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { Pagination } from '@/core/entities/value-object/pagination';
+import { Pagination } from '@/core/entities/value-object/pagination';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { Package } from '../../enterprise/entities/package';
+import { Package } from '../../enterprise/entities/package';
 import { PostalCode } from '../../enterprise/entities/value-object/postal-code';
 import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
 import { InvalidPostalCode } from '../../errors/invalid-postal-code-error';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
-import type { PostalCodeValidator } from '../validation/postal-code-validator';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { PackagesRepository } from '../repositories/packages-repository';
+import { PostalCodeValidator } from '../validation/postal-code-validator';
 
 interface FetchPackagesNearByDeliveryPersonUseCaseRequest {
   authorId: string;
@@ -23,6 +24,7 @@ type FetchPackagesNearByDeliveryPersonUseCaseResponse = Either<
   { packages: Pagination<Package> }
 >;
 
+@Injectable()
 export class FetchPackagesNearByDeliveryPersonUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,

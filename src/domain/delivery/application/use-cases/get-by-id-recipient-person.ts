@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { RecipientPerson } from '../../enterprise/entities/recipient-person';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
 
 interface GetByIdRecipientPersonUseCaseRequest {
@@ -15,6 +16,7 @@ type GetByIdRecipientPersonUseCaseResponse = Either<
   { recipientPerson: RecipientPerson }
 >;
 
+@Injectable()
 export class GetByIdRecipientPersonUseCase {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,

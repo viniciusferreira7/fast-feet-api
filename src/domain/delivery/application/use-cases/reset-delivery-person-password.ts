@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
+import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
 import { WeakPasswordError } from '../../errors/weak-password-error';
-import type { HashComparer } from '../cryptography/hash-comparer';
-import type { HashGenerator } from '../cryptography/hash-generator';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PasswordValidator } from '../validation/password-validator';
+import { HashComparer } from '../cryptography/hash-comparer';
+import { HashGenerator } from '../cryptography/hash-generator';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { PasswordValidator } from '../validation/password-validator';
 import { DeliveryPersonProfileIsDisableError } from './errors/delivery-person-profile-is-disable-error';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
@@ -23,6 +24,7 @@ type ResetDeliveryPersonPasswordUseCaseResponse = Either<
   { deliveryPerson: DeliveryPerson }
 >;
 
+@Injectable()
 export class ResetDeliveryPersonPassword {
   constructor(
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,

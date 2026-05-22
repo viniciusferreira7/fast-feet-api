@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
+import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { WeakPasswordError } from '../../errors/weak-password-error';
-import type { HashComparer } from '../cryptography/hash-comparer';
-import type { HashGenerator } from '../cryptography/hash-generator';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
-import type { PasswordValidator } from '../validation/password-validator';
+import { HashComparer } from '../cryptography/hash-comparer';
+import { HashGenerator } from '../cryptography/hash-generator';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { PasswordValidator } from '../validation/password-validator';
 import { EmailCodeHasNotBeenVerifiedError } from './errors/email-code-has-not-been-verified-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -19,6 +20,7 @@ type ResetRecipientPersonPasswordUseCaseResponse = Either<
   { recipientPerson: RecipientPerson }
 >;
 
+@Injectable()
 export class ResetRecipientPersonPassword {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,

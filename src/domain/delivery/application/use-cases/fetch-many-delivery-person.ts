@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { Pagination } from '@/core/entities/value-object/pagination';
-import type { DeliveryPerson } from '../../enterprise/entities/delivery-person';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type {
+import { Pagination } from '@/core/entities/value-object/pagination';
+import { DeliveryPerson } from '../../enterprise/entities/delivery-person';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import {
   DeliveryPeopleRepository,
   FindManyDeliveryPersonParams,
 } from '../repositories/delivery-people-repository';
@@ -27,6 +28,7 @@ type FetchManyDeliveryPersonUseCaseResponse = Either<
   { deliveryPeople: Pagination<DeliveryPerson> }
 >;
 
+@Injectable()
 export class FetchManyDeliveryPersonUseCase {
   constructor(
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,

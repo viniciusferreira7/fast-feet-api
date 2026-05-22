@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
+import { RecipientPerson } from '../../enterprise/entities/recipient-person';
 import { EmailSender } from '../email/email-sender';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { EmailAlreadyInUseError } from './errors/email-already-in-use-error';
 
 interface UpdateRecipientPersonUseCaseRequest {

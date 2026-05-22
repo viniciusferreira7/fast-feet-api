@@ -1,7 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
-import type { RecipientPerson } from '../../enterprise/entities/recipient-person';
-import type { EmailSender } from '../email/email-sender';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { RecipientPerson } from '../../enterprise/entities/recipient-person';
+import { EmailSender } from '../email/email-sender';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
 import { TimeToSendNewEmailCodeError } from './errors/time-to-send-new-email-code-error';
 import { WrongCredentialsError } from './errors/wrong-credentials-error';
 
@@ -14,6 +15,7 @@ export type SendRecipientPersonCodeUseCaseResponse = Either<
   { recipientPerson: RecipientPerson }
 >;
 
+@Injectable()
 export class SendRecipientPersonCodeUseCase {
   constructor(
     private readonly recipientPeopleRepository: RecipientPeopleRepository,
