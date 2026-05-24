@@ -374,9 +374,45 @@ src/
     │   ├── env.service.ts
     │   ├── env.service.int-spec.ts
     │   └── env.module.ts
-    ├── http/                       # HTTP client module
-    │   ├── fetch-http-client.ts   # Fetch-based HTTP client
-    │   ├── fetch-http-client.int-spec.ts
+    ├── http/                       # NestJS HTTP layer
+    │   ├── controllers/           # REST controllers + e2e specs (25 controllers)
+    │   │   ├── authenticate-admin-person.controller.ts
+    │   │   ├── register-admin-person.controller.ts
+    │   │   ├── send-admin-person-code.controller.ts
+    │   │   ├── validate-admin-person-code.controller.ts
+    │   │   ├── get-by-id-admin-person.controller.ts
+    │   │   ├── update-admin-person.controller.ts
+    │   │   ├── reset-admin-person-password.controller.ts
+    │   │   ├── authenticate-delivery-person.controller.ts
+    │   │   ├── register-delivery-person.controller.ts
+    │   │   ├── send-delivery-person-code.controller.ts
+    │   │   ├── validate-delivery-person-code.controller.ts
+    │   │   ├── get-by-id-delivery-person.controller.ts
+    │   │   ├── fetch-many-delivery-person.controller.ts
+    │   │   ├── fetch-packages-near-by-delivery-person.controller.ts
+    │   │   ├── update-delivery-person.controller.ts
+    │   │   ├── reset-delivery-person-password.controller.ts
+    │   │   ├── delete-delivery-person.controller.ts
+    │   │   ├── authenticate-recipient-person.controller.ts
+    │   │   ├── register-recipient-person.controller.ts
+    │   │   ├── send-recipient-person-code.controller.ts
+    │   │   ├── validate-recipient-person-code.controller.ts
+    │   │   ├── get-by-id-recipient-person.controller.ts
+    │   │   ├── update-recipient-person.controller.ts
+    │   │   ├── reset-recipient-person-password.controller.ts
+    │   │   └── assign-package-to-a-delivery-person.controller.ts
+    │   ├── presenters/            # JSON response serializers
+    │   │   ├── admin-person-presenter.ts
+    │   │   ├── delivery-person-presenter.ts
+    │   │   ├── recipient-person-presenter.ts
+    │   │   ├── package-presenter.ts
+    │   │   ├── package-details-presenter.ts
+    │   │   ├── package-history-presenter.ts
+    │   │   ├── attachment-presenter.ts
+    │   │   └── notification-presenter.ts
+    │   ├── pipes/
+    │   │   └── zod-validation-pipes.ts  # Zod-based body/query validation
+    │   ├── fetch-http-client.ts   # Fetch-based HTTP client (external services)
     │   └── http.module.ts
     ├── interfaces/                 # Shared response interfaces
     │   └── postal-code-external-service-response.ts
@@ -683,14 +719,39 @@ Test infrastructure services against real external systems (database, email, sto
 | `jwt-encrypter.int-spec.ts` | JWT sign and verify |
 | `env.service.int-spec.ts` | Environment variable loading and validation |
 | `email.service.int-spec.ts` | Resend email delivery |
-| `fetch-http-client.int-spec.ts` | HTTP client (external service calls) |
 | `r2-storage.int-spec.ts` | Cloudflare R2 file upload |
 | `password.service.int-spec.ts` | External password strength validation |
 | `postal-code.service.int-spec.ts` | ViaCEP postal code lookup |
 
-### E2E Tests
+### E2E Tests (`.e2e-spec.ts`)
 
-Testing complete user flows, API endpoints, full request/response cycles, and database integration.
+Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **154 tests passing.**
+
+| Test file | Endpoint | What it covers |
+|---|---|---|
+| `authenticate-admin-person.controller.e2e-spec.ts` | `POST /admins/login` | Login with CPF/password, wrong credentials, unverified email |
+| `authenticate-delivery-person.controller.e2e-spec.ts` | `POST /delivery-people/login` | Login, wrong credentials, unverified email |
+| `authenticate-recipient-person.controller.e2e-spec.ts` | `POST /recipients/login` | Login, wrong credentials, unverified email |
+| `register-admin-person.controller.e2e-spec.ts` | `POST /admins` | Register admin, duplicate CPF/email, role guard |
+| `register-delivery-person.controller.e2e-spec.ts` | `POST /delivery-people` | Register delivery person, admin-only guard |
+| `register-recipient-person.controller.e2e-spec.ts` | `POST /recipients` | Self-registration, duplicate CPF/email |
+| `send-admin-person-code.controller.e2e-spec.ts` | `POST /admins/code` | Send verification code, rate-limit guard |
+| `send-delivery-person-code.controller.e2e-spec.ts` | `POST /delivery-people/code` | Send code, email not found |
+| `send-recipient-person-code.controller.e2e-spec.ts` | `POST /recipients/code` | Send code, email not found |
+| `validate-admin-person-code.controller.e2e-spec.ts` | `PUT /admins/code` | Valid code, wrong code, expired code |
+| `validate-delivery-person-code.controller.e2e-spec.ts` | `PUT /delivery-people/code` | Valid code, wrong code, expired code |
+| `validate-recipient-person-code.controller.e2e-spec.ts` | `PUT /recipients/code` | Valid code, wrong code, expired code |
+| `get-by-id-admin-person.controller.e2e-spec.ts` | `GET /admins/:id` | Get by ID, not found, non-admin access denied |
+| `get-by-id-delivery-person.controller.e2e-spec.ts` | `GET /delivery-people/:id` | Get own profile, cross-delivery access denied, admin access |
+| `get-by-id-recipient-person.controller.e2e-spec.ts` | `GET /recipients/:id` | Get own profile, cross-recipient access denied, admin access |
+| `fetch-many-delivery-person.controller.e2e-spec.ts` | `GET /delivery-people` | Pagination, name filter, admin-only guard |
+| `update-admin-person.controller.e2e-spec.ts` | `PATCH /admins` | Update name/email, email conflict, email cleared on change |
+| `update-delivery-person.controller.e2e-spec.ts` | `PATCH /delivery-people` | Update name/email, email conflict, role guard |
+| `update-recipient-person.controller.e2e-spec.ts` | `PATCH /recipients` | Update name/email, email conflict, role guard |
+| `reset-admin-person-password.controller.e2e-spec.ts` | `PATCH /admins/reset-password` | Reset password, wrong old password, weak new password |
+| `reset-delivery-person-password.controller.e2e-spec.ts` | `PATCH /delivery-people/reset-password` | Reset password, wrong password, unverified email |
+| `reset-recipient-person-password.controller.e2e-spec.ts` | `PATCH /recipients/reset-password` | Reset password, wrong password, unverified email |
+| `delete-delivery-person.controller.e2e-spec.ts` | `DELETE /delivery-people/cpf/:cpf` | Delete by CPF, not found, admin-only guard |
 
 ### Coverage Reports
 
@@ -700,14 +761,19 @@ Track code coverage metrics with Vitest coverage tools.
 
 ```
 test/
-├── setup-e2e.ts            # E2E test setup
-├── drop-uuid-schema.ts     # DB cleanup helper
-├── cryptography/           # Fake cryptography implementations
+├── setup-for-infra-tests.ts  # afterEach TRUNCATE for e2e/int test isolation
+├── seed-admin.ts              # beforeEach root-admin seed for e2e tests
+├── drop-uuid-schema.ts        # DB cleanup helper
+├── e2e/                       # Reusable e2e flow utilities
+│   ├── admin-flow.ts          # loginAdmin, sendAdminCode, validateAdminCode helpers
+│   ├── delivery-flow.ts       # registerDeliveryPerson, createAuthenticatedDeliveryPerson, etc.
+│   └── recipient-flow.ts      # registerRecipientPerson, createAuthenticatedRecipientPerson, etc.
+├── cryptography/              # Fake cryptography implementations
 │   ├── fake-hasher.ts
 │   └── faker-encrypter.ts
 ├── email/
 │   └── fake-email-sender.ts
-├── factories/              # Test data factories
+├── factories/                 # Test data factories
 │   ├── make-admin-person.ts
 │   ├── make-delivery-person.ts
 │   ├── make-recipient-person.ts
@@ -716,8 +782,8 @@ test/
 │   ├── make-package-history.ts
 │   ├── make-attachment.ts
 │   ├── make-notification.ts
-│   └── make-module-ref.ts  # NestJS app factory for integration tests
-├── repositories/           # In-memory repository implementations
+│   └── make-module-ref.ts    # NestJS app factory for integration/e2e tests
+├── repositories/              # In-memory repository implementations
 │   ├── in-memory-admin-people-repository.ts
 │   ├── in-memory-delivery-people-repository.ts
 │   ├── in-memory-recipient-people-repository.ts
@@ -887,6 +953,65 @@ HTTPBIN_URL="https://httpbin.org"
   - Verification code format validation tests
 - Test data factories for easy test setup with automatic email verification
 - Functional error handling with Either monad pattern
+- HTTP/REST controllers for all person-management endpoints (25 controllers, snake_case body/query params)
+  - Admin person: register, login, send/validate code, get by ID, update, reset password
+  - Delivery person: register, login, send/validate code, get by ID, list, update, reset password, delete, fetch nearby packages
+  - Recipient person: register, login, send/validate code, get by ID, update, reset password
+- JSON response presenters for all domain entities (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Attachment, Notification)
+- Zod validation pipe for request body and query parameter validation
+- E2E test suites for all person-management endpoints (23 test suites, 154 tests passing)
+  - Full request/response cycle against real PostgreSQL database
+  - Role-based access guard assertions (401/403 coverage)
+  - Test isolation via afterEach TRUNCATE + beforeEach admin seed
+
+### HTTP/REST API ✅
+
+All person-management endpoints are implemented with NestJS controllers, Zod validation pipes, and JSON presenters.
+
+#### Admin (`/admins`)
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `POST` | `/admins` | Admin JWT | Register a new admin person |
+| `POST` | `/admins/login` | API Key | Authenticate an admin (returns JWT) |
+| `POST` | `/admins/code` | API Key | Send email verification code |
+| `PUT` | `/admins/code` | API Key | Validate email verification code |
+| `GET` | `/admins/:id` | Admin JWT | Get admin by ID |
+| `PATCH` | `/admins` | Admin JWT | Update admin profile |
+| `PATCH` | `/admins/reset-password` | Admin JWT | Reset admin password |
+
+#### Delivery Person (`/delivery-people`)
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `POST` | `/delivery-people` | Admin JWT | Register a new delivery person |
+| `POST` | `/delivery-people/login` | API Key | Authenticate a delivery person (returns JWT) |
+| `POST` | `/delivery-people/code` | API Key | Send email verification code |
+| `PUT` | `/delivery-people/code` | API Key | Validate email verification code |
+| `GET` | `/delivery-people` | Admin JWT | List all delivery persons (paginated) |
+| `GET` | `/delivery-people/:id` | Admin / Delivery JWT | Get delivery person by ID |
+| `GET` | `/delivery-people/:id/packages` | Admin / Delivery JWT | Fetch packages near by delivery person |
+| `PATCH` | `/delivery-people` | Delivery JWT | Update own delivery person profile |
+| `PATCH` | `/delivery-people/reset-password` | Delivery JWT | Reset own password |
+| `DELETE` | `/delivery-people/cpf/:cpf` | Admin JWT | Delete delivery person by CPF |
+
+#### Recipient Person (`/recipients`)
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `POST` | `/recipients` | API Key | Self-register as a recipient |
+| `POST` | `/recipients/login` | API Key | Authenticate a recipient (returns JWT) |
+| `POST` | `/recipients/code` | API Key | Send email verification code |
+| `PUT` | `/recipients/code` | API Key | Validate email verification code |
+| `GET` | `/recipients/:id` | Admin / Recipient JWT | Get recipient by ID |
+| `PATCH` | `/recipients` | Recipient JWT | Update own recipient profile |
+| `PATCH` | `/recipients/reset-password` | Recipient JWT | Reset own password |
+
+#### Packages (`/packages`) — Partial
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `PATCH` | `/packages/:packagesId` | Admin JWT | Assign package to a delivery person |
 
 ### Infrastructure ✅
 
@@ -902,15 +1027,13 @@ HTTPBIN_URL="https://httpbin.org"
 - **Logging**: Pino with env-aware transports (pretty for dev/test, OTLP for dev/prod) and a global `AllExceptionsFilter` that logs every unhandled HTTP error
 - **Auth**: JWT strategy + guard with unauthorized-request warnings
 - **Environment**: Zod-validated environment configuration with per-environment rules
-- **Integration Tests**: 9 infrastructure + 9 repository integration test suites
+- **Integration Tests**: 16 integration test suites (infrastructure services + all repository CRUD operations)
 
 ### In Progress 🚧
-- HTTP/REST API endpoints with NestJS controllers
-- Package CRUD operations API
-- Recipient management API
-- Photo upload for delivery proof
-- Location-based package filtering
-- E2E tests
+- Package management REST API (register, update, get, list, full lifecycle endpoints, photo upload)
+- Notification REST API (fetch, mark as read)
+- E2E tests for package and notification endpoints
+- E2E test for `GET /delivery-people/:id/packages` (fetch packages near by delivery person)
 
 ## 🤝 Contributing
 
