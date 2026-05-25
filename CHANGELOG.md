@@ -1,3 +1,20 @@
+# [1.48.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.47.0...v1.48.0) (2026-05-25)
+
+
+### Bug Fixes
+
+* **controller:** correct route param name mismatch in assign-package controller ([b5e7bf3](https://github.com/viniciusferreira7/fast-feet-api/commit/b5e7bf33799f0f44a311cc8f27e2be6c15de2b6a))
+* **observability:** suppress dotenv missing-file warnings in metrics and tracer ([f90244b](https://github.com/viniciusferreira7/fast-feet-api/commit/f90244b4ba1f0b46f3db94285b6124eb8057f8d2))
+* **use-case:** propagate status transition error from assignDeliveryPerson ([3604c59](https://github.com/viniciusferreira7/fast-feet-api/commit/3604c59396b5a580a3553f3e977876db819e82eb))
+
+
+### Features
+
+* **controller:** implement get-package-by-code with API key auth ([8e3245a](https://github.com/viniciusferreira7/fast-feet-api/commit/8e3245a66af3cc239c32f94266c53943afc52ea6))
+* **controllers:** create controller to register package ([1e7d5fa](https://github.com/viniciusferreira7/fast-feet-api/commit/1e7d5fae094bd10854bf02f552c7e94f29ec82bf))
+* **observability:** add metrics for get-package-by-code ([509de18](https://github.com/viniciusferreira7/fast-feet-api/commit/509de18c7adac5b50c98c5b504444f1c1bfd4b0e))
+* **presenter:** add toPublicHttp method to package presenters ([3f9e4a7](https://github.com/viniciusferreira7/fast-feet-api/commit/3f9e4a7e131b9c31481803ca97b967907e05e0df))
+
 # [1.47.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.46.0...v1.47.0) (2026-05-22)
 
 
