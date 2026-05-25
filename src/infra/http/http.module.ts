@@ -10,6 +10,7 @@ import { FetchPackagesNearByDeliveryPersonUseCase } from '@/domain/delivery/appl
 import { GetByIdAdminPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-admin-person';
 import { GetByIdDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-delivery-person';
 import { GetByIdRecipientPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-recipient-person';
+import { GetByPackageByCodeUseCase } from '@/domain/delivery/application/use-cases/get-package-by-code';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { RegisterDeliveryPerson } from '@/domain/delivery/application/use-cases/register-delivery-person';
 import { RegisterPackageUseCase } from '@/domain/delivery/application/use-cases/register-package';
@@ -41,6 +42,7 @@ import { FetchPackagesNearByDeliveryPersonController } from './controllers/fetch
 import { GetByIdAdminPersonController } from './controllers/get-by-id-admin-person.controller';
 import { GetByIdDeliveryPersonController } from './controllers/get-by-id-delivery-person.controller';
 import { GetByIdRecipientPersonController } from './controllers/get-by-id-recipient-person.controller';
+import { GetPackageByCodeController } from './controllers/get-package-by-code.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { RegisterDeliveryPersonController } from './controllers/register-delivery-person.controller';
 import { RegisterPackageController } from './controllers/register-package.controller';
@@ -103,6 +105,7 @@ import { FetchHttpClient } from './fetch-http-client';
 
     // Package
     RegisterPackageUseCase,
+    GetByPackageByCodeUseCase,
   ],
   exports: [HttpClient],
   controllers: [
@@ -135,6 +138,7 @@ import { FetchHttpClient } from './fetch-http-client';
     UpdateRecipientPersonController,
     GetByIdRecipientPersonController,
     RegisterPackageController,
+    GetPackageByCodeController,
   ],
 })
 export class HttpModule {}
