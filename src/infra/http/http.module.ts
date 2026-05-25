@@ -12,6 +12,7 @@ import { GetByIdDeliveryPersonUseCase } from '@/domain/delivery/application/use-
 import { GetByIdRecipientPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-recipient-person';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { RegisterDeliveryPerson } from '@/domain/delivery/application/use-cases/register-delivery-person';
+import { RegisterPackageUseCase } from '@/domain/delivery/application/use-cases/register-package';
 import { RegisterRecipientPerson } from '@/domain/delivery/application/use-cases/register-recipient-person';
 import { ResetAdminPersonPasswordUseCase } from '@/domain/delivery/application/use-cases/reset-admin-person-password';
 import { ResetDeliveryPersonPassword } from '@/domain/delivery/application/use-cases/reset-delivery-person-password';
@@ -42,6 +43,7 @@ import { GetByIdDeliveryPersonController } from './controllers/get-by-id-deliver
 import { GetByIdRecipientPersonController } from './controllers/get-by-id-recipient-person.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { RegisterDeliveryPersonController } from './controllers/register-delivery-person.controller';
+import { RegisterPackageController } from './controllers/register-package.controller';
 import { RegisterRecipientPersonController } from './controllers/register-recipient-person.controller';
 import { ResetAdminPersonPasswordController } from './controllers/reset-admin-person-password.controller';
 import { ResetDeliveryPersonPasswordController } from './controllers/reset-delivery-person-password.controller';
@@ -98,6 +100,9 @@ import { FetchHttpClient } from './fetch-http-client';
     ResetRecipientPersonPassword,
     UpdateRecipientPersonUseCase,
     GetByIdRecipientPersonUseCase,
+
+    // Package
+    RegisterPackageUseCase,
   ],
   exports: [HttpClient],
   controllers: [
@@ -129,6 +134,7 @@ import { FetchHttpClient } from './fetch-http-client';
     ResetRecipientPersonPasswordController,
     UpdateRecipientPersonController,
     GetByIdRecipientPersonController,
+    RegisterPackageController,
   ],
 })
 export class HttpModule {}

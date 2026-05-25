@@ -13,7 +13,7 @@ import { Package } from '../../enterprise/entities/package';
 import { PackageCode } from '../../enterprise/entities/value-object/package-code';
 import { PackageStatus } from '../../enterprise/entities/value-object/package-status';
 import { ExternalPostalCodeError } from '../../errors/external-postal-code-validation-error';
-import { RegisterPackage } from './register-package';
+import { RegisterPackageUseCase } from './register-package';
 
 let packagesRepository: InMemoryPackagesRepository;
 let packageHistoryRepository: InMemoryPackagesHistoryRepository;
@@ -21,7 +21,7 @@ let adminPeopleRepository: InMemoryAdminPeopleRepository;
 let deliveryPeopleRepository: InMemoryDeliveryPeopleRepository;
 let recipientPeopleRepository: InMemoryRecipientPeopleRepository;
 let postalCodeValidator: FakePostalCodeValidator;
-let sut: RegisterPackage;
+let sut: RegisterPackageUseCase;
 
 describe('Register Package', () => {
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('Register Package', () => {
     deliveryPeopleRepository = new InMemoryDeliveryPeopleRepository();
     recipientPeopleRepository = new InMemoryRecipientPeopleRepository();
     postalCodeValidator = new FakePostalCodeValidator();
-    sut = new RegisterPackage(
+    sut = new RegisterPackageUseCase(
       packagesRepository,
       deliveryPeopleRepository,
       adminPeopleRepository,
@@ -295,7 +295,7 @@ describe('Register Package', () => {
       left(new ExternalPostalCodeError())
     );
 
-    const registerPackageWithInvalidValidator = new RegisterPackage(
+    const registerPackageWithInvalidValidator = new RegisterPackageUseCase(
       packagesRepository,
       deliveryPeopleRepository,
       adminPeopleRepository,

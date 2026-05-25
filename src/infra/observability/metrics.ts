@@ -150,6 +150,14 @@ const fetchManyDeliveryPersonSuccessCounter = customMetrics.createCounter(
   'fetch_many_delivery_person_success'
 );
 
+// register package
+const registerPackageErrorCounter = customMetrics.createCounter(
+  'register_package_error'
+);
+const registerPackageSuccessCounter = customMetrics.createCounter(
+  'register_package_success'
+);
+
 // fetch packages near by delivery person
 const fetchPackagesNearByDeliveryPersonErrorCounter =
   customMetrics.createCounter('fetch_packages_near_by_delivery_person_error');
@@ -239,6 +247,8 @@ export {
   registerAdminPersonSuccessCounter,
   registerDeliveryPersonErrorCounter,
   registerDeliveryPersonSuccessCounter,
+  registerPackageErrorCounter,
+  registerPackageSuccessCounter,
   registerRecipientPersonErrorCounter,
   registerRecipientPersonSuccessCounter,
   resetAdminPersonPasswordErrorCounter,

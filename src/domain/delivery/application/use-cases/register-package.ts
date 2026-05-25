@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { UniqueEntityId } from '@/core/entities/value-object/unique-entity-id';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
@@ -10,11 +11,11 @@ import { ExternalPostalCodeError } from '../../errors/external-postal-code-valid
 import type { InvalidPostalCode } from '../../errors/invalid-postal-code-error';
 import type { InvalidatePackageCodeError } from '../../errors/invalidate-package-code-error';
 import type { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
-import type { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
-import type { PostalCodeValidator } from '../validation/postal-code-validator';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { PackagesRepository } from '../repositories/packages-repository';
+import { RecipientPeopleRepository } from '../repositories/recipient-people-repository';
+import { PostalCodeValidator } from '../validation/postal-code-validator';
 
 interface RegisterPackageUseCaseRequest {
   recipientId: string;
@@ -35,8 +36,8 @@ type RegisterPackageUseCaseResponse = Either<
     package: Package;
   }
 >;
-
-export class RegisterPackage {
+@Injectable()
+export class RegisterPackageUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,
     private readonly deliveryPeopleRepository: DeliveryPeopleRepository,
