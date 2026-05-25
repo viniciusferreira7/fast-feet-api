@@ -52,11 +52,15 @@ export class AssignPackageToADeliveryPersonUseCase {
       return left(new ResourceNotFoundError('package'));
     }
 
-    packageRegistered.assignDeliveryPerson(
+    const assignResult = packageRegistered.assignDeliveryPerson(
       deliveryPerson.id,
       author.id,
       description
     );
+
+    if (assignResult.isLeft()) {
+      return left(assignResult.value);
+    }
 
     await this.packagesRepository.update(packageRegistered);
 
