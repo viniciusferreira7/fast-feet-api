@@ -43,7 +43,9 @@ export class PackagePresenter {
     };
   }
 
-  public static toPublicHttp(packageData: Package): PackagePublicPresenterToHttp {
+  public static toPublicHttp(
+    packageData: Package
+  ): PackagePublicPresenterToHttp {
     return {
       code: packageData.code.value,
       name: packageData.name,
