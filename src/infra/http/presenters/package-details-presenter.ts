@@ -42,7 +42,29 @@ export interface PackageDetailsPresenterToHttp {
   delivered_at: Date | null;
 }
 
+export interface PackageDetailsPublicPresenterToHttp {
+  code: string;
+  name: string;
+  status: Status;
+  recipient_address: string;
+  updated_at: Date | null;
+  delivered_at: Date | null;
+}
+
 export class PackageDetailsPresenter {
+  public static toPublicHttp(
+    details: PackageDetails
+  ): PackageDetailsPublicPresenterToHttp {
+    return {
+      code: details.code.value,
+      name: details.name,
+      status: details.status.value,
+      recipient_address: details.recipientAddress,
+      updated_at: details.updatedAt,
+      delivered_at: details.deliveredAt,
+    };
+  }
+
   public static toHttp(details: PackageDetails): PackageDetailsPresenterToHttp {
     return {
       id: details.packageId.toString(),
