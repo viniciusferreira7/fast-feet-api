@@ -49,7 +49,7 @@ type AssignPackageToADeliveryPersonSchema = z.infer<
 @ApiTags('Packages')
 @ApiBearerAuth('JWT-auth')
 @UseGuards(RoleGuard)
-@Controller('packages/:packagesId')
+@Controller('packages/:packageId')
 export class AssignPackageToADeliveryPersonController {
   constructor(
     private readonly assignPackageToADeliveryPersonUseCase: AssignPackageToADeliveryPersonUseCase
@@ -111,5 +111,3 @@ export class AssignPackageToADeliveryPersonController {
     return { package: PackagePresenter.toHttp(packageRecord) };
   }
 }
-
-//TODO: Create delivery flow and create e2e testes to this controller
