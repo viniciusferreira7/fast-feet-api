@@ -10,7 +10,6 @@ import { InMemoryPackagesRepository } from 'test/repositories/in-memory-packages
 import { InMemoryRecipientPeopleRepository } from 'test/repositories/in-memory-recipient-people-repository';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import { PackageDetails } from '../../enterprise/entities/value-object/package-details';
-import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
 import { GetByPackageByCodeUseCase } from './get-package-by-code';
 
 let packagesRepository: InMemoryPackagesRepository;
@@ -37,14 +36,10 @@ describe('Get Package By Code', () => {
         attachments: attachmentsRepository,
       }
     );
-    sut = new GetByPackageByCodeUseCase(
-      packagesRepository,
-      adminPeopleRepository
-    );
+    sut = new GetByPackageByCodeUseCase(packagesRepository);
   });
 
   it('should be able to get package details by code', async () => {
-    const admin = makeAdminPerson();
     const author = makeAdminPerson();
     const recipient = makeRecipientPerson();
     const deliveryPerson = makeDeliveryPerson();
@@ -54,15 +49,13 @@ describe('Get Package By Code', () => {
       deliveryPersonId: deliveryPerson.id,
     });
 
-    await adminPeopleRepository.register(admin);
     await adminPeopleRepository.register(author);
     await recipientPeopleRepository.register(recipient);
     await deliveryPeopleRepository.register(deliveryPerson);
     await packagesRepository.register(packageEntity);
 
     const result = await sut.execute({
-      authorId: admin.id.toString(),
-      packageId: packageEntity.code.value,
+      packageCode: packageEntity.code.value,
     });
 
     expect(result.isRight()).toBe(true);
@@ -80,7 +73,6 @@ describe('Get Package By Code', () => {
   });
 
   it('should return the correct package data', async () => {
-    const admin = makeAdminPerson();
     const author = makeAdminPerson();
     const recipient = makeRecipientPerson();
     const packageEntity = makePackage({
@@ -89,14 +81,12 @@ describe('Get Package By Code', () => {
       deliveryPersonId: null,
     });
 
-    await adminPeopleRepository.register(admin);
     await adminPeopleRepository.register(author);
     await recipientPeopleRepository.register(recipient);
     await packagesRepository.register(packageEntity);
 
     const result = await sut.execute({
-      authorId: admin.id.toString(),
-      packageId: packageEntity.code.value,
+      packageCode: packageEntity.code.value,
     });
 
     expect(result.isRight()).toBe(true);
@@ -107,32 +97,9 @@ describe('Get Package By Code', () => {
     }
   });
 
-  it('should not be able to get a package with a non-existent admin', async () => {
-    const recipient = makeRecipientPerson();
-    const packageEntity = makePackage({ recipientId: recipient.id });
-
-    await recipientPeopleRepository.register(recipient);
-    await packagesRepository.register(packageEntity);
-
-    const result = await sut.execute({
-      authorId: 'non-existent-admin-id',
-      packageId: packageEntity.code.value,
-    });
-
-    expect(result.isLeft()).toBe(true);
-    if (result.isLeft()) {
-      expect(result.value).toBeInstanceOf(OnlyAdminCanPerformThisActionError);
-    }
-  });
-
   it('should not be able to get a package with a non-existent code', async () => {
-    const admin = makeAdminPerson();
-
-    await adminPeopleRepository.register(admin);
-
     const result = await sut.execute({
-      authorId: admin.id.toString(),
-      packageId: '01AAAAAAAAAAAAAAAAAAAAAAAAA',
+      packageCode: '01AAAAAAAAAAAAAAAAAAAAAAAAA',
     });
 
     expect(result.isLeft()).toBe(true);
