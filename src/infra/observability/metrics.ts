@@ -158,6 +158,14 @@ const registerPackageSuccessCounter = customMetrics.createCounter(
   'register_package_success'
 );
 
+// get package by code
+const getPackageByCodeErrorCounter = customMetrics.createCounter(
+  'get_package_by_code_error'
+);
+const getPackageByCodeSuccessCounter = customMetrics.createCounter(
+  'get_package_by_code_success'
+);
+
 // fetch packages near by delivery person
 const fetchPackagesNearByDeliveryPersonErrorCounter =
   customMetrics.createCounter('fetch_packages_near_by_delivery_person_error');
@@ -242,6 +250,8 @@ export {
   getByIdDeliveryPersonSuccessCounter,
   getByIdRecipientPersonErrorCounter,
   getByIdRecipientPersonSuccessCounter,
+  getPackageByCodeErrorCounter,
+  getPackageByCodeSuccessCounter,
   jwtRejectedCounter,
   registerAdminPersonErrorCounter,
   registerAdminPersonSuccessCounter,
