@@ -13,7 +13,7 @@ export async function registerPackage(
   app: INestApplication,
   adminToken: string,
   options: RegisterPackageOptions
-): Promise<{ response: Response; packageId: string }> {
+): Promise<{ response: Response; packageId: string; packageCode: string }> {
   const {
     recipientId,
     name = 'Test Package',
@@ -34,8 +34,19 @@ export async function registerPackage(
     });
 
   const packageId = response.body.package?.id as string;
+  const packageCode = response.body.package?.code as string;
 
-  return { response, packageId };
+  return { response, packageId, packageCode };
+}
+
+export async function trackPackageByCode(
+  app: INestApplication,
+  code: string,
+  apiToken: string
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .get(`/packages/track/${code}`)
+    .set('Authorization', `Bearer ${apiToken}`);
 }
 
 export async function assignPackageToDeliveryPerson(
