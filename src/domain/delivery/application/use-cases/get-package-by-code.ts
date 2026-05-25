@@ -1,38 +1,27 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { PackageDetails } from '../../enterprise/entities/value-object/package-details';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
-import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
+import { PackagesRepository } from '../repositories/packages-repository';
 
 interface GetByPackageByCodeUseCaseRequest {
-  authorId: string;
-  packageId: string;
+  packageCode: string;
 }
 
 type GetByPackageByCodeUseCaseResponse = Either<
-  ResourceNotFoundError | OnlyAdminCanPerformThisActionError,
+  ResourceNotFoundError,
   { package: PackageDetails }
 >;
 
+@Injectable()
 export class GetByPackageByCodeUseCase {
-  constructor(
-    private readonly packagesRepository: PackagesRepository,
-    private readonly adminPeopleRepository: AdminPeopleRepository
-  ) {}
+  constructor(private readonly packagesRepository: PackagesRepository) {}
 
   async execute({
-    authorId,
-    packageId,
+    packageCode,
   }: GetByPackageByCodeUseCaseRequest): Promise<GetByPackageByCodeUseCaseResponse> {
-    const [adminPerson, packageDetails] = await Promise.all([
-      this.adminPeopleRepository.findById(authorId),
-      this.packagesRepository.findDetailsByCode(packageId),
-    ]);
-
-    if (!adminPerson) {
-      return left(new OnlyAdminCanPerformThisActionError());
-    }
+    const packageDetails =
+      await this.packagesRepository.findDetailsByCode(packageCode);
 
     if (!packageDetails) {
       return left(new ResourceNotFoundError('package'));
