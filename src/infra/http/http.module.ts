@@ -27,6 +27,9 @@ import { UpdateRecipientPersonUseCase } from '@/domain/delivery/application/use-
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { ValidDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/validate-delivery-person-code';
 import { ValidateRecipientPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-recipient-person-code';
+import { FetchManyNotificationsUseCase } from '@/domain/notification/application/use-cases/fetch-many-notifications';
+import { MarkAsReadNotificationUseCase } from '@/domain/notification/application/use-cases/mark-as-read-notification';
+import { MarkManyNotificationsAsReaUseCase } from '@/domain/notification/application/use-cases/mark-many-notifications-as-read';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
@@ -38,11 +41,14 @@ import { AuthenticateDeliveryPersonController } from './controllers/authenticate
 import { AuthenticateRecipientPersonController } from './controllers/authenticate-recipient-person.controller';
 import { DeleteDeliveryPersonController } from './controllers/delete-delivery-person.controller';
 import { FetchManyDeliveryPersonController } from './controllers/fetch-many-delivery-person.controller';
+import { FetchManyNotificationsController } from './controllers/fetch-many-notifications.controller';
 import { FetchPackagesNearByDeliveryPersonController } from './controllers/fetch-packages-near-by-delivery-person.controller';
 import { GetByIdAdminPersonController } from './controllers/get-by-id-admin-person.controller';
 import { GetByIdDeliveryPersonController } from './controllers/get-by-id-delivery-person.controller';
 import { GetByIdRecipientPersonController } from './controllers/get-by-id-recipient-person.controller';
 import { GetPackageByCodeController } from './controllers/get-package-by-code.controller';
+import { MarkAsReadNotificationController } from './controllers/mark-as-read-notification.controller';
+import { MarkManyNotificationsAsReadController } from './controllers/mark-many-notifications-as-read.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
 import { RegisterDeliveryPersonController } from './controllers/register-delivery-person.controller';
 import { RegisterPackageController } from './controllers/register-package.controller';
@@ -106,6 +112,11 @@ import { FetchHttpClient } from './fetch-http-client';
     // Package
     RegisterPackageUseCase,
     GetByPackageByCodeUseCase,
+
+    // Notification
+    FetchManyNotificationsUseCase,
+    MarkAsReadNotificationUseCase,
+    MarkManyNotificationsAsReaUseCase,
   ],
   exports: [HttpClient],
   controllers: [
@@ -139,6 +150,11 @@ import { FetchHttpClient } from './fetch-http-client';
     GetByIdRecipientPersonController,
     RegisterPackageController,
     GetPackageByCodeController,
+
+    // Notification
+    FetchManyNotificationsController,
+    MarkAsReadNotificationController,
+    MarkManyNotificationsAsReadController,
   ],
 })
 export class HttpModule {}
