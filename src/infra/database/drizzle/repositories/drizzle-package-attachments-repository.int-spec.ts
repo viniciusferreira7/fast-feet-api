@@ -2,10 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { makeAdminPerson } from 'test/factories/make-admin-person';
 import { makeAttachment } from 'test/factories/make-attachment';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { makePackage } from 'test/factories/make-package';
 import { makePackageAttachment } from 'test/factories/make-package-attachment';
 import { makeRecipientPerson } from 'test/factories/make-recipient-person';
-import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { AdminPeopleRepository } from '@/domain/delivery/application/repositories/admin-people-repository';
 import { AttachmentsRepository } from '@/domain/delivery/application/repositories/attachments-repository';
 import { PackageAttachmentsRepository } from '@/domain/delivery/application/repositories/package-attachments-repository';
@@ -126,7 +126,10 @@ describe('DrizzlePackageAttachmentsRepository', () => {
       const attachment = await seedAttachment();
 
       await repository.create(
-        makePackageAttachment({ PackageId: pkg.id, attachmentId: attachment.id })
+        makePackageAttachment({
+          PackageId: pkg.id,
+          attachmentId: attachment.id,
+        })
       );
 
       const result = await repository.findById(pkg.id.toString());
@@ -157,7 +160,10 @@ describe('DrizzlePackageAttachmentsRepository', () => {
       const attachment = await seedAttachment();
 
       await repository.create(
-        makePackageAttachment({ PackageId: pkg.id, attachmentId: attachment.id })
+        makePackageAttachment({
+          PackageId: pkg.id,
+          attachmentId: attachment.id,
+        })
       );
 
       const result = await repository.delete(pkg.id.toString());
@@ -172,7 +178,10 @@ describe('DrizzlePackageAttachmentsRepository', () => {
       const attachment = await seedAttachment();
 
       await repository.create(
-        makePackageAttachment({ PackageId: pkg.id, attachmentId: attachment.id })
+        makePackageAttachment({
+          PackageId: pkg.id,
+          attachmentId: attachment.id,
+        })
       );
 
       await repository.delete(pkg.id.toString());
@@ -187,7 +196,10 @@ describe('DrizzlePackageAttachmentsRepository', () => {
       const attachment = await seedAttachment();
 
       await repository.create(
-        makePackageAttachment({ PackageId: pkg.id, attachmentId: attachment.id })
+        makePackageAttachment({
+          PackageId: pkg.id,
+          attachmentId: attachment.id,
+        })
       );
 
       await repository.delete(pkg.id.toString());

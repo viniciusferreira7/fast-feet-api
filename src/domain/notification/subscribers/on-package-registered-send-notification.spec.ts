@@ -91,4 +91,47 @@ describe('On package registered', () => {
       })
     );
   });
+
+  it('should NOT send notification when package is registered without calling markAsRegistered', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    // Do not call markAsRegistered
+    await packagesRepository.register(packageRecord);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(sendNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should truncate package names longer than 20 characters in notification content', async () => {
+    const longName = 'VeryLongPackageName1234';
+    const packageRecord = makePackage({
+      name: longName,
+      deliveryPersonId: null,
+    });
+    const adminPerson = makeAdminPerson();
+
+    packageRecord.markAsRegistered(adminPerson.id);
+    await packagesRepository.register(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const [callArg] = sendNotificationSpy.mock.calls[0];
+    expect(callArg.content).toContain('"VeryLongPackageName1...');
+  });
+
+  it('should fire exactly once per registration event', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    const adminPerson = makeAdminPerson();
+
+    packageRecord.markAsRegistered(adminPerson.id);
+    await packagesRepository.register(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+  });
 });

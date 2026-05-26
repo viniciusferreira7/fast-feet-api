@@ -24,4 +24,33 @@ describe('Send notification', () => {
       result.value?.notification
     );
   });
+
+  it('should store notification with the correct recipientId', async () => {
+    const result = await sut.execute({
+      recipientId: 'recipient-42',
+      title: 'Test title',
+      content: 'Test content',
+    });
+
+    expect(result.isRight()).toBeTruthy();
+    expect(result.value?.notification.recipientId.toString()).toBe(
+      'recipient-42'
+    );
+  });
+
+  it('should store notification with matching title and content', async () => {
+    const result = await sut.execute({
+      recipientId: 'any-id',
+      title: 'Shipment update',
+      content: 'Your package is on the way',
+    });
+
+    expect(result.isRight()).toBeTruthy();
+    if (result.isRight()) {
+      expect(result.value.notification.title).toBe('Shipment update');
+      expect(result.value.notification.content).toBe(
+        'Your package is on the way'
+      );
+    }
+  });
 });

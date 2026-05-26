@@ -95,4 +95,60 @@ describe('On package assigned to a delivery person', () => {
       })
     );
   });
+
+  it('should NOT call sendNotification when no delivery person is assigned', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    await packagesRepository.register(packageRecord);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(sendNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should truncate package names longer than 10 characters in notification content', async () => {
+    const longName = 'VeryLongPackageName';
+    const packageRecord = makePackage({
+      name: longName,
+      deliveryPersonId: null,
+    });
+    await packagesRepository.register(packageRecord);
+
+    const adminPerson = makeAdminPerson();
+    const deliveryPerson = makeDeliveryPerson();
+
+    packageRecord.assignDeliveryPerson(
+      deliveryPerson.id,
+      adminPerson.id,
+      'Assigning'
+    );
+    await packagesRepository.update(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const [callArg] = sendNotificationSpy.mock.calls[0];
+    expect(callArg.content).toContain('VeryLongPa...');
+  });
+
+  it('should fire exactly once per assignment', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    await packagesRepository.register(packageRecord);
+
+    const adminPerson = makeAdminPerson();
+    const deliveryPerson = makeDeliveryPerson();
+
+    packageRecord.assignDeliveryPerson(
+      deliveryPerson.id,
+      adminPerson.id,
+      'First assignment'
+    );
+    await packagesRepository.update(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+  });
 });

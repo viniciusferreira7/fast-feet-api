@@ -96,4 +96,78 @@ describe('On package picked up', () => {
       })
     );
   });
+
+  it('should NOT call sendNotification when package is registered without pick-up', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      throw new Error('Failed to create awaiting_pickup status');
+    }
+
+    const packageRecord = makePackage({
+      status: awaitingPickupStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    await packagesRepository.register(packageRecord);
+    // No markAsPickedUp call
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(sendNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should truncate package names longer than 10 characters in notification content', async () => {
+    const longName = 'VeryLongPackageName';
+    const deliveryPerson = makeDeliveryPerson();
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      throw new Error('Failed to create awaiting_pickup status');
+    }
+
+    const packageRecord = makePackage({
+      name: longName,
+      status: awaitingPickupStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    await packagesRepository.register(packageRecord);
+
+    packageRecord.markAsPickedUp(deliveryPerson.id);
+    await packagesRepository.update(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const [callArg] = sendNotificationSpy.mock.calls[0];
+    expect(callArg.content).toContain('VeryLongPa...');
+  });
+
+  it('should fire exactly once per pick-up', async () => {
+    const deliveryPerson = makeDeliveryPerson();
+    const awaitingPickupStatus = PackageStatus.create('awaiting_pickup');
+
+    if (awaitingPickupStatus.isLeft()) {
+      throw new Error('Failed to create awaiting_pickup status');
+    }
+
+    const packageRecord = makePackage({
+      status: awaitingPickupStatus.value,
+      deliveryPersonId: deliveryPerson.id,
+    });
+
+    await packagesRepository.register(packageRecord);
+
+    packageRecord.markAsPickedUp(deliveryPerson.id);
+    await packagesRepository.update(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+  });
 });

@@ -36,6 +36,7 @@ export interface PackageProps {
   status: PackageStatus;
   postalCode: PostalCode;
   attachment?: PackageAttachment | null;
+  description?: string;
   createdAt: Date;
   updatedAt: Date | null;
   deliveredAt: Date | null;
@@ -80,6 +81,10 @@ export class Package extends AggregateRoot<PackageProps> {
 
   get attachment() {
     return this.props.attachment;
+  }
+
+  get description() {
+    return this.props.description;
   }
 
   get createdAt() {
@@ -555,6 +560,7 @@ export class Package extends AggregateRoot<PackageProps> {
   ) {
     this.props.name = props.name;
     this.props.recipientAddress = props.recipientAddress;
+    this.props.description = description;
     this.touch();
 
     const packageHistory = PackageHistory.create({

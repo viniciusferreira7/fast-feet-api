@@ -79,4 +79,54 @@ describe('Get By Id Admin Person', () => {
       expect(result.value).toBeInstanceOf(OnlyAdminCanPerformThisActionError);
     }
   });
+
+  it('should return the correct admin person name', async () => {
+    const author = makeAdminPerson();
+    const adminPerson = makeAdminPerson({ name: 'Alice Wonderland' });
+
+    await adminPeopleRepository.register(author);
+    await adminPeopleRepository.register(adminPerson);
+
+    const result = await sut.execute({
+      adminPersonId: adminPerson.id.toString(),
+      authorId: author.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.adminPerson.name).toBe('Alice Wonderland');
+    }
+  });
+
+  it('should return the correct admin person email', async () => {
+    const author = makeAdminPerson();
+    const adminPerson = makeAdminPerson({ email: 'alice@example.com' });
+
+    await adminPeopleRepository.register(author);
+    await adminPeopleRepository.register(adminPerson);
+
+    const result = await sut.execute({
+      adminPersonId: adminPerson.id.toString(),
+      authorId: author.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.adminPerson.email).toBe('alice@example.com');
+    }
+  });
+
+  it('should return ResourceNotFoundError when adminPersonId equals authorId but neither exists', async () => {
+    const sameId = 'non-existent-shared-id';
+
+    const result = await sut.execute({
+      adminPersonId: sameId,
+      authorId: sameId,
+    });
+
+    expect(result.isLeft()).toBe(true);
+    if (result.isLeft()) {
+      expect(result.value).toBeInstanceOf(ResourceNotFoundError);
+    }
+  });
 });

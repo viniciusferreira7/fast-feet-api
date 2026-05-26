@@ -87,4 +87,47 @@ describe('On package canceled', () => {
       })
     );
   });
+
+  it('should NOT send notification when package is registered without cancellation', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    await packagesRepository.register(packageRecord);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(sendNotificationSpy).not.toHaveBeenCalled();
+  });
+
+  it('should truncate package names longer than 10 characters in notification content', async () => {
+    const longName = 'VeryLongPackageName';
+    const packageRecord = makePackage({
+      name: longName,
+      deliveryPersonId: null,
+    });
+
+    const adminPerson = makeAdminPerson();
+    packageRecord.markAsCanceled(adminPerson.id);
+
+    await packagesRepository.register(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    const [callArg] = sendNotificationSpy.mock.calls[0];
+    expect(callArg.content).toContain('VeryLongPa...');
+  });
+
+  it('should fire exactly once per cancellation', async () => {
+    const packageRecord = makePackage({ deliveryPersonId: null });
+    const adminPerson = makeAdminPerson();
+    packageRecord.markAsCanceled(adminPerson.id);
+
+    await packagesRepository.register(packageRecord);
+
+    await waitFor(() => {
+      expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+    });
+
+    expect(sendNotificationSpy).toHaveBeenCalledTimes(1);
+  });
 });

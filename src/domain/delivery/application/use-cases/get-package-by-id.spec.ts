@@ -136,4 +136,77 @@ describe('Get Package By Id', () => {
       expect(result.value).toBeInstanceOf(ResourceNotFoundError);
     }
   });
+
+  it('should return null attachment when package has no attachment', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+      attachment: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: author.id.toString(),
+      packageId: packageEntity.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.attachment).toBeNull();
+    }
+  });
+
+  it('should include the correct recipient email in package details', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: author.id.toString(),
+      packageId: packageEntity.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.recipient.email).toBe(recipient.email);
+    }
+  });
+
+  it('should return the correct package code', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: author.id.toString(),
+      packageId: packageEntity.id.toString(),
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.code.equals(packageEntity.code)).toBe(true);
+    }
+  });
 });

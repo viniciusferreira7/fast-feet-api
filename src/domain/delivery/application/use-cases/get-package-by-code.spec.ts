@@ -107,4 +107,99 @@ describe('Get Package By Code', () => {
       expect(result.value).toBeInstanceOf(ResourceNotFoundError);
     }
   });
+
+  it('should return the correct recipient email in package details', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      packageCode: packageEntity.code.value,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.recipient.email).toBe(recipient.email);
+    }
+  });
+
+  it('should include the package status in details', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      packageCode: packageEntity.code.value,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.status.value).toBe(
+        packageEntity.status.value
+      );
+    }
+  });
+
+  it('should return null attachment when package has no attachment', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+      attachment: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      packageCode: packageEntity.code.value,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.attachment).toBeNull();
+    }
+  });
+
+  it('should include package code in details', async () => {
+    const author = makeAdminPerson();
+    const recipient = makeRecipientPerson();
+    const packageEntity = makePackage({
+      authorId: author.id,
+      recipientId: recipient.id,
+      deliveryPersonId: null,
+    });
+
+    await adminPeopleRepository.register(author);
+    await recipientPeopleRepository.register(recipient);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      packageCode: packageEntity.code.value,
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.code.equals(packageEntity.code)).toBe(true);
+    }
+  });
 });

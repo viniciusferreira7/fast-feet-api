@@ -122,4 +122,68 @@ describe('Update Package', () => {
       expect(result.value).toBeInstanceOf(ResourceNotFoundError);
     }
   });
+
+  it('should persist description when provided', async () => {
+    const admin = makeAdminPerson();
+    const packageEntity = makePackage();
+
+    await adminPeopleRepository.register(admin);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: admin.id.toString(),
+      packageId: packageEntity.id.toString(),
+      name: 'New name',
+      recipientAddress: 'New address',
+      description: 'Fragile item',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.description).toBe('Fragile item');
+    }
+  });
+
+  it('should not alter the package code or status after updating', async () => {
+    const admin = makeAdminPerson();
+    const packageEntity = makePackage();
+    const originalCode = packageEntity.code;
+    const originalStatus = packageEntity.status;
+
+    await adminPeopleRepository.register(admin);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: admin.id.toString(),
+      packageId: packageEntity.id.toString(),
+      name: 'Changed name',
+      recipientAddress: 'Changed address',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.code.equals(originalCode)).toBe(true);
+      expect(result.value.package.status.value).toBe(originalStatus.value);
+    }
+  });
+
+  it('should leave description undefined when not provided', async () => {
+    const admin = makeAdminPerson();
+    const packageEntity = makePackage();
+
+    await adminPeopleRepository.register(admin);
+    await packagesRepository.register(packageEntity);
+
+    const result = await sut.execute({
+      authorId: admin.id.toString(),
+      packageId: packageEntity.id.toString(),
+      name: 'New name',
+      recipientAddress: 'New address',
+    });
+
+    expect(result.isRight()).toBe(true);
+    if (result.isRight()) {
+      expect(result.value.package.description).toBeUndefined();
+    }
+  });
 });

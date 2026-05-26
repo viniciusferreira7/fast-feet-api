@@ -64,6 +64,38 @@ describe('DrizzlePackagesHistoryRepository', () => {
       expect(result.id.toString()).toEqual(history.id.toString());
       expect(result.packageId.toString()).toEqual(pkg.id.toString());
     });
+
+    it('should persist the description correctly', async () => {
+      const { pkg, author } = await seedPackage();
+
+      const history = makePackageHistory({
+        packageId: pkg.id,
+        authorId: author.id,
+        description: 'Custom delivery history note',
+      });
+
+      await repository.register(history);
+
+      const result = await repository.findById(history.id.toString());
+
+      expect(result?.description).toEqual('Custom delivery history note');
+    });
+
+    it('should register multiple histories for the same package', async () => {
+      const { pkg, author } = await seedPackage();
+
+      const h1 = makePackageHistory({ packageId: pkg.id, authorId: author.id });
+      const h2 = makePackageHistory({ packageId: pkg.id, authorId: author.id });
+      const h3 = makePackageHistory({ packageId: pkg.id, authorId: author.id });
+
+      await repository.register(h1);
+      await repository.register(h2);
+      await repository.register(h3);
+
+      const all = await repository.findManyByPackageId(pkg.id.toString());
+
+      expect(all?.length).toBeGreaterThanOrEqual(3);
+    });
   });
 
   describe('findById', () => {
@@ -87,6 +119,22 @@ describe('DrizzlePackagesHistoryRepository', () => {
       expect(result).not.toBeNull();
       expect(result?.packageId.toString()).toEqual(pkg.id.toString());
     });
+
+    it('should preserve description on retrieval', async () => {
+      const { pkg, author } = await seedPackage();
+
+      const history = makePackageHistory({
+        packageId: pkg.id,
+        authorId: author.id,
+        description: 'Step completed',
+      });
+      await repository.register(history);
+
+      const result = await repository.findById(history.id.toString());
+
+      expect(result?.description).toEqual('Step completed');
+      expect(result?.packageId.toString()).toEqual(pkg.id.toString());
+    });
   });
 
   describe('findManyByPackageId', () => {
@@ -108,6 +156,33 @@ describe('DrizzlePackagesHistoryRepository', () => {
 
       expect(result).not.toBeNull();
       expect(result?.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should not return histories belonging to a different package', async () => {
+      const { pkg: pkg1, author } = await seedPackage();
+      const { pkg: pkg2 } = await seedPackage();
+
+      await repository.register(
+        makePackageHistory({ packageId: pkg1.id, authorId: author.id })
+      );
+
+      const result = await repository.findManyByPackageId(pkg2.id.toString());
+
+      expect(result).toBeNull();
+    });
+
+    it('should return exact count of registered histories', async () => {
+      const { pkg, author } = await seedPackage();
+
+      for (let i = 0; i < 4; i++) {
+        await repository.register(
+          makePackageHistory({ packageId: pkg.id, authorId: author.id })
+        );
+      }
+
+      const result = await repository.findManyByPackageId(pkg.id.toString());
+
+      expect(result?.length).toBe(4);
     });
   });
 });
