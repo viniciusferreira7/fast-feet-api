@@ -11,6 +11,7 @@ import { GetByIdAdminPersonUseCase } from '@/domain/delivery/application/use-cas
 import { GetByIdDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-delivery-person';
 import { GetByIdRecipientPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-recipient-person';
 import { GetByPackageByCodeUseCase } from '@/domain/delivery/application/use-cases/get-package-by-code';
+import { GetByPackageByIdUseCase } from '@/domain/delivery/application/use-cases/get-package-by-id';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
 import { RegisterDeliveryPerson } from '@/domain/delivery/application/use-cases/register-delivery-person';
 import { RegisterPackageUseCase } from '@/domain/delivery/application/use-cases/register-package';
@@ -39,6 +40,7 @@ import { AssignPackageToADeliveryPersonController } from './controllers/assign-p
 import { AuthenticateAdminPersonController } from './controllers/authenticate-admin-person.controller';
 import { AuthenticateDeliveryPersonController } from './controllers/authenticate-delivery-person.controller';
 import { AuthenticateRecipientPersonController } from './controllers/authenticate-recipient-person.controller';
+import { CancelPackageController } from './controllers/cancel-package.controller';
 import { DeleteDeliveryPersonController } from './controllers/delete-delivery-person.controller';
 import { FetchManyDeliveryPersonController } from './controllers/fetch-many-delivery-person.controller';
 import { FetchManyNotificationsController } from './controllers/fetch-many-notifications.controller';
@@ -47,6 +49,7 @@ import { GetByIdAdminPersonController } from './controllers/get-by-id-admin-pers
 import { GetByIdDeliveryPersonController } from './controllers/get-by-id-delivery-person.controller';
 import { GetByIdRecipientPersonController } from './controllers/get-by-id-recipient-person.controller';
 import { GetPackageByCodeController } from './controllers/get-package-by-code.controller';
+import { GetPackageByIdController } from './controllers/get-package-by-id.controller';
 import { MarkAsReadNotificationController } from './controllers/mark-as-read-notification.controller';
 import { MarkManyNotificationsAsReadController } from './controllers/mark-many-notifications-as-read.controller';
 import { RegisterAdminPersonController } from './controllers/register-admin-person.controller';
@@ -112,6 +115,7 @@ import { FetchHttpClient } from './fetch-http-client';
     // Package
     RegisterPackageUseCase,
     GetByPackageByCodeUseCase,
+    GetByPackageByIdUseCase,
 
     // Notification
     FetchManyNotificationsUseCase,
@@ -150,11 +154,13 @@ import { FetchHttpClient } from './fetch-http-client';
     GetByIdRecipientPersonController,
     RegisterPackageController,
     GetPackageByCodeController,
+    GetPackageByIdController,
 
     // Notification
     FetchManyNotificationsController,
     MarkAsReadNotificationController,
     MarkManyNotificationsAsReadController,
+    CancelPackageController,
   ],
 })
 export class HttpModule {}
