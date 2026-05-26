@@ -10,6 +10,7 @@ import { FetchPackagesNearByDeliveryPersonUseCase } from '@/domain/delivery/appl
 import { GetByIdAdminPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-admin-person';
 import { GetByIdDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-delivery-person';
 import { GetByIdRecipientPersonUseCase } from '@/domain/delivery/application/use-cases/get-by-id-recipient-person';
+import { CancelPackageUseCase } from '@/domain/delivery/application/use-cases/cancel-package';
 import { GetByPackageByCodeUseCase } from '@/domain/delivery/application/use-cases/get-package-by-code';
 import { GetByPackageByIdUseCase } from '@/domain/delivery/application/use-cases/get-package-by-id';
 import { RegisterAdminPersonUseCase } from '@/domain/delivery/application/use-cases/register-admin-person';
@@ -113,6 +114,7 @@ import { FetchHttpClient } from './fetch-http-client';
     GetByIdRecipientPersonUseCase,
 
     // Package
+    CancelPackageUseCase,
     RegisterPackageUseCase,
     GetByPackageByCodeUseCase,
     GetByPackageByIdUseCase,

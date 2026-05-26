@@ -158,6 +158,14 @@ const registerPackageSuccessCounter = customMetrics.createCounter(
   'register_package_success'
 );
 
+// cancel package
+const cancelPackageErrorCounter = customMetrics.createCounter(
+  'cancel_package_error'
+);
+const cancelPackageSuccessCounter = customMetrics.createCounter(
+  'cancel_package_success'
+);
+
 // get package by code
 const getPackageByCodeErrorCounter = customMetrics.createCounter(
   'get_package_by_code_error'
@@ -284,6 +292,8 @@ export {
   getByIdDeliveryPersonSuccessCounter,
   getByIdRecipientPersonErrorCounter,
   getByIdRecipientPersonSuccessCounter,
+  cancelPackageErrorCounter,
+  cancelPackageSuccessCounter,
   getPackageByCodeErrorCounter,
   getPackageByCodeSuccessCounter,
   getPackageByIdErrorCounter,
