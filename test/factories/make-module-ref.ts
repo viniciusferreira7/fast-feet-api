@@ -1,6 +1,5 @@
 import type { INestApplication } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
-import { AllExceptionsFilter } from '@/infra/filters/all-exceptions.filter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -12,6 +11,7 @@ import { DatabaseModule } from '@/infra/database/database.module';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { EmailModule } from '@/infra/email/email.module';
 import { EnvModule } from '@/infra/env/env.module';
+import { AllExceptionsFilter } from '@/infra/filters/all-exceptions.filter';
 import { HttpModule } from '@/infra/http/http.module';
 import { ValidationModule } from '@/infra/validation/validation.module';
 import { FakeEmailSender } from '../email/fake-email-sender';

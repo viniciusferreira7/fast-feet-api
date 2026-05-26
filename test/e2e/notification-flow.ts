@@ -1,13 +1,12 @@
 import { type INestApplication } from '@nestjs/common';
 import request, { type Response } from 'supertest';
 import {
+  getRecipientEmailCode,
+  loginRecipientPerson,
   type RegisterRecipientOptions,
-  createAuthenticatedRecipientPerson,
   registerRecipientPerson,
   sendRecipientCode,
-  getRecipientEmailCode,
   validateRecipientCode,
-  loginRecipientPerson,
 } from 'test/e2e/recipient-flow';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { notifications } from '@/infra/database/drizzle/schema';
