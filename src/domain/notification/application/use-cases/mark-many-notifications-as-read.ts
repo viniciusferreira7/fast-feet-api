@@ -1,6 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import type { NotificationsRepository } from '../repositories/notifications-repository';
+import { NotificationsRepository } from '../repositories/notifications-repository';
 import { InvalidMarkAsReadRequestError } from './error/invalid-mark-as-read-request-error';
 
 interface MarkManyNotificationsAsReaUseCaseRequest {
@@ -21,6 +22,7 @@ type MarkManyNotificationsAsReaUseCaseResponse = Either<
   { message: 'Notifications marked as read' }
 >;
 
+@Injectable()
 export class MarkManyNotificationsAsReaUseCase {
   constructor(
     private readonly notificationsRepository: NotificationsRepository

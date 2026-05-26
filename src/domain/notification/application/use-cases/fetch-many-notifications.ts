@@ -1,8 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, right } from '@/core/either';
-import type { Pagination } from '@/core/entities/value-object/pagination';
-import type { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
-import type { Notification } from '../../enterprise/entities/notification';
-import type { NotificationsRepository } from '../repositories/notifications-repository';
+import { Pagination } from '@/core/entities/value-object/pagination';
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error';
+import { Notification } from '../../enterprise/entities/notification';
+import { NotificationsRepository } from '../repositories/notifications-repository';
 
 interface FetchManyNotificationsUseCaseRequest {
   authorId: string;
@@ -17,6 +18,7 @@ type FetchManyNotificationsUseCaseResponse = Either<
   { notifications: Pagination<Notification> }
 >;
 
+@Injectable()
 export class FetchManyNotificationsUseCase {
   constructor(
     private readonly notificationsRepository: NotificationsRepository
