@@ -62,6 +62,16 @@ export async function assignPackageToDeliveryPerson(
     .send({ deliveryPersonId, description });
 }
 
+export async function getPackageById(
+  app: INestApplication,
+  adminToken: string,
+  packageId: string
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .get(`/packages/${packageId}`)
+    .set('Authorization', `Bearer ${adminToken}`);
+}
+
 export async function fetchPackagesNearBy(
   app: INestApplication,
   token: string,
