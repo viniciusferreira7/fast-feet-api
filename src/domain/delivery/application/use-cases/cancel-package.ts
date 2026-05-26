@@ -1,9 +1,10 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
 import type { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
-import type { AdminPeopleRepository } from '../repositories/admin-people-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
+import { AdminPeopleRepository } from '../repositories/admin-people-repository';
+import { PackagesRepository } from '../repositories/packages-repository';
 import { OnlyAdminCanPerformThisActionError } from './errors/only-admin-can-perform-this-action-error';
 import { PackageAlreadyCanceledErrorError } from './errors/package-already-canceled-error';
 
@@ -21,6 +22,7 @@ type CancelPackageUseCaseResponse = Either<
   { package: Package }
 >;
 
+@Injectable()
 export class CancelPackageUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,

@@ -166,6 +166,78 @@ const cancelPackageSuccessCounter = customMetrics.createCounter(
   'cancel_package_success'
 );
 
+// picked up package
+const pickedUpPackageErrorCounter = customMetrics.createCounter(
+  'picked_up_package_error'
+);
+const pickedUpPackageSuccessCounter = customMetrics.createCounter(
+  'picked_up_package_success'
+);
+
+// drop off package at distribution center
+const dropOffPackageAtDistributionCenterErrorCounter =
+  customMetrics.createCounter('drop_off_package_at_distribution_center_error');
+const dropOffPackageAtDistributionCenterSuccessCounter =
+  customMetrics.createCounter(
+    'drop_off_package_at_distribution_center_success'
+  );
+
+// package is in transit
+const packageIsInTransitErrorCounter = customMetrics.createCounter(
+  'package_is_in_transit_error'
+);
+const packageIsInTransitSuccessCounter = customMetrics.createCounter(
+  'package_is_in_transit_success'
+);
+
+// package is out for delivery
+const packageIsOutForDeliveryErrorCounter = customMetrics.createCounter(
+  'package_is_out_for_delivery_error'
+);
+const packageIsOutForDeliverySuccessCounter = customMetrics.createCounter(
+  'package_is_out_for_delivery_success'
+);
+
+// package failed delivery
+const packageFailedDeliveryErrorCounter = customMetrics.createCounter(
+  'package_failed_delivery_error'
+);
+const packageFailedDeliverySuccessCounter = customMetrics.createCounter(
+  'package_failed_delivery_success'
+);
+
+// return package
+const returnPackageErrorCounter = customMetrics.createCounter(
+  'return_package_error'
+);
+const returnPackageSuccessCounter = customMetrics.createCounter(
+  'return_package_success'
+);
+
+// package was delivered
+const packageWasDeliveredErrorCounter = customMetrics.createCounter(
+  'package_was_delivered_error'
+);
+const packageWasDeliveredSuccessCounter = customMetrics.createCounter(
+  'package_was_delivered_success'
+);
+
+// fetch many packages
+const fetchManyPackagesErrorCounter = customMetrics.createCounter(
+  'fetch_many_packages_error'
+);
+const fetchManyPackagesSuccessCounter = customMetrics.createCounter(
+  'fetch_many_packages_success'
+);
+
+// update package
+const updatePackageErrorCounter = customMetrics.createCounter(
+  'update_package_error'
+);
+const updatePackageSuccessCounter = customMetrics.createCounter(
+  'update_package_success'
+);
+
 // get package by code
 const getPackageByCodeErrorCounter = customMetrics.createCounter(
   'get_package_by_code_error'
@@ -277,13 +349,19 @@ export {
   authenticateDeliveryPersonSuccessCounter,
   authenticateRecipientPersonErrorCounter,
   authenticateRecipientPersonSuccessCounter,
+  cancelPackageErrorCounter,
+  cancelPackageSuccessCounter,
   customMetrics,
   deleteDeliveryPersonErrorCounter,
   deleteDeliveryPersonSuccessCounter,
+  dropOffPackageAtDistributionCenterErrorCounter,
+  dropOffPackageAtDistributionCenterSuccessCounter,
   fetchManyDeliveryPersonErrorCounter,
   fetchManyDeliveryPersonSuccessCounter,
   fetchManyNotificationsErrorCounter,
   fetchManyNotificationsSuccessCounter,
+  fetchManyPackagesErrorCounter,
+  fetchManyPackagesSuccessCounter,
   fetchPackagesNearByDeliveryPersonErrorCounter,
   fetchPackagesNearByDeliveryPersonSuccessCounter,
   getByIdAdminPersonErrorCounter,
@@ -292,8 +370,6 @@ export {
   getByIdDeliveryPersonSuccessCounter,
   getByIdRecipientPersonErrorCounter,
   getByIdRecipientPersonSuccessCounter,
-  cancelPackageErrorCounter,
-  cancelPackageSuccessCounter,
   getPackageByCodeErrorCounter,
   getPackageByCodeSuccessCounter,
   getPackageByIdErrorCounter,
@@ -303,6 +379,16 @@ export {
   markAsReadNotificationSuccessCounter,
   markManyNotificationsAsReadErrorCounter,
   markManyNotificationsAsReadSuccessCounter,
+  packageFailedDeliveryErrorCounter,
+  packageFailedDeliverySuccessCounter,
+  packageIsInTransitErrorCounter,
+  packageIsInTransitSuccessCounter,
+  packageIsOutForDeliveryErrorCounter,
+  packageIsOutForDeliverySuccessCounter,
+  packageWasDeliveredErrorCounter,
+  packageWasDeliveredSuccessCounter,
+  pickedUpPackageErrorCounter,
+  pickedUpPackageSuccessCounter,
   registerAdminPersonErrorCounter,
   registerAdminPersonSuccessCounter,
   registerDeliveryPersonErrorCounter,
@@ -317,6 +403,8 @@ export {
   resetDeliveryPersonPasswordSuccessCounter,
   resetRecipientPersonPasswordErrorCounter,
   resetRecipientPersonPasswordSuccessCounter,
+  returnPackageErrorCounter,
+  returnPackageSuccessCounter,
   roleRejectedCounter,
   sendAdminPersonCodeErrorCounter,
   sendAdminPersonCodeSuccessCounter,
@@ -328,6 +416,8 @@ export {
   updateAdminPersonSuccessCounter,
   updateDeliveryPersonErrorCounter,
   updateDeliveryPersonSuccessCounter,
+  updatePackageErrorCounter,
+  updatePackageSuccessCounter,
   updateRecipientPersonErrorCounter,
   updateRecipientPersonSuccessCounter,
   validateAdminPersonCodeErrorCounter,

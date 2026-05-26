@@ -72,6 +72,131 @@ export async function getPackageById(
     .set('Authorization', `Bearer ${adminToken}`);
 }
 
+export async function cancelPackage(
+  app: INestApplication,
+  adminToken: string,
+  packageId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/cancel`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send(body);
+}
+
+export async function pickUpPackage(
+  app: INestApplication,
+  deliveryToken: string,
+  packageId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/pick-up`)
+    .set('Authorization', `Bearer ${deliveryToken}`)
+    .send(body);
+}
+
+export async function dropOffPackage(
+  app: INestApplication,
+  deliveryToken: string,
+  packageId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/drop-off`)
+    .set('Authorization', `Bearer ${deliveryToken}`)
+    .send(body);
+}
+
+export async function markPackageInTransit(
+  app: INestApplication,
+  adminToken: string,
+  packageId: string,
+  deliveryPersonId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/in-transit`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({ deliveryPersonId, ...body });
+}
+
+export async function markPackageOutForDelivery(
+  app: INestApplication,
+  adminToken: string,
+  packageId: string,
+  deliveryPersonId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/out-for-delivery`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({ deliveryPersonId, ...body });
+}
+
+export async function markPackageFailedDelivery(
+  app: INestApplication,
+  deliveryToken: string,
+  packageId: string,
+  attachmentId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/failed-delivery`)
+    .set('Authorization', `Bearer ${deliveryToken}`)
+    .send({ attachmentId, ...body });
+}
+
+export async function returnPackage(
+  app: INestApplication,
+  deliveryToken: string,
+  packageId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/return`)
+    .set('Authorization', `Bearer ${deliveryToken}`)
+    .send(body);
+}
+
+export async function deliverPackage(
+  app: INestApplication,
+  deliveryToken: string,
+  packageId: string,
+  attachmentId: string,
+  body: { description?: string } = {}
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .patch(`/packages/${packageId}/deliver`)
+    .set('Authorization', `Bearer ${deliveryToken}`)
+    .send({ attachmentId, ...body });
+}
+
+export async function fetchManyPackages(
+  app: INestApplication,
+  adminToken: string,
+  query: Record<string, string | number> = {}
+): Promise<Response> {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(query)) params.set(k, String(v));
+
+  return request(app.getHttpServer())
+    .get(`/packages?${params.toString()}`)
+    .set('Authorization', `Bearer ${adminToken}`);
+}
+
+export async function updatePackage(
+  app: INestApplication,
+  adminToken: string,
+  packageId: string,
+  body: { name: string; recipientAddress: string; description?: string }
+): Promise<Response> {
+  return request(app.getHttpServer())
+    .put(`/packages/${packageId}`)
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send(body);
+}
+
 export async function fetchPackagesNearBy(
   app: INestApplication,
   token: string,

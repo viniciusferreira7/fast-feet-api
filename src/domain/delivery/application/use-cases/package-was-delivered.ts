@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { Package } from '../../enterprise/entities/package';
-import type { AttachmentsRepository } from '../repositories/attachments-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
+import { Package } from '../../enterprise/entities/package';
+import { AttachmentsRepository } from '../repositories/attachments-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
+import { PackagesRepository } from '../repositories/packages-repository';
 import { DeliveryWithoutRequiredPhoto } from './errors/delivery-without-required-photo';
 
 interface PackageWasDeliveredUseCaseRequest {
@@ -19,6 +20,7 @@ type PackageWasDeliveredUseCaseResponse = Either<
   { package: Package }
 >;
 
+@Injectable()
 export class PackageWasDeliveredUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,

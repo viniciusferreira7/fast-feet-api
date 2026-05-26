@@ -1,11 +1,12 @@
+import { Injectable } from '@nestjs/common';
 import { type Either, left, right } from '@/core/either';
 import { ResourceNotFoundError } from '../../../../core/errors/resource-not-found-error';
-import type { Package } from '../../enterprise/entities/package';
+import { Package } from '../../enterprise/entities/package';
 import { InvalidatePackageStatusError } from '../../errors/invalidate-package-status-error';
-import type { AttachmentsRepository } from '../repositories/attachments-repository';
-import type { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
-import type { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
-import type { PackagesRepository } from '../repositories/packages-repository';
+import { AttachmentsRepository } from '../repositories/attachments-repository';
+import { DeliveryPeopleRepository } from '../repositories/delivery-people-repository';
+import { PackageAttachmentsRepository } from '../repositories/package-attachments-repository';
+import { PackagesRepository } from '../repositories/packages-repository';
 import { DeliveryPersonNotAssignedToPackageError } from './errors/delivery-person-not-assigned-to-package-error';
 import { DeliveryWithoutRequiredPhoto } from './errors/delivery-without-required-photo';
 import { PackageNotAssignedToDeliveryPersonError } from './errors/package-not-assigned-to-delivery-person-error';
@@ -26,6 +27,7 @@ type PackageFailedDeliveryUseCaseResponse = Either<
   { package: Package }
 >;
 
+@Injectable()
 export class PackageFailedDeliveryUseCase {
   constructor(
     private readonly packagesRepository: PackagesRepository,
