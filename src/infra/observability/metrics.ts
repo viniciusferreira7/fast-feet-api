@@ -228,6 +228,30 @@ const getByIdRecipientPersonSuccessCounter = customMetrics.createCounter(
   'get_by_id_recipient_person_success'
 );
 
+// fetch many notifications
+const fetchManyNotificationsErrorCounter = customMetrics.createCounter(
+  'fetch_many_notifications_error'
+);
+const fetchManyNotificationsSuccessCounter = customMetrics.createCounter(
+  'fetch_many_notifications_success'
+);
+
+// mark as read notification
+const markAsReadNotificationErrorCounter = customMetrics.createCounter(
+  'mark_as_read_notification_error'
+);
+const markAsReadNotificationSuccessCounter = customMetrics.createCounter(
+  'mark_as_read_notification_success'
+);
+
+// mark many notifications as read
+const markManyNotificationsAsReadErrorCounter = customMetrics.createCounter(
+  'mark_many_notifications_as_read_error'
+);
+const markManyNotificationsAsReadSuccessCounter = customMetrics.createCounter(
+  'mark_many_notifications_as_read_success'
+);
+
 export {
   assignPackageToDeliveryPersonErrorCounter,
   assignPackageToDeliveryPersonSuccessCounter,
@@ -242,6 +266,8 @@ export {
   deleteDeliveryPersonSuccessCounter,
   fetchManyDeliveryPersonErrorCounter,
   fetchManyDeliveryPersonSuccessCounter,
+  fetchManyNotificationsErrorCounter,
+  fetchManyNotificationsSuccessCounter,
   fetchPackagesNearByDeliveryPersonErrorCounter,
   fetchPackagesNearByDeliveryPersonSuccessCounter,
   getByIdAdminPersonErrorCounter,
@@ -253,6 +279,10 @@ export {
   getPackageByCodeErrorCounter,
   getPackageByCodeSuccessCounter,
   jwtRejectedCounter,
+  markAsReadNotificationErrorCounter,
+  markAsReadNotificationSuccessCounter,
+  markManyNotificationsAsReadErrorCounter,
+  markManyNotificationsAsReadSuccessCounter,
   registerAdminPersonErrorCounter,
   registerAdminPersonSuccessCounter,
   registerDeliveryPersonErrorCounter,
