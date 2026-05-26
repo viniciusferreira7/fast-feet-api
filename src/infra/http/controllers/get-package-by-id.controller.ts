@@ -28,7 +28,7 @@ import {
   getPackageByIdErrorCounter,
   getPackageByIdSuccessCounter,
 } from '@/infra/observability/metrics';
-import { PackagePresenter } from '../presenters/package-presenter';
+import { PackageDetailsPresenter } from '../presenters/package-details-presenter';
 
 @ApiTags('Packages')
 @ApiBearerAuth('JWT-auth')
@@ -71,6 +71,6 @@ export class GetPackageByIdController {
     }
 
     getPackageByIdSuccessCounter.add(1);
-    return { package: PackagePresenter.toHttp(result.value.package) };
+    return { package: PackageDetailsPresenter.toHttp(result.value.package) };
   }
 }

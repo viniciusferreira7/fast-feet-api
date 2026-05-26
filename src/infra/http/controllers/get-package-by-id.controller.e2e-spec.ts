@@ -72,7 +72,7 @@ describe('Get Package By Id (E2E)', () => {
         id: packageId,
         name: 'Laptop Dell XPS',
         status: 'pending',
-        recipient_id: recipientId,
+        recipient: expect.objectContaining({ id: recipientId }),
         postal_code: '01310-100',
       })
     );
@@ -97,9 +97,16 @@ describe('Get Package By Id (E2E)', () => {
         id: expect.any(String),
         name: expect.any(String),
         code: expect.any(String),
-        recipient_id: expect.any(String),
+        recipient: expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+          email: expect.any(String),
+        }),
         recipient_address: expect.any(String),
-        author_id: expect.any(String),
+        author: expect.objectContaining({
+          id: expect.any(String),
+          name: expect.any(String),
+        }),
         status: expect.any(String),
         postal_code: expect.any(String),
         created_at: expect.any(String),
