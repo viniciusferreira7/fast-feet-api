@@ -1,5 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { AllExceptionsFilter } from '@/infra/filters/all-exceptions.filter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -60,6 +61,7 @@ export async function startApp(
   moduleRef: TestingModule
 ): Promise<INestApplication> {
   const app = moduleRef.createNestApplication(new FastifyAdapter());
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
   return app;
