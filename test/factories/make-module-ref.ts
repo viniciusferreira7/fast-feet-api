@@ -1,6 +1,13 @@
 import type { INestApplication } from '@nestjs/common';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  FastifyAdapter,
+  type NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import {
+  Test,
+  type TestingModule,
+  type TestingModuleBuilder,
+} from '@nestjs/testing';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { EmailSender } from '@/domain/delivery/application/email/email-sender';
@@ -17,12 +24,14 @@ import { ValidationModule } from '@/infra/validation/validation.module';
 import { FakeEmailSender } from '../email/fake-email-sender';
 import { FakePostalCodeValidator } from '../validation/fake-postal-code-validator';
 
-export async function makeModuleRef(): Promise<TestingModule> {
+export async function makeModuleRef(
+  configure?: (builder: TestingModuleBuilder) => TestingModuleBuilder
+): Promise<TestingModule> {
   const databaseUrl = process.env.CI
     ? `postgresql://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:5432/${process.env.DATABASE_NAME}`
     : (process.env.DATABASE_URL ?? '');
 
-  const moduleRef = await Test.createTestingModule({
+  let builder = Test.createTestingModule({
     imports: [
       AppModule,
       CryptographyModule,
@@ -51,17 +60,28 @@ export async function makeModuleRef(): Promise<TestingModule> {
           },
         };
       },
-    })
-    .compile();
+    });
 
-  return moduleRef;
+  if (configure) {
+    builder = configure(builder);
+  }
+
+  return builder.compile();
 }
 
 export async function startApp(
-  moduleRef: TestingModule
+  moduleRef: TestingModule,
+  options?: {
+    beforeInit?: (app: NestFastifyApplication) => Promise<void>;
+  }
 ): Promise<INestApplication> {
-  const app = moduleRef.createNestApplication(new FastifyAdapter());
+  const app = moduleRef.createNestApplication<NestFastifyApplication>(
+    new FastifyAdapter()
+  );
   app.useGlobalFilters(new AllExceptionsFilter());
+  if (options?.beforeInit) {
+    await options.beforeInit(app);
+  }
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
   return app;

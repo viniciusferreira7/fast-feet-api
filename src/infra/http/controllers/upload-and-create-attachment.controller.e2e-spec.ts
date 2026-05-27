@@ -1,12 +1,5 @@
 import multipart from '@fastify/multipart';
-import { type INestApplication } from '@nestjs/common';
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { Test } from '@nestjs/testing';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import {
   getAdminEmailCode,
@@ -15,22 +8,11 @@ import {
   validateAdminCode,
 } from 'test/e2e/admin-flow';
 import { createAuthenticatedDeliveryPerson } from 'test/e2e/delivery-flow';
-import { FakeEmailSender } from 'test/email/fake-email-sender';
+import { makeModuleRef, startApp } from 'test/factories/make-module-ref';
 import { FakeUploader } from 'test/storage/fake-uploader';
-import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
-import { EmailSender } from '@/domain/delivery/application/email/email-sender';
 import { Uploader } from '@/domain/delivery/application/storage/uploader';
-import { PostalCodeValidator } from '@/domain/delivery/application/validation/postal-code-validator';
-import { AppModule } from '@/infra/app.module';
-import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
-import { DatabaseModule } from '@/infra/database/database.module';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
-import { EmailModule } from '@/infra/email/email.module';
-import { EnvModule } from '@/infra/env/env.module';
 import { EnvService } from '@/infra/env/env.service';
-import { AllExceptionsFilter } from '@/infra/filters/all-exceptions.filter';
-import { HttpModule } from '@/infra/http/http.module';
-import { ValidationModule } from '@/infra/validation/validation.module';
 
 describe('Upload and Create Attachment (E2E)', () => {
   let app: INestApplication;
@@ -41,54 +23,20 @@ describe('Upload and Create Attachment (E2E)', () => {
   let fakeUploader: FakeUploader;
 
   beforeAll(async () => {
-    const databaseUrl = process.env.CI
-      ? `postgresql://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@localhost:5432/${process.env.DATABASE_NAME}`
-      : (process.env.DATABASE_URL ?? '');
-
     fakeUploader = new FakeUploader();
 
-    const moduleRef = await Test.createTestingModule({
-      imports: [
-        AppModule,
-        CryptographyModule,
-        EmailModule,
-        EnvModule,
-        HttpModule,
-        ValidationModule,
-        DatabaseModule,
-      ],
-    })
-      .overrideProvider(EmailSender)
-      .useClass(FakeEmailSender)
-      .overrideProvider(PostalCodeValidator)
-      .useClass(FakePostalCodeValidator)
-      .overrideProvider(Uploader)
-      .useValue(fakeUploader)
-      .overrideProvider(DrizzleService)
-      .useFactory({
-        factory() {
-          const pool = new Pool({ connectionString: databaseUrl });
-          return {
-            db: drizzle(pool),
-            async onModuleDestroy() {
-              await pool.end();
-            },
-          };
-        },
-      })
-      .compile();
-
-    const fastifyApp = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter()
+    const moduleRef = await makeModuleRef((builder) =>
+      builder.overrideProvider(Uploader).useValue(fakeUploader)
     );
-    fastifyApp.useGlobalFilters(new AllExceptionsFilter());
-    await fastifyApp.register(multipart, {
-      limits: { fileSize: 10 * 1024 * 1024 },
-    });
-    await fastifyApp.init();
-    await fastifyApp.getHttpAdapter().getInstance().ready();
 
-    app = fastifyApp;
+    app = await startApp(moduleRef, {
+      beforeInit: async (fastifyApp) => {
+        await fastifyApp.register(multipart, {
+          limits: { fileSize: 10 * 1024 * 1024 },
+        });
+      },
+    });
+
     drizzleService = moduleRef.get(DrizzleService);
     envService = moduleRef.get(EnvService);
   });
