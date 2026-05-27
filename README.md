@@ -166,7 +166,10 @@ src/
 │   ├── watched-list.ts            # Watched list for tracking collection changes
 │   ├── either.ts                  # Either monad for functional error handling
 │   ├── errors/                     # Core error classes
+│   │   ├── error-implementation.ts
+│   │   └── resource-not-found-error.ts
 │   └── types/                      # Core type definitions
+│       └── optional.ts
 │
 ├── domain/                         # Domain layer
 │   ├── delivery/                   # Delivery context (bounded context)
@@ -186,7 +189,8 @@ src/
 │   │   │   │       ├── package-code.ts
 │   │   │   │       ├── package-status.ts
 │   │   │   │       ├── postal-code.ts
-│   │   │   │       └── package-history-list.ts
+│   │   │   │       ├── package-history-list.ts
+│   │   │   │       └── package-details.ts
 │   │   │   └── events/             # Domain events
 │   │   │       ├── package-registered-event.ts
 │   │   │       ├── package-assigned-to-a-delivery-person-event.ts
@@ -275,6 +279,8 @@ src/
 │   │   │   │   ├── attachments-repository.ts
 │   │   │   │   ├── package-attachments-repository.ts
 │   │   │   │   └── email-verifications-repository.ts
+│   │   │   ├── http/               # HTTP client interface
+│   │   │   │   └── http-client.ts
 │   │   │   ├── email/              # Email service interfaces
 │   │   │   │   └── email-sender.ts
 │   │   │   ├── cryptography/       # Cryptography interfaces
@@ -294,7 +300,7 @@ src/
 │   │       ├── invalidate-package-status-error.ts
 │   │       ├── invalid-postal-code-error.ts
 │   │       ├── external-postal-code-validation-error.ts
-│   │       ├── external-password-validation-error.ts
+│   │       ├── weak-password-error.ts
 │   │       ├── email-code-expired-error.ts
 │   │       ├── invalid-email-code-error.ts
 │   │       ├── delivery-person-already-disabled-error.ts
@@ -311,7 +317,9 @@ src/
 │       │       ├── send-notification.ts
 │       │       ├── fetch-many-notifications.ts
 │       │       ├── mark-as-read-notification.ts
-│       │       └── mark-many-notifications-as-read.ts
+│       │       ├── mark-many-notifications-as-read.ts
+│       │       └── error/
+│       │           └── invalid-mark-as-read-request-error.ts
 │       └── subscribers/            # Event subscribers (cross-boundary communication)
 │           ├── on-package-registered-send-notification.ts
 │           ├── on-package-assigned-send-notification.ts
@@ -326,10 +334,15 @@ src/
 └── infra/                          # Infrastructure layer
     ├── auth/                       # Authentication module
     │   ├── auth.module.ts
-    │   ├── current-user.decorator.ts
-    │   ├── jwt-auth.guard.ts
     │   ├── jwt.strategy.ts
-    │   └── public.ts
+    │   ├── decorators/
+    │   │   ├── current-user.decorator.ts
+    │   │   ├── current-api-key.decorator.ts
+    │   │   ├── public.decorator.ts
+    │   │   └── role.decorator.ts
+    │   └── guards/
+    │       ├── jwt-auth.guard.ts
+    │       └── role.guard.ts
     ├── cryptography/               # Cryptography implementations
     │   ├── argon-hasher.ts        # Argon2 password hashing
     │   ├── argon-hasher.int-spec.ts
@@ -342,6 +355,14 @@ src/
     │       ├── drizzle.service.ts # Connection pool + query logger
     │       ├── drizzle.service.int-spec.ts
     │       ├── mappers/           # Domain ↔ persistence mappers
+    │       │   ├── drizzle-admin-person-mapper.ts
+    │       │   ├── drizzle-delivery-person-mapper.ts
+    │       │   ├── drizzle-recipient-person-mapper.ts
+    │       │   ├── drizzle-email-verification-mapper.ts
+    │       │   ├── drizzle-package-mapper.ts
+    │       │   ├── drizzle-package-history-mapper.ts
+    │       │   ├── drizzle-attachment-mapper.ts
+    │       │   └── drizzle-notification-mapper.ts
     │       ├── repositories/      # Drizzle repository implementations
     │       │   ├── drizzle-admin-people-repository.ts
     │       │   ├── drizzle-delivery-people-repository.ts
@@ -447,8 +468,14 @@ src/
     │   ├── postal-code.service.ts # External CEP validation
     │   ├── postal-code.service.int-spec.ts
     │   └── validation.module.ts
+    ├── observability/              # OpenTelemetry & metrics
+    │   ├── tracer.ts              # OTel SDK setup (traces, metrics, logs via OTLP)
+    │   └── metrics.ts             # Custom counters for every use case + guards
+    ├── utils/
+    │   └── zod-schemas/           # Shared Zod validators
+    │       ├── cpf-schema.ts
+    │       └── password-schema.ts
     ├── logger.ts                   # Pino logger (pretty + OTLP transports)
-    ├── tracer.ts                   # OpenTelemetry SDK setup
     ├── app.module.ts
     └── main.ts
 ```
