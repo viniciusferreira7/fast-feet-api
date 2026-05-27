@@ -1,7 +1,5 @@
 # 📦 FastFeet API
 
-> ⚠️ **Work In Progress** - This project is currently under active development.
-
 A robust package delivery management system built with NestJS, following Domain-Driven Design (DDD) and Clean Architecture principles.
 
 ## 📋 Overview
@@ -375,7 +373,7 @@ src/
     │   ├── env.service.int-spec.ts
     │   └── env.module.ts
     ├── http/                       # NestJS HTTP layer
-    │   ├── controllers/           # REST controllers + e2e specs (25 controllers)
+    │   ├── controllers/           # REST controllers + e2e specs (42 controllers)
     │   │   ├── authenticate-admin-person.controller.ts
     │   │   ├── register-admin-person.controller.ts
     │   │   ├── send-admin-person-code.controller.ts
@@ -698,11 +696,11 @@ Test domain logic in complete isolation using in-memory repositories and fakes:
 - Use case business logic (RegisterAdminPersonUseCase, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPersonUseCase, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackageUseCase, UpdatePackage, AssignPackageToADeliveryPersonUseCase, PickedUpPackage, DropOffPackageAtDistributionCenter, PackageIsInTransit, PackageIsOutForDelivery, PackageWasDelivered, PackageFailedDelivery, ReturnPackage, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson, UploadAndCreateAttachment, FetchManyNotifications, MarkAsReadNotification, MarkManyNotificationsAsRead)
 - Email verification requirement in authentication flow
 - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageIsInTransitSendNotification, OnPackageWasDeliveredSendNotification, OnPackageFailedDeliverySendNotification, OnPackageWasUpdatedSendNotification, OnPackageCanceledSendNotification)
-- Comprehensive test coverage with 200+ passing tests
+- Comprehensive test coverage with **604 passing unit tests**
 
 ### Integration Tests (`.int-spec.ts`)
 
-Test infrastructure services against real external systems (database, email, storage, external APIs). Each integration test spins up a NestJS app via `makeModuleRef`:
+Test infrastructure services against real external systems (database, email, storage, external APIs). Each integration test spins up a NestJS app via `makeModuleRef`. **132 tests across 18 suites.**
 
 | Test file | What it covers |
 |---|---|
@@ -713,8 +711,10 @@ Test infrastructure services against real external systems (database, email, sto
 | `drizzle-email-verifications-repository.int-spec.ts` | Email verification repository |
 | `drizzle-packages-repository.int-spec.ts` | Packages repository CRUD + filters |
 | `drizzle-packages-history-repository.int-spec.ts` | Package history audit trail |
+| `drizzle-package-attachments-repository.int-spec.ts` | Package attachments repository |
 | `drizzle-attachments-repository.int-spec.ts` | Attachments repository |
 | `drizzle-notifications-repository.int-spec.ts` | Notifications repository |
+| `fastify-file.interceptor.int-spec.ts` | File interceptor: presence, size, happy path |
 | `argon-hasher.int-spec.ts` | Argon2 password hashing and verification |
 | `jwt-encrypter.int-spec.ts` | JWT sign and verify |
 | `env.service.int-spec.ts` | Environment variable loading and validation |
@@ -725,7 +725,7 @@ Test infrastructure services against real external systems (database, email, sto
 
 ### E2E Tests (`.e2e-spec.ts`)
 
-Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **154 tests passing.**
+Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **272 tests passing across 42 suites.**
 
 | Test file | Endpoint | What it covers |
 |---|---|---|
@@ -745,6 +745,7 @@ Full HTTP request/response cycles against a real PostgreSQL database. Tests run 
 | `get-by-id-delivery-person.controller.e2e-spec.ts` | `GET /delivery-people/:id` | Get own profile, cross-delivery access denied, admin access |
 | `get-by-id-recipient-person.controller.e2e-spec.ts` | `GET /recipients/:id` | Get own profile, cross-recipient access denied, admin access |
 | `fetch-many-delivery-person.controller.e2e-spec.ts` | `GET /delivery-people` | Pagination, name filter, admin-only guard |
+| `fetch-packages-near-by-delivery-person.controller.e2e-spec.ts` | `GET /delivery-people/:id/packages` | Postal code filter, pagination, role guard |
 | `update-admin-person.controller.e2e-spec.ts` | `PATCH /admins` | Update name/email, email conflict, email cleared on change |
 | `update-delivery-person.controller.e2e-spec.ts` | `PATCH /delivery-people` | Update name/email, email conflict, role guard |
 | `update-recipient-person.controller.e2e-spec.ts` | `PATCH /recipients` | Update name/email, email conflict, role guard |
@@ -752,6 +753,24 @@ Full HTTP request/response cycles against a real PostgreSQL database. Tests run 
 | `reset-delivery-person-password.controller.e2e-spec.ts` | `PATCH /delivery-people/reset-password` | Reset password, wrong password, unverified email |
 | `reset-recipient-person-password.controller.e2e-spec.ts` | `PATCH /recipients/reset-password` | Reset password, wrong password, unverified email |
 | `delete-delivery-person.controller.e2e-spec.ts` | `DELETE /delivery-people/cpf/:cpf` | Delete by CPF, not found, admin-only guard |
+| `register-package.controller.e2e-spec.ts` | `POST /packages` | Register with/without delivery person, 401/403/400 guards |
+| `get-package-by-id.controller.e2e-spec.ts` | `GET /packages/:packageId` | Full data, all expected fields, not found, role guards |
+| `get-package-by-code.controller.e2e-spec.ts` | `GET /packages/track/:code` | Public tracking data, no sensitive fields, not found |
+| `fetch-many-packages.controller.e2e-spec.ts` | `GET /packages` | Pagination, search filter, status filter, role guard |
+| `update-package.controller.e2e-spec.ts` | `PUT /packages/:packageId` | Update name/address, not found, role guard |
+| `cancel-package.controller.e2e-spec.ts` | `PATCH /packages/:packageId/cancel` | Cancel pending/awaiting, invalid transitions, role guard |
+| `assign-package-to-a-delivery-person.controller.e2e-spec.ts` | `PATCH /packages/:packageId` | Assign to delivery person, already assigned, not found, role guard |
+| `picked-up-package.controller.e2e-spec.ts` | `PATCH /packages/:packageId/pick-up` | Pickup assigned package, invalid status, role guard |
+| `drop-off-package-at-distribution-center.controller.e2e-spec.ts` | `PATCH /packages/:packageId/drop-off` | Drop off picked-up package, invalid status, role guard |
+| `package-is-in-transit.controller.e2e-spec.ts` | `PATCH /packages/:packageId/in-transit` | Mark in transit, invalid status, role guard |
+| `package-is-out-for-delivery.controller.e2e-spec.ts` | `PATCH /packages/:packageId/out-for-delivery` | Mark out for delivery, invalid status, role guard |
+| `package-was-delivered.controller.e2e-spec.ts` | `PATCH /packages/:packageId/deliver` | Deliver with photo proof, missing attachment, role guard |
+| `package-failed-delivery.controller.e2e-spec.ts` | `PATCH /packages/:packageId/failed-delivery` | Mark failed delivery with photo, missing attachment, role guard |
+| `return-package.controller.e2e-spec.ts` | `PATCH /packages/:packageId/return` | Return failed-delivery package, invalid status, role guard |
+| `fetch-many-notifications.controller.e2e-spec.ts` | `GET /notifications` | Paginated list, user isolation, search filter, empty list |
+| `mark-as-read-notification.controller.e2e-spec.ts` | `PATCH /notifications/:notificationId/read` | Mark read, not found, wrong owner |
+| `mark-many-notifications-as-read.controller.e2e-spec.ts` | `PATCH /notifications/read` | Mark all, mark by IDs, validation errors |
+| `upload-and-create-attachment.controller.e2e-spec.ts` | `POST /upload` | JPEG/PNG upload, invalid type, role guard |
 
 ### Coverage Reports
 
@@ -947,19 +966,22 @@ HTTPBIN_URL="https://httpbin.org"
   - Send verification code use cases for all user types (Admin, Delivery Person, Recipient)
   - Rate limiting to prevent code spam (can't request new code until current expires)
   - Email service abstraction with EmailSender interface
-- Comprehensive unit tests for domain logic (200+ passing tests)
+- Comprehensive unit tests for domain logic (604 passing unit tests)
   - Email verification expiration logic tests
   - Authentication with unverified email rejection tests
   - Verification code format validation tests
 - Test data factories for easy test setup with automatic email verification
 - Functional error handling with Either monad pattern
-- HTTP/REST controllers for all person-management endpoints (25 controllers, snake_case body/query params)
+- HTTP/REST controllers for all endpoints (42 controllers, snake_case body/query params)
   - Admin person: register, login, send/validate code, get by ID, update, reset password
   - Delivery person: register, login, send/validate code, get by ID, list, update, reset password, delete, fetch nearby packages
   - Recipient person: register, login, send/validate code, get by ID, update, reset password
+  - Package management: register, get by ID, track by code, list, update, assign, cancel, full lifecycle (pickup → drop-off → in-transit → out-for-delivery → deliver / failed-delivery → return)
+  - Notification management: fetch list, mark as read, mark many as read
+  - Attachments: upload JPEG/PNG delivery proof photo
 - JSON response presenters for all domain entities (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Attachment, Notification)
 - Zod validation pipe for request body and query parameter validation
-- E2E test suites for all person-management endpoints (23 test suites, 154 tests passing)
+- E2E test suites for all endpoints (42 test suites, 272 tests passing)
   - Full request/response cycle against real PostgreSQL database
   - Role-based access guard assertions (401/403 coverage)
   - Test isolation via afterEach TRUNCATE + beforeEach admin seed
@@ -1007,11 +1029,38 @@ All person-management endpoints are implemented with NestJS controllers, Zod val
 | `PATCH` | `/recipients` | Recipient JWT | Update own recipient profile |
 | `PATCH` | `/recipients/reset-password` | Recipient JWT | Reset own password |
 
-#### Packages (`/packages`) — Partial
+#### Packages (`/packages`)
 
 | Method | Route | Auth | Description |
 |---|---|---|---|
-| `PATCH` | `/packages/:packagesId` | Admin JWT | Assign package to a delivery person |
+| `POST` | `/packages` | Admin JWT | Register a new package |
+| `GET` | `/packages` | Admin JWT | List packages with filters and pagination |
+| `GET` | `/packages/:packageId` | Admin JWT | Get package details by ID |
+| `GET` | `/packages/track/:code` | API Key | Track a package by its unique code (public) |
+| `PUT` | `/packages/:packageId` | Admin JWT | Update package details |
+| `PATCH` | `/packages/:packageId` | Admin JWT | Assign package to a delivery person |
+| `PATCH` | `/packages/:packageId/cancel` | Admin JWT | Cancel a package |
+| `PATCH` | `/packages/:packageId/pick-up` | Delivery JWT | Mark package as picked up |
+| `PATCH` | `/packages/:packageId/drop-off` | Delivery JWT | Drop off package at distribution center |
+| `PATCH` | `/packages/:packageId/in-transit` | Admin JWT | Mark package as in transit |
+| `PATCH` | `/packages/:packageId/out-for-delivery` | Admin JWT | Mark package as out for delivery |
+| `PATCH` | `/packages/:packageId/deliver` | Delivery JWT | Mark package as delivered (requires photo proof) |
+| `PATCH` | `/packages/:packageId/failed-delivery` | Delivery JWT | Mark delivery attempt as failed (requires photo) |
+| `PATCH` | `/packages/:packageId/return` | Delivery JWT | Mark package as returned to sender |
+
+#### Notifications (`/notifications`)
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `GET` | `/notifications` | Any JWT | Fetch own notifications with pagination and search |
+| `PATCH` | `/notifications/:notificationId/read` | Any JWT | Mark a single notification as read |
+| `PATCH` | `/notifications/read` | Any JWT | Mark all or a batch of notifications as read |
+
+#### Attachments (`/upload`)
+
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `POST` | `/upload` | Delivery JWT | Upload a JPEG/PNG file and create an attachment (delivery proof) |
 
 ### Infrastructure ✅
 
@@ -1027,13 +1076,7 @@ All person-management endpoints are implemented with NestJS controllers, Zod val
 - **Logging**: Pino with env-aware transports (pretty for dev/test, OTLP for dev/prod) and a global `AllExceptionsFilter` that logs every unhandled HTTP error
 - **Auth**: JWT strategy + guard with unauthorized-request warnings
 - **Environment**: Zod-validated environment configuration with per-environment rules
-- **Integration Tests**: 16 integration test suites (infrastructure services + all repository CRUD operations)
-
-### In Progress 🚧
-- Package management REST API (register, update, get, list, full lifecycle endpoints, photo upload)
-- Notification REST API (fetch, mark as read)
-- E2E tests for package and notification endpoints
-- E2E test for `GET /delivery-people/:id/packages` (fetch packages near by delivery person)
+- **Integration Tests**: 18 integration test suites (infrastructure services + all repository CRUD operations)
 
 ## 🤝 Contributing
 
