@@ -15,6 +15,13 @@
       "when": 1778594933185,
       "tag": "0001_lovely_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748390400000,
+      "tag": "0002_rename_attachment_url_to_key",
+      "breakpoints": true
     }
   ]
 }
