@@ -9,6 +9,6 @@ export interface UploadedFileDto {
 export const UploadedFile = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): UploadedFileDto => {
     const request = ctx.switchToHttp().getRequest();
-    return request['uploadedFile'] as UploadedFileDto;
+    return request.uploadedFile as UploadedFileDto;
   }
 );

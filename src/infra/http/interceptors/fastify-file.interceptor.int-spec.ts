@@ -58,7 +58,7 @@ describe('FastifyFileInterceptor', () => {
 
     await interceptor.intercept(ctx, nextHandler);
 
-    expect(request['uploadedFile']).toEqual({
+    expect(request.uploadedFile).toEqual({
       filename: 'photo.jpg',
       mimetype: 'image/jpeg',
       buffer,

@@ -34,7 +34,7 @@ export class FastifyFileInterceptor implements NestInterceptor {
       throw new BadRequestException('File too large. Max size is 5MB');
     }
 
-    request['uploadedFile'] = {
+    request.uploadedFile = {
       filename: file.filename,
       mimetype: file.mimetype,
       buffer,
