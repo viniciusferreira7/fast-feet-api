@@ -398,7 +398,28 @@ src/
     │   │   ├── get-by-id-recipient-person.controller.ts
     │   │   ├── update-recipient-person.controller.ts
     │   │   ├── reset-recipient-person-password.controller.ts
-    │   │   └── assign-package-to-a-delivery-person.controller.ts
+    │   │   ├── assign-package-to-a-delivery-person.controller.ts
+    │   │   ├── register-package.controller.ts
+    │   │   ├── get-package-by-id.controller.ts
+    │   │   ├── get-package-by-code.controller.ts
+    │   │   ├── fetch-many-packages.controller.ts
+    │   │   ├── update-package.controller.ts
+    │   │   ├── cancel-package.controller.ts
+    │   │   ├── picked-up-package.controller.ts
+    │   │   ├── drop-off-package-at-distribution-center.controller.ts
+    │   │   ├── package-is-in-transit.controller.ts
+    │   │   ├── package-is-out-for-delivery.controller.ts
+    │   │   ├── package-was-delivered.controller.ts
+    │   │   ├── package-failed-delivery.controller.ts
+    │   │   ├── return-package.controller.ts
+    │   │   ├── fetch-many-notifications.controller.ts
+    │   │   ├── mark-as-read-notification.controller.ts
+    │   │   ├── mark-many-notifications-as-read.controller.ts
+    │   │   └── upload-and-create-attachment.controller.ts
+    │   ├── decorators/            # Custom NestJS param decorators
+    │   │   └── uploaded-file.decorator.ts  # @UploadedFile() — reads multipart file from request
+    │   ├── interceptors/          # NestJS interceptors
+    │   │   └── fastify-file.interceptor.ts # Reads & validates multipart upload before handler
     │   ├── presenters/            # JSON response serializers
     │   │   ├── admin-person-presenter.ts
     │   │   ├── delivery-person-presenter.ts
