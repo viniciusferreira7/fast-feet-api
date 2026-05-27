@@ -7,7 +7,10 @@ export interface AttachmentPresenterToHttp {
 }
 
 export class AttachmentPresenter {
-  static toHttp(attachment: Attachment, baseUrl: string): AttachmentPresenterToHttp {
+  static toHttp(
+    attachment: Attachment,
+    baseUrl: string
+  ): AttachmentPresenterToHttp {
     return {
       id: attachment.id.toString(),
       title: attachment.title,
