@@ -96,7 +96,7 @@ describe('Package Failed Delivery (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/proof-${Date.now()}.jpg`,
+        key: `proof-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
     const attachmentId = att.id;
@@ -179,7 +179,7 @@ describe('Package Failed Delivery (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/proof-pending-${Date.now()}.jpg`,
+        key: `proof-pending-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 
@@ -207,7 +207,7 @@ describe('Package Failed Delivery (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/proof-404-${Date.now()}.jpg`,
+        key: `proof-404-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 
@@ -226,7 +226,7 @@ describe('Package Failed Delivery (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/proof-admin-${Date.now()}.jpg`,
+        key: `proof-admin-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 

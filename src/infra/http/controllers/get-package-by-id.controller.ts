@@ -24,6 +24,7 @@ import { CurrentUser } from '@/infra/auth/decorators/current-user.decorator';
 import { Role } from '@/infra/auth/decorators/role.decorator';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import type { UserPayload } from '@/infra/auth/jwt.strategy';
+import { EnvService } from '@/infra/env/env.service';
 import {
   getPackageByIdErrorCounter,
   getPackageByIdSuccessCounter,
@@ -37,7 +38,8 @@ import { PackageDetailsPresenter } from '../presenters/package-details-presenter
 @UseGuards(RoleGuard)
 export class GetPackageByIdController {
   constructor(
-    private readonly getByPackageByIdUseCase: GetByPackageByIdUseCase
+    private readonly getByPackageByIdUseCase: GetByPackageByIdUseCase,
+    private readonly envService: EnvService
   ) {}
 
   @Get()
@@ -71,6 +73,9 @@ export class GetPackageByIdController {
     }
 
     getPackageByIdSuccessCounter.add(1);
-    return { package: PackageDetailsPresenter.toHttp(result.value.package) };
+    const baseUrl = this.envService.get('CLOUDFLARE_PUBLIC_URL');
+    return {
+      package: PackageDetailsPresenter.toHttp(result.value.package, baseUrl),
+    };
   }
 }

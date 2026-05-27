@@ -36,14 +36,14 @@ describe('DrizzleAttachmentsRepository', () => {
       expect(found?.title).toEqual('delivery-proof.jpg');
     });
 
-    it('should persist the url correctly', async () => {
-      const url = 'https://bucket.s3.amazonaws.com/receipt.jpg';
-      const attachment = makeAttachment({ url });
+    it('should persist the key correctly', async () => {
+      const key = 'unique-storage-key-receipt-jpg';
+      const attachment = makeAttachment({ key });
       await repository.create(attachment);
 
       const found = await repository.findById(attachment.id.toString());
 
-      expect(found?.url).toEqual(url);
+      expect(found?.key).toEqual(key);
     });
 
     it('should allow multiple distinct attachments to coexist', async () => {
@@ -76,7 +76,7 @@ describe('DrizzleAttachmentsRepository', () => {
 
       expect(result).not.toBeNull();
       expect(result?.id.toString()).toEqual(attachment.id.toString());
-      expect(result?.url).toEqual(attachment.url);
+      expect(result?.key).toEqual(attachment.key);
     });
 
     it('should return the correct attachment when multiple exist', async () => {
@@ -103,7 +103,7 @@ describe('DrizzleAttachmentsRepository', () => {
 
     it('should still find the original attachment after other attachments are created', async () => {
       const original = makeAttachment({
-        url: 'https://s3.example.com/original.jpg',
+        key: 'original-storage-key-jpg',
       });
       await repository.create(original);
       await repository.create(makeAttachment());
@@ -111,7 +111,7 @@ describe('DrizzleAttachmentsRepository', () => {
 
       const found = await repository.findById(original.id.toString());
 
-      expect(found?.url).toEqual('https://s3.example.com/original.jpg');
+      expect(found?.key).toEqual('original-storage-key-jpg');
     });
   });
 });

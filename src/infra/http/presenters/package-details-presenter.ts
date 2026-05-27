@@ -65,7 +65,10 @@ export class PackageDetailsPresenter {
     };
   }
 
-  public static toHttp(details: PackageDetails): PackageDetailsPresenterToHttp {
+  public static toHttp(
+    details: PackageDetails,
+    attachmentBaseUrl: string
+  ): PackageDetailsPresenterToHttp {
     return {
       id: details.packageId.toString(),
       name: details.name,
@@ -89,7 +92,7 @@ export class PackageDetailsPresenter {
           }
         : null,
       attachment: details.attachment
-        ? AttachmentPresenter.toHttp(details.attachment)
+        ? AttachmentPresenter.toHttp(details.attachment, attachmentBaseUrl)
         : null,
       histories: details.histories.map(PackageHistoryPresenter.toHttp),
       created_at: details.createdAt,

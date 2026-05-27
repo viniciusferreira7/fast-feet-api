@@ -21,6 +21,7 @@ import { InvalidAttachmentTypeError } from '@/domain/delivery/application/use-ca
 import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/use-cases/upload-and-create-attachment';
 import { Role } from '@/infra/auth/decorators/role.decorator';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
+import { EnvService } from '@/infra/env/env.service';
 import {
   uploadAndCreateAttachmentErrorCounter,
   uploadAndCreateAttachmentSuccessCounter,
@@ -39,7 +40,8 @@ import { AttachmentPresenter } from '../presenters/attachment-presenter';
 @Controller('upload')
 export class UploadAndCreateAttachmentController {
   constructor(
-    private readonly uploadAndCreateAttachmentUseCase: UploadAndCreateAttachmentUseCase
+    private readonly uploadAndCreateAttachmentUseCase: UploadAndCreateAttachmentUseCase,
+    private readonly envService: EnvService
   ) {}
 
   @Post()
@@ -85,6 +87,9 @@ export class UploadAndCreateAttachmentController {
 
     uploadAndCreateAttachmentSuccessCounter.add(1);
 
-    return { attachment: AttachmentPresenter.toHttp(result.value.attachment) };
+    const baseUrl = this.envService.get('CLOUDFLARE_PUBLIC_URL');
+    return {
+      attachment: AttachmentPresenter.toHttp(result.value.attachment, baseUrl),
+    };
   }
 }

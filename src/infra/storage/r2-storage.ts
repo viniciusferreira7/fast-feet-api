@@ -31,7 +31,7 @@ export class R2Storage implements Uploader {
     fileName,
     fileType,
     body,
-  }: UploadParams): Promise<{ url: string }> {
+  }: UploadParams): Promise<{ key: string }> {
     const uploadId = randomUUID();
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const uniqueFile = `${uploadId}-${timestamp}-${fileName}`;
@@ -48,7 +48,7 @@ export class R2Storage implements Uploader {
         })
       );
 
-      return { url: uniqueFile };
+      return { key: uniqueFile };
     } catch (error) {
       log.error(error, '[R2 Storage Error]');
       throw new Error('R2 Storage Error');

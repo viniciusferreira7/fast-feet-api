@@ -10,13 +10,13 @@ export class DrizzleAttachmentMapper {
     return {
       id: attachment.id.toString(),
       title: attachment.title,
-      url: attachment.url,
+      key: attachment.key,
     };
   }
 
   public static toDomain(raw: AttachmentRaw): Attachment {
     return Attachment.create(
-      { title: raw.title, url: raw.url },
+      { title: raw.title, key: raw.key },
       new UniqueEntityId(raw.id)
     );
   }

@@ -6,20 +6,20 @@ import type {
 
 interface Upload {
   fileName: string;
-  url: string;
+  key: string;
 }
 
 export class FakeUploader implements Uploader {
   public uploads: Upload[] = [];
 
-  async upload({ fileName }: UploadParams): Promise<{ url: string }> {
-    const url = faker.image.url();
+  async upload({ fileName }: UploadParams): Promise<{ key: string }> {
+    const key = faker.string.uuid();
 
     this.uploads.push({
       fileName,
-      url,
+      key,
     });
 
-    return { url };
+    return { key };
   }
 }

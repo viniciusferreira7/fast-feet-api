@@ -13,7 +13,7 @@ export function makeAttachment(
   return Attachment.create(
     {
       title: faker.system.fileName(),
-      url: faker.internet.url(),
+      key: faker.string.uuid(),
       ...override,
     },
     id

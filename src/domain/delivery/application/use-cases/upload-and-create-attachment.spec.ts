@@ -27,7 +27,7 @@ describe('Upload and Create Attachment', () => {
     if (result.isRight()) {
       expect(result.value.attachment).toBeInstanceOf(Attachment);
       expect(result.value.attachment.title).toBe('photo.jpg');
-      expect(result.value.attachment.url).toBeTruthy();
+      expect(result.value.attachment.key).toBeTruthy();
     }
   });
 
@@ -66,7 +66,7 @@ describe('Upload and Create Attachment', () => {
     expect(uploader.uploads[0].fileName).toBe('photo.jpg');
   });
 
-  it('should store the url returned by the uploader in the attachment', async () => {
+  it('should store the key returned by the uploader in the attachment', async () => {
     const result = await sut.execute({
       fileName: 'photo.jpg',
       fileType: 'image/jpeg',
@@ -75,7 +75,7 @@ describe('Upload and Create Attachment', () => {
 
     expect(result.isRight()).toBe(true);
     if (result.isRight()) {
-      expect(result.value.attachment.url).toBe(uploader.uploads[0].url);
+      expect(result.value.attachment.key).toBe(uploader.uploads[0].key);
     }
   });
 

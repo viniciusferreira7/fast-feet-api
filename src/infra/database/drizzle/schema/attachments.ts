@@ -4,5 +4,5 @@ import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
 export const attachments = pgTable('attachments', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: text('title').notNull(),
-  url: text('url').notNull().unique(),
+  key: text('key').notNull().unique(),
 });

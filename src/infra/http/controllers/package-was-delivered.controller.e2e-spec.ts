@@ -93,7 +93,7 @@ describe('Package Was Delivered (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/deliver-${Date.now()}.jpg`,
+        key: `deliver-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
     const attachmentId = att.id;
@@ -176,7 +176,7 @@ describe('Package Was Delivered (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/deliver-pending-${Date.now()}.jpg`,
+        key: `deliver-pending-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 
@@ -204,7 +204,7 @@ describe('Package Was Delivered (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/deliver-404-${Date.now()}.jpg`,
+        key: `deliver-404-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 
@@ -223,7 +223,7 @@ describe('Package Was Delivered (E2E)', () => {
       .insert(attachments)
       .values({
         title: 'proof.jpg',
-        url: `https://cdn.example.com/deliver-admin-${Date.now()}.jpg`,
+        key: `deliver-admin-${Date.now()}.jpg`,
       })
       .returning({ id: attachments.id });
 

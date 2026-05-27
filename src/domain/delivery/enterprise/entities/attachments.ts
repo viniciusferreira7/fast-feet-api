@@ -3,7 +3,7 @@ import type { UniqueEntityId } from '@/core/entities/value-object/unique-entity-
 
 export interface AttachmentProps {
   title: string;
-  url: string;
+  key: string;
 }
 
 export class Attachment extends Entity<AttachmentProps> {
@@ -11,8 +11,8 @@ export class Attachment extends Entity<AttachmentProps> {
     return this.props.title;
   }
 
-  get url() {
-    return this.props.url;
+  get key() {
+    return this.props.key;
   }
 
   static create(props: AttachmentProps, id?: UniqueEntityId) {

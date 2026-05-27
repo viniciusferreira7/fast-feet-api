@@ -225,7 +225,7 @@ export class DrizzlePackageMapper {
 
     const attachment = raw.attachment
       ? Attachment.create(
-          { title: raw.attachment.title, url: raw.attachment.url },
+          { title: raw.attachment.title, key: raw.attachment.key },
           new UniqueEntityId(raw.attachment.id)
         )
       : null;

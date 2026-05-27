@@ -35,6 +35,7 @@ export const envSchema = z
     CLIENT_API_KEY: z.string().optional(),
     CLOUDFLARE_ACCOUNT_ID: z.string(),
     CLOUDFLARE_ACCOUNT_TOKEN: z.string(),
+    CLOUDFLARE_PUBLIC_URL: z.url(),
     AWS_BUCKET_NAME: z.string(),
     AWS_ACCESS_KEY_ID: z.string(),
     AWS_SECRETE_ACCESS_KEY_ID: z.string(),

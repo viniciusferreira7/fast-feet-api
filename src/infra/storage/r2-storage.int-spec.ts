@@ -16,7 +16,7 @@ describe('R2Storage', () => {
     expect(uploader).toBeDefined();
   });
 
-  it('should upload a file and return a url key', async () => {
+  it('should upload a file and return a key', async () => {
     const filePath = resolve(
       __dirname,
       '../../../test/utils/assets/file-to-use-on-upload.png'
@@ -29,9 +29,9 @@ describe('R2Storage', () => {
       body,
     });
 
-    expect(result.url).toEqual(expect.any(String));
-    expect(result.url.length).toBeGreaterThan(0);
-    expect(result.url).toContain('file-to-use-on-upload.png');
+    expect(result.key).toEqual(expect.any(String));
+    expect(result.key.length).toBeGreaterThan(0);
+    expect(result.key).toContain('file-to-use-on-upload.png');
   });
 
   it('should generate a unique key for each upload of the same file', async () => {
@@ -51,6 +51,6 @@ describe('R2Storage', () => {
       uploader.upload(params),
     ]);
 
-    expect(first.url).not.toEqual(second.url);
+    expect(first.key).not.toEqual(second.key);
   });
 });
