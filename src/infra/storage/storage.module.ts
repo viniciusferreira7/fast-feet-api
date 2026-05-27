@@ -9,5 +9,6 @@ import { R2Storage } from './r2-storage';
       useClass: R2Storage,
     },
   ],
+  exports: [Uploader],
 })
 export class StorageModule {}
