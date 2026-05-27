@@ -35,6 +35,7 @@ import { UpdateAdminPersonUseCase } from '@/domain/delivery/application/use-case
 import { UpdateDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/update-delivery-person';
 import { UpdatePackage } from '@/domain/delivery/application/use-cases/update-package';
 import { UpdateRecipientPersonUseCase } from '@/domain/delivery/application/use-cases/update-recipient-person';
+import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/use-cases/upload-and-create-attachment';
 import { ValidateAdminPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-admin-person-code';
 import { ValidDeliveryPersonUseCase } from '@/domain/delivery/application/use-cases/validate-delivery-person-code';
 import { ValidateRecipientPersonCodeUseCase } from '@/domain/delivery/application/use-cases/validate-recipient-person-code';
@@ -45,6 +46,7 @@ import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 import { EmailModule } from '@/infra/email/email.module';
+import { StorageModule } from '@/infra/storage/storage.module';
 import { ValidationModule } from '../validation/validation.module';
 import { AssignPackageToADeliveryPersonController } from './controllers/assign-package-to-a-delivery-person.controller';
 import { AuthenticateAdminPersonController } from './controllers/authenticate-admin-person.controller';
@@ -84,6 +86,7 @@ import { UpdateAdminPersonController } from './controllers/update-admin-person.c
 import { UpdateDeliveryPersonController } from './controllers/update-delivery-person.controller';
 import { UpdatePackageController } from './controllers/update-package.controller';
 import { UpdateRecipientPersonController } from './controllers/update-recipient-person.controller';
+import { UploadAndCreateAttachmentController } from './controllers/upload-and-create-attachment.controller';
 import { ValidateAdminPersonCodeController } from './controllers/validate-admin-person-code.controller';
 import { ValidateDeliveryPersonCodeController } from './controllers/validate-delivery-person-code.controller';
 import { ValidateRecipientPersonCodeController } from './controllers/validate-recipient-person-code.controller';
@@ -94,6 +97,7 @@ import { FetchHttpClient } from './fetch-http-client';
     DatabaseModule,
     EmailModule,
     CryptographyModule,
+    StorageModule,
     forwardRef(() => ValidationModule),
   ],
   providers: [
@@ -145,6 +149,7 @@ import { FetchHttpClient } from './fetch-http-client';
     PackageWasDeliveredUseCase,
     FetchManyPackagesUseCase,
     UpdatePackage,
+    UploadAndCreateAttachmentUseCase,
 
     // Notification
     FetchManyNotificationsUseCase,
@@ -199,8 +204,7 @@ import { FetchHttpClient } from './fetch-http-client';
     FetchManyNotificationsController,
     MarkAsReadNotificationController,
     MarkManyNotificationsAsReadController,
+    UploadAndCreateAttachmentController,
   ],
 })
 export class HttpModule {}
-
-//TODO: create UploadAndCreateAttachmentController using @fastify/multipart, maybe this @blazity/nest-file-fastify too
