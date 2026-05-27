@@ -33,5 +33,5 @@
 
 - [X] Domain-Driven Design (DDD), Domain Events and Clean Architecture
 - [X] Authentication and authorization with RBAC
-- [ ] Unit and end-to-end (E2E) tests
+- [X] Unit and end-to-end (E2E) tests
 - [X] Integration with external services (e.g., notifications)
