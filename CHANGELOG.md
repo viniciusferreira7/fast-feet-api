@@ -1,3 +1,27 @@
+# [1.49.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.48.0...v1.49.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* **migration:** register 0002_rename_attachment_url_to_key in drizzle journal ([689bdec](https://github.com/viniciusferreira7/fast-feet-api/commit/689bdec92af26267cf70f4448f25338259e0c9c9))
+* **tests:** apply AllExceptionsFilter in test app to prevent socket hang up ([93968ff](https://github.com/viniciusferreira7/fast-feet-api/commit/93968fff3b017038c0652012d63090d3cd5ba0ce))
+
+
+### Features
+
+* add UploadedFile decorator and FastifyFileInterceptor ([37ada74](https://github.com/viniciusferreira7/fast-feet-api/commit/37ada7439d0f87c0d5db4f53855b6b4000d35f84))
+* **controller:** add metrics and swagger to cancel-package controller ([7914feb](https://github.com/viniciusferreira7/fast-feet-api/commit/7914febba351a0f05976b40763b7bf41b2df3516))
+* **controller:** implement get-package-by-id controller and register in http module ([49330f4](https://github.com/viniciusferreira7/fast-feet-api/commit/49330f4822e165232c5fa7533d45931ab3720b22))
+* **controller:** implement upload-and-create-attachment controller ([3a93544](https://github.com/viniciusferreira7/fast-feet-api/commit/3a93544ab7ab1090314dc58253d189d7cd0c1fcc))
+* **controllers:** add notification controllers and register in http module ([9ba6d8f](https://github.com/viniciusferreira7/fast-feet-api/commit/9ba6d8f5c91a4b1f5ab2ac08340f02073970f07e))
+* implement remaining package status controllers with metrics, swagger and e2e tests ([5b89a6a](https://github.com/viniciusferreira7/fast-feet-api/commit/5b89a6ac3aa9022c30632dbafbe5328752c07f48))
+* **metrics:** add get-package-by-id operation counters ([ddadfd8](https://github.com/viniciusferreira7/fast-feet-api/commit/ddadfd8e232b1cbbfb8942c71b7fb4073c401f4d))
+* **metrics:** add notification operation counters ([e55d3de](https://github.com/viniciusferreira7/fast-feet-api/commit/e55d3de42488be5cee10ddce97d317b580499b90))
+* register @fastify/multipart in main bootstrap ([4ca700e](https://github.com/viniciusferreira7/fast-feet-api/commit/4ca700ec3e74ed223a9a1e4fd980636a5efc7fa7))
+* **upload:** add @Injectable to use case and metrics counters to controller ([d9edfda](https://github.com/viniciusferreira7/fast-feet-api/commit/d9edfdabebcaeb3e3bdd6078b6e5cf1f87ef9619))
+* **use-cases:** add @Injectable and remove type-only imports from get-package-by-id ([1f1f616](https://github.com/viniciusferreira7/fast-feet-api/commit/1f1f616103b45e6eb220dcd438a65853865debde))
+* **use-cases:** add @Injectable and remove type-only imports from notification use cases ([d5705d9](https://github.com/viniciusferreira7/fast-feet-api/commit/d5705d94946f9331cbf288406be16ee1237b21a0))
+
 # [1.48.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.47.0...v1.48.0) (2026-05-25)
 
 
