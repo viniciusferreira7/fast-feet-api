@@ -22,6 +22,10 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/delivery/application/
 import { Role } from '@/infra/auth/decorators/role.decorator';
 import { RoleGuard } from '@/infra/auth/guards/role.guard';
 import {
+  uploadAndCreateAttachmentErrorCounter,
+  uploadAndCreateAttachmentSuccessCounter,
+} from '@/infra/observability/metrics';
+import {
   UploadedFile,
   type UploadedFileDto,
 } from '../decorators/uploaded-file.decorator';
@@ -68,6 +72,7 @@ export class UploadAndCreateAttachmentController {
     });
 
     if (result.isLeft()) {
+      uploadAndCreateAttachmentErrorCounter.add(1);
       const error = result.value;
 
       switch (error.constructor) {
@@ -77,6 +82,8 @@ export class UploadAndCreateAttachmentController {
           throw new BadRequestException(error.message);
       }
     }
+
+    uploadAndCreateAttachmentSuccessCounter.add(1);
 
     return { attachment: AttachmentPresenter.toHttp(result.value.attachment) };
   }

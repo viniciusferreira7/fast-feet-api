@@ -340,6 +340,15 @@ const markManyNotificationsAsReadSuccessCounter = customMetrics.createCounter(
   'mark_many_notifications_as_read_success'
 );
 
+// upload and create attachment
+const uploadAndCreateAttachmentErrorCounter = customMetrics.createCounter(
+  'upload_and_create_attachment_error'
+);
+
+const uploadAndCreateAttachmentSuccessCounter = customMetrics.createCounter(
+  'upload_and_create_attachment_success'
+);
+
 export {
   assignPackageToDeliveryPersonErrorCounter,
   assignPackageToDeliveryPersonSuccessCounter,
@@ -420,6 +429,8 @@ export {
   updatePackageSuccessCounter,
   updateRecipientPersonErrorCounter,
   updateRecipientPersonSuccessCounter,
+  uploadAndCreateAttachmentErrorCounter,
+  uploadAndCreateAttachmentSuccessCounter,
   validateAdminPersonCodeErrorCounter,
   validateAdminPersonCodeSuccessCounter,
   validateDeliveryPersonCodeErrorCounter,

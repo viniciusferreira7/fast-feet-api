@@ -19,8 +19,8 @@ import { FakeEmailSender } from 'test/email/fake-email-sender';
 import { FakeUploader } from 'test/storage/fake-uploader';
 import { FakePostalCodeValidator } from 'test/validation/fake-postal-code-validator';
 import { EmailSender } from '@/domain/delivery/application/email/email-sender';
-import { PostalCodeValidator } from '@/domain/delivery/application/validation/postal-code-validator';
 import { Uploader } from '@/domain/delivery/application/storage/uploader';
+import { PostalCodeValidator } from '@/domain/delivery/application/validation/postal-code-validator';
 import { AppModule } from '@/infra/app.module';
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module';
 import { DatabaseModule } from '@/infra/database/database.module';
@@ -78,10 +78,9 @@ describe('Upload and Create Attachment (E2E)', () => {
       })
       .compile();
 
-    const fastifyApp =
-      moduleRef.createNestApplication<NestFastifyApplication>(
-        new FastifyAdapter()
-      );
+    const fastifyApp = moduleRef.createNestApplication<NestFastifyApplication>(
+      new FastifyAdapter()
+    );
     fastifyApp.useGlobalFilters(new AllExceptionsFilter());
     await fastifyApp.register(multipart, {
       limits: { fileSize: 10 * 1024 * 1024 },
