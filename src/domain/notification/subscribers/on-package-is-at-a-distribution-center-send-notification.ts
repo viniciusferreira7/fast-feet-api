@@ -1,9 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { DomainEvents } from '@/core/events/domain-events';
 import type { EventHandler } from '@/core/events/event-handler';
-import type { PackagesRepository } from '@/domain/delivery/application/repositories/packages-repository';
+import { PackagesRepository } from '@/domain/delivery/application/repositories/packages-repository';
 import { PackageAtDistributionCenterEvent } from '@/domain/delivery/enterprise/events/package-at-distribution-center-event';
-import type { SendNotificationUseCase } from '../application/use-cases/send-notification';
+import { SendNotificationUseCase } from '../application/use-cases/send-notification';
 
+@Injectable()
 export class OnPackageIsAtADistributionCenterSendNotification
   implements EventHandler
 {
