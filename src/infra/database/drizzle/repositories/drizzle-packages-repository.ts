@@ -13,6 +13,7 @@ import {
 } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import { Pagination } from '@/core/entities/value-object/pagination';
+import { DomainEvents } from '@/core/events/domain-events';
 import {
   type FindManyPackagesParams,
   type FindNearByParams,
@@ -54,6 +55,8 @@ export class DrizzlePackagesRepository implements PackagesRepository {
         .insert(packageHistories)
         .values(newHistories);
     }
+
+    DomainEvents.dispatchEventsForEntity(data.id);
 
     return DrizzlePackageMapper.toDomain({
       package: packageRow,
@@ -177,6 +180,8 @@ export class DrizzlePackagesRepository implements PackagesRepository {
       .from(packageHistories)
       .where(eq(packageHistories.packageId, packageRow.id))
       .orderBy(asc(packageHistories.createdAt));
+
+    DomainEvents.dispatchEventsForEntity(data.id);
 
     return DrizzlePackageMapper.toDomain({
       package: packageRow,
