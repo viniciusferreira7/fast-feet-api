@@ -1,5 +1,4 @@
 import swc from 'unplugin-swc';
-import tsConfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -12,8 +11,11 @@ export default defineConfig({
     testTimeout: 100_000,
     hookTimeout: 100_000,
   },
+  resolve: {
+    tsconfigPaths: true,
+  },
+  oxc: false,
   plugins: [
-    tsConfigPaths(),
     swc.vite({
       module: { type: 'es6' },
     }),
