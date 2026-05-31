@@ -5,8 +5,8 @@ import { Pool } from 'pg';
 import { users } from '@/infra/database/drizzle/schema';
 import { envSchema } from '@/infra/env/env';
 
-dotenv.config({ path: '.env', override: true });
-dotenv.config({ path: '.env.test', override: !process.env.CI });
+dotenv.config({ path: '.env', override: true, quiet: true });
+dotenv.config({ path: '.env.test', override: !process.env.CI, quiet: true });
 
 const env = envSchema.parse(process.env);
 
