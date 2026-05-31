@@ -393,6 +393,9 @@ src/
     │   ├── env.service.ts
     │   ├── env.service.int-spec.ts
     │   └── env.module.ts
+    ├── events/                     # Domain event subscribers wired into DI
+    │   ├── events.module.ts        # Registers all 9 notification subscribers + SendNotificationUseCase
+    │   └── on-package-*.e2e-spec.ts # End-to-end tests verifying each subscriber persists a notification
     ├── http/                       # NestJS HTTP layer
     │   ├── controllers/           # REST controllers + e2e specs (42 controllers)
     │   │   ├── authenticate-admin-person.controller.ts
@@ -773,7 +776,7 @@ Test infrastructure services against real external systems (database, email, sto
 
 ### E2E Tests (`.e2e-spec.ts`)
 
-Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **272 tests passing across 42 suites.**
+Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **281 tests passing across 51 suites.**
 
 | Test file | Endpoint | What it covers |
 |---|---|---|
@@ -819,6 +822,15 @@ Full HTTP request/response cycles against a real PostgreSQL database. Tests run 
 | `mark-as-read-notification.controller.e2e-spec.ts` | `PATCH /notifications/:notificationId/read` | Mark read, not found, wrong owner |
 | `mark-many-notifications-as-read.controller.e2e-spec.ts` | `PATCH /notifications/read` | Mark all, mark by IDs, validation errors |
 | `upload-and-create-attachment.controller.e2e-spec.ts` | `POST /upload` | JPEG/PNG upload, invalid type, role guard |
+| `events/on-package-registered-send-notification.e2e-spec.ts` | `POST /packages` → `PackageRegisteredEvent` | Subscriber persists a notification for the recipient |
+| `events/on-package-assigned-send-notification.e2e-spec.ts` | `PATCH /packages/:id` → `PackageAssignedToADeliveryPersonEvent` | Subscriber persists a notification on assignment |
+| `events/on-package-picked-up-send-notification.e2e-spec.ts` | `PATCH /packages/:id/pick-up` → `PackagePickedUpEvent` | Subscriber persists a notification on pickup |
+| `events/on-package-is-at-a-distribution-center-send-notification.e2e-spec.ts` | `PATCH /packages/:id/drop-off` → `PackageAtDistributionCenterEvent` | Subscriber persists a notification on drop-off |
+| `events/on-package-is-in-transit-send-notification.e2e-spec.ts` | `PATCH /packages/:id/in-transit` → `PackageIsInTransitEvent` | Subscriber persists a notification on in-transit |
+| `events/on-package-was-delivered-send-notification.e2e-spec.ts` | `PATCH /packages/:id/deliver` → `PackageWasDeliveredEvent` | Subscriber persists a notification on delivery |
+| `events/on-package-failed-delivery-send-notification.e2e-spec.ts` | `PATCH /packages/:id/failed-delivery` → `PackageFailedDeliveryEvent` | Subscriber persists a notification on failed delivery |
+| `events/on-package-was-updated-send-notification.e2e-spec.ts` | `PUT /packages/:id` → `PackageWasUpdatedEvent` | Subscriber persists a notification on update |
+| `events/on-package-canceled-send-notification.e2e-spec.ts` | `PATCH /packages/:id/cancel` → `PackageCanceledEvent` | Subscriber persists a notification on cancellation |
 
 ### Coverage Reports
 
@@ -1029,10 +1041,11 @@ HTTPBIN_URL="https://httpbin.org"
   - Attachments: upload JPEG/PNG delivery proof photo
 - JSON response presenters for all domain entities (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Attachment, Notification)
 - Zod validation pipe for request body and query parameter validation
-- E2E test suites for all endpoints (42 test suites, 272 tests passing)
+- E2E test suites for all endpoints (51 test suites, 281 tests passing)
   - Full request/response cycle against real PostgreSQL database
   - Role-based access guard assertions (401/403 coverage)
   - Test isolation via afterEach TRUNCATE + beforeEach admin seed
+  - Subscriber suites that toggle `DomainEvents.shouldRun = true` and poll the `notifications` table to verify each handler persists a row
 
 ### HTTP/REST API ✅
 
@@ -1124,6 +1137,7 @@ All person-management endpoints are implemented with NestJS controllers, Zod val
 - **Logging**: Pino with env-aware transports (pretty for dev/test, OTLP for dev/prod) and a global `AllExceptionsFilter` that logs every unhandled HTTP error
 - **Auth**: JWT strategy + guard with unauthorized-request warnings
 - **Environment**: Zod-validated environment configuration with per-environment rules
+- **Events**: `EventsModule` registers all 9 notification subscribers as Nest providers so they're constructed on boot and listen for domain events end-to-end
 - **Integration Tests**: 18 integration test suites (infrastructure services + all repository CRUD operations)
 
 ## 🤝 Contributing
