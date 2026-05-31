@@ -1,3 +1,16 @@
+# [1.50.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.49.0...v1.50.0) (2026-05-31)
+
+
+### Bug Fixes
+
+* **notification:** use value import for NotificationsRepository to enable Nest DI ([2606304](https://github.com/viniciusferreira7/fast-feet-api/commit/260630423ae7069319b5d3353989d28b18e33a0b))
+* **packages-repository:** dispatch domain events after register and update ([b45ff93](https://github.com/viniciusferreira7/fast-feet-api/commit/b45ff93411a3b83498c2003c13900591686a08ad))
+
+
+### Features
+
+* **events:** create events module ([f2f5051](https://github.com/viniciusferreira7/fast-feet-api/commit/f2f50512189db2278ebd1941b8f4ccf38c78fede))
+
 # [1.49.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.48.0...v1.49.0) (2026-05-27)
 
 
