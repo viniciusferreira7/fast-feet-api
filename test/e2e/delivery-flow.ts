@@ -1,9 +1,11 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import request, { type Response } from 'supertest';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { emailsCodes, users } from '@/infra/database/drizzle/schema';
+import { assertSetupSucceeded } from './assert-response';
 
 const DEFAULT_PASSWORD = 'MyS3cur3P@ssw0rd!';
 
@@ -34,7 +36,7 @@ export async function registerDeliveryPerson(
   const {
     name = 'Test Delivery',
     cpf = generateCpf(),
-    email = `delivery-${Date.now()}@example.com`,
+    email = `delivery-${randomUUID()}@example.com`,
     password = DEFAULT_PASSWORD,
   } = options;
 
@@ -66,12 +68,26 @@ export async function getDeliveryEmailCode(
     .from(users)
     .where(eq(users.email, email));
 
-  if (!user.emailCode) throw new Error(`No email code found for ${email}`);
+  if (!user) {
+    throw new Error(`[e2e setup] no user row for ${email}`);
+  }
+
+  if (!user.emailCode) {
+    throw new Error(
+      `[e2e setup] no email code for ${email} (role=${user.role}, emailVerifiedAt=${user.emailVerifiedAt?.toISOString() ?? 'null'}) — the code request did not persist one`
+    );
+  }
 
   const [row] = await drizzleService.db
     .select()
     .from(emailsCodes)
     .where(eq(emailsCodes.id, user.emailCode));
+
+  if (!row) {
+    throw new Error(
+      `[e2e setup] ${email} points at email code ${user.emailCode}, but that row is missing`
+    );
+  }
 
   return row.code;
 }
@@ -99,7 +115,17 @@ export async function loginDeliveryPerson(
     .set('Authorization', `Bearer ${apiToken}`)
     .send({ cpf, password });
 
-  return response.body.access_token as string;
+  assertSetupSucceeded(response, 'POST /delivery-people/login');
+
+  const accessToken = response.body.access_token as string | undefined;
+
+  if (!accessToken) {
+    throw new Error(
+      `[e2e setup] POST /delivery-people/login succeeded without an access_token: ${JSON.stringify(response.body)}`
+    );
+  }
+
+  return accessToken;
 }
 
 export async function resetDeliveryPersonPassword(
@@ -133,17 +159,25 @@ export async function createAuthenticatedDeliveryPerson(
   apiToken: string,
   options: RegisterDeliveryOptions = {}
 ): Promise<DeliveryCredentials> {
-  const { email, cpf, password } = await registerDeliveryPerson(
+  const { response, email, cpf, password } = await registerDeliveryPerson(
     app,
     adminToken,
     options
   );
 
-  await sendDeliveryCode(app, email, apiToken);
+  assertSetupSucceeded(response, `POST /delivery-people (${email})`);
+
+  assertSetupSucceeded(
+    await sendDeliveryCode(app, email, apiToken),
+    `POST /delivery-people/code (${email})`
+  );
 
   const code = await getDeliveryEmailCode(drizzleService, email);
 
-  await validateDeliveryCode(app, email, code, apiToken);
+  assertSetupSucceeded(
+    await validateDeliveryCode(app, email, code, apiToken),
+    `PUT /delivery-people/code (${email})`
+  );
 
   const accessToken = await loginDeliveryPerson(app, cpf, password, apiToken);
 

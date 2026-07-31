@@ -1,9 +1,11 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import request, { type Response } from 'supertest';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { emailsCodes, users } from '@/infra/database/drizzle/schema';
+import { assertSetupSucceeded } from './assert-response';
 
 const DEFAULT_PASSWORD = 'MyS3cur3P@ssw0rd!';
 
@@ -34,7 +36,7 @@ export async function registerAdmin(
   const {
     name = 'Test Admin',
     cpf = generateCpf(),
-    email = `admin-${Date.now()}@example.com`,
+    email = `admin-${randomUUID()}@example.com`,
     password = DEFAULT_PASSWORD,
   } = options;
 
@@ -68,12 +70,26 @@ export async function getAdminEmailCode(
     .from(users)
     .where(eq(users.email, email));
 
-  if (!user.emailCode) throw new Error(`No email code found for ${email}`);
+  if (!user) {
+    throw new Error(`[e2e setup] no user row for ${email}`);
+  }
+
+  if (!user.emailCode) {
+    throw new Error(
+      `[e2e setup] no email code for ${email} (role=${user.role}, emailVerifiedAt=${user.emailVerifiedAt?.toISOString() ?? 'null'}) — the code request did not persist one`
+    );
+  }
 
   const [row] = await drizzleService.db
     .select()
     .from(emailsCodes)
     .where(eq(emailsCodes.id, user.emailCode));
+
+  if (!row) {
+    throw new Error(
+      `[e2e setup] ${email} points at email code ${user.emailCode}, but that row is missing`
+    );
+  }
 
   return row.code;
 }
@@ -103,7 +119,17 @@ export async function loginAdmin(
     .set('Authorization', `Bearer ${apiToken}`)
     .send({ cpf, password });
 
-  return response.body.access_token as string;
+  assertSetupSucceeded(response, 'POST /admins/login');
+
+  const accessToken = response.body.access_token as string | undefined;
+
+  if (!accessToken) {
+    throw new Error(
+      `[e2e setup] POST /admins/login succeeded without an access_token: ${JSON.stringify(response.body)}`
+    );
+  }
+
+  return accessToken;
 }
 
 export async function resetAdminPassword(
@@ -137,17 +163,25 @@ export async function createAuthenticatedAdmin(
   apiToken: string,
   options: RegisterAdminOptions = {}
 ): Promise<AdminCredentials> {
-  const { email, cpf, password } = await registerAdmin(
+  const { response, email, cpf, password } = await registerAdmin(
     app,
     adminToken,
     options
   );
 
-  await sendAdminCode(app, email, apiToken);
+  assertSetupSucceeded(response, `POST /admins (${email})`);
+
+  assertSetupSucceeded(
+    await sendAdminCode(app, email, apiToken),
+    `POST /admins/code (${email})`
+  );
 
   const code = await getAdminEmailCode(drizzleService, email);
 
-  await validateAdminCode(app, email, code, apiToken);
+  assertSetupSucceeded(
+    await validateAdminCode(app, email, code, apiToken),
+    `PUT /admins/code (${email})`
+  );
 
   const accessToken = await loginAdmin(app, cpf, password, apiToken);
 

@@ -1,9 +1,11 @@
+import { randomUUID } from 'node:crypto';
 import { type INestApplication } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { generate as generateCpf } from 'gerador-validador-cpf';
 import request, { type Response } from 'supertest';
 import { DrizzleService } from '@/infra/database/drizzle/drizzle.service';
 import { emailsCodes, users } from '@/infra/database/drizzle/schema';
+import { assertSetupSucceeded } from './assert-response';
 
 const DEFAULT_PASSWORD = 'MyS3cur3P@ssw0rd!';
 
@@ -34,7 +36,7 @@ export async function registerRecipientPerson(
   const {
     name = 'Test Recipient',
     cpf = generateCpf(),
-    email = `recipient-${Date.now()}@example.com`,
+    email = `recipient-${randomUUID()}@example.com`,
     password = DEFAULT_PASSWORD,
   } = options;
 
@@ -66,12 +68,26 @@ export async function getRecipientEmailCode(
     .from(users)
     .where(eq(users.email, email));
 
-  if (!user.emailCode) throw new Error(`No email code found for ${email}`);
+  if (!user) {
+    throw new Error(`[e2e setup] no user row for ${email}`);
+  }
+
+  if (!user.emailCode) {
+    throw new Error(
+      `[e2e setup] no email code for ${email} (role=${user.role}, emailVerifiedAt=${user.emailVerifiedAt?.toISOString() ?? 'null'}) — the code request did not persist one`
+    );
+  }
 
   const [row] = await drizzleService.db
     .select()
     .from(emailsCodes)
     .where(eq(emailsCodes.id, user.emailCode));
+
+  if (!row) {
+    throw new Error(
+      `[e2e setup] ${email} points at email code ${user.emailCode}, but that row is missing`
+    );
+  }
 
   return row.code;
 }
@@ -99,7 +115,17 @@ export async function loginRecipientPerson(
     .set('Authorization', `Bearer ${apiToken}`)
     .send({ cpf, password });
 
-  return response.body.access_token as string;
+  assertSetupSucceeded(response, 'POST /recipients/login');
+
+  const accessToken = response.body.access_token as string | undefined;
+
+  if (!accessToken) {
+    throw new Error(
+      `[e2e setup] POST /recipients/login succeeded without an access_token: ${JSON.stringify(response.body)}`
+    );
+  }
+
+  return accessToken;
 }
 
 export async function resetRecipientPersonPassword(
@@ -132,17 +158,25 @@ export async function createAuthenticatedRecipientPerson(
   apiToken: string,
   options: RegisterRecipientOptions = {}
 ): Promise<RecipientCredentials> {
-  const { email, cpf, password } = await registerRecipientPerson(
+  const { response, email, cpf, password } = await registerRecipientPerson(
     app,
     apiToken,
     options
   );
 
-  await sendRecipientCode(app, email, apiToken);
+  assertSetupSucceeded(response, `POST /recipients (${email})`);
+
+  assertSetupSucceeded(
+    await sendRecipientCode(app, email, apiToken),
+    `POST /recipients/code (${email})`
+  );
 
   const code = await getRecipientEmailCode(drizzleService, email);
 
-  await validateRecipientCode(app, email, code, apiToken);
+  assertSetupSucceeded(
+    await validateRecipientCode(app, email, code, apiToken),
+    `PUT /recipients/code (${email})`
+  );
 
   const accessToken = await loginRecipientPerson(app, cpf, password, apiToken);
 
