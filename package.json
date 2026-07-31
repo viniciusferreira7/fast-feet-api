@@ -7,7 +7,7 @@
     "prestart:dev": "docker compose --env-file .env up -d fast-feet-api-postgresql",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/infra/main",
     "docker:up": "docker compose --env-file .env up -d",
     "docker:down": "docker compose down",
     "docker:stop": "docker compose stop",
