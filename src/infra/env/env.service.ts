@@ -7,7 +7,7 @@ import { Env } from './env';
 export class EnvService {
   constructor(private readonly configService: ConfigService<Env, true>) {}
 
-  get<T extends keyof Env>(key: T) {
-    return this.configService.get<T>(key, { infer: true });
+  get<T extends keyof Env>(key: T): Env[T] {
+    return this.configService.get(key, { infer: true });
   }
 }

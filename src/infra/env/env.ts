@@ -14,6 +14,7 @@ export const envSchema = z
     SERVICE_NAME: z.string().default('fast-feet-api'),
     NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
     PORT: z.coerce.number().default(3000),
+    SHUTDOWN_DRAIN_DELAY_MS: z.coerce.number().int().min(0).default(10_000),
     JWT_PRIVATE_KEY: z.string().refine(isBase64, {
       message: 'JWT_PRIVATE_KEY must be a valid base64 string',
     }),
