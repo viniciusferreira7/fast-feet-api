@@ -54,11 +54,12 @@ COPY --chown=nestjs:nodejs --from=build /app/dist ./dist
 USER nestjs
 
 # Expose port
+ENV PORT=3333
 EXPOSE 3333
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3333/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+HEALTHCHECK --interval=30s --timeout=3s --start-period=15s --retries=3 \
+  CMD node -e "const p=process.env.PORT||3000;require('http').get('http://127.0.0.1:'+p+'/api/health/ready',(r)=>{process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"
 
 # Start the application
 CMD ["node", "dist/src/infra/main"]
