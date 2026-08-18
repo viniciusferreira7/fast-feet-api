@@ -9,6 +9,7 @@ import { EmailModule } from './email/email.module';
 import { envSchema } from './env/env';
 import { EnvModule } from './env/env.module';
 import { EventsModule } from './events/events.module';
+import { HealthModule } from './health/health.module';
 import { HttpModule } from './http/http.module';
 import { StorageModule } from './storage/storage.module';
 import { ValidationModule } from './validation/validation.module';
@@ -19,6 +20,7 @@ import { ValidationModule } from './validation/validation.module';
     CryptographyModule,
     EmailModule,
     EnvModule,
+    HealthModule,
     HttpModule,
     ConfigModule.forRoot({
       envFilePath: ['.env.test', '.env'],

@@ -98,6 +98,7 @@ async function bootstrap() {
       'A robust package delivery management system built with NestJS, following Domain-Driven Design (DDD) and Clean Architecture principles.'
     )
     .setVersion(packageJson.version)
+    .addTag('Health', 'Kubernetes liveness, readiness and startup probes')
     .addTag('Admins', 'Admin person management endpoints')
     .addTag('Packages', 'Package management endpoints')
     .addBearerAuth(
