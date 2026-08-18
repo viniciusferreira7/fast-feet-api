@@ -136,6 +136,55 @@ docker run -p 3333:3333 fast-feet-api:latest
 
 The application will be available at `http://localhost:3333`.
 
+## ☸️ Health Probes
+
+Three public endpoints (no authentication) back the Kubernetes probes:
+
+| Endpoint | Probe | Checks | Failure |
+| --- | --- | --- | --- |
+| `GET /api/health/live` | liveness | none — only that the process is up and the event loop responds | never fails on a dependency outage, so a database blip cannot kill healthy pods |
+| `GET /api/health/ready` | readiness | `SELECT 1` on PostgreSQL, 2s timeout | `503` while the database is unreachable or the process is shutting down |
+| `GET /api/health/startup` | startup | same as readiness | `503` while the instance is still booting |
+
+Successful readiness response:
+
+```json
+{
+  "status": "ok",
+  "uptime": 132.4,
+  "checks": { "database": { "status": "up", "responseTime": 12 } }
+}
+```
+
+Failures return `503` with `"status": "error"` and `"database": { "status": "down" }`. The driver error never reaches the response body — it is logged instead.
+
+### Graceful shutdown
+
+On `SIGTERM`/`SIGINT` the readiness probe starts returning `503` immediately, then the process waits `SHUTDOWN_DRAIN_DELAY_MS` (default `10000`) before closing the HTTP server, flushing the OpenTelemetry SDK and draining the database pool. That window lets the cluster remove the pod from its endpoints before connections are refused, so rollouts do not surface as `502`s. Keep `terminationGracePeriodSeconds` comfortably above the drain delay.
+
+### Kubernetes manifest snippet
+
+```yaml
+spec:
+  terminationGracePeriodSeconds: 30
+  containers:
+    - name: fast-feet-api
+      startupProbe:
+        httpGet: { path: /api/health/startup, port: 3333 }
+        periodSeconds: 5
+        failureThreshold: 30 # up to 150s to boot
+      readinessProbe:
+        httpGet: { path: /api/health/ready, port: 3333 }
+        periodSeconds: 10
+        timeoutSeconds: 3
+        failureThreshold: 3
+      livenessProbe:
+        httpGet: { path: /api/health/live, port: 3333 }
+        periodSeconds: 20
+        timeoutSeconds: 3
+        failureThreshold: 3
+```
+
 ## 🏗️ Architecture
 
 The project follows:
@@ -747,7 +796,7 @@ Test domain logic in complete isolation using in-memory repositories and fakes:
 - Use case business logic (RegisterAdminPersonUseCase, RegisterDeliveryPerson, RegisterRecipientPerson, AuthenticateAdminPersonUseCase, AuthenticateDeliveryPerson, AuthenticateRecipientPerson, RegisterPackageUseCase, UpdatePackage, AssignPackageToADeliveryPersonUseCase, PickedUpPackage, DropOffPackageAtDistributionCenter, PackageIsInTransit, PackageIsOutForDelivery, PackageWasDelivered, PackageFailedDelivery, ReturnPackage, CancelPackage, FetchManyPackages, FetchPackagesNearByDeliveryPerson, ValidatePersonCode, ResetPersonPassword, UpdatePerson, DeleteDeliveryPerson, UploadAndCreateAttachment, FetchManyNotifications, MarkAsReadNotification, MarkManyNotificationsAsRead)
 - Email verification requirement in authentication flow
 - Domain event subscribers (OnPackageRegisteredSendNotification, OnPackageAssignedToADeliveryPersonSendNotification, OnPackagePickedUpSendNotification, OnPackageIsAtADistributionCenterSendNotification, OnPackageIsInTransitSendNotification, OnPackageWasDeliveredSendNotification, OnPackageFailedDeliverySendNotification, OnPackageWasUpdatedSendNotification, OnPackageCanceledSendNotification)
-- Comprehensive test coverage with **604 passing unit tests**
+- Comprehensive test coverage with **607 passing unit tests**
 
 ### Integration Tests (`.int-spec.ts`)
 
@@ -776,7 +825,7 @@ Test infrastructure services against real external systems (database, email, sto
 
 ### E2E Tests (`.e2e-spec.ts`)
 
-Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **281 tests passing across 51 suites.**
+Full HTTP request/response cycles against a real PostgreSQL database. Tests run serially (`fileParallelism: false`) with `afterEach` TRUNCATE + `beforeEach` root-admin seed for isolation. **288 tests passing across 52 suites.**
 
 | Test file | Endpoint | What it covers |
 |---|---|---|
@@ -910,6 +959,7 @@ Create a `.env` file in the root directory:
 ```env
 # Server
 PORT=3000
+SHUTDOWN_DRAIN_DELAY_MS=10000 # readiness fails this long before the server closes
 NODE_ENV="dev"  # Options: dev, test, production
 CORS_ORIGIN="http://localhost:3000"
 
@@ -1026,7 +1076,7 @@ HTTPBIN_URL="https://httpbin.org"
   - Send verification code use cases for all user types (Admin, Delivery Person, Recipient)
   - Rate limiting to prevent code spam (can't request new code until current expires)
   - Email service abstraction with EmailSender interface
-- Comprehensive unit tests for domain logic (604 passing unit tests)
+- Comprehensive unit tests for domain logic (607 passing unit tests)
   - Email verification expiration logic tests
   - Authentication with unverified email rejection tests
   - Verification code format validation tests
@@ -1041,7 +1091,7 @@ HTTPBIN_URL="https://httpbin.org"
   - Attachments: upload JPEG/PNG delivery proof photo
 - JSON response presenters for all domain entities (AdminPerson, DeliveryPerson, RecipientPerson, Package, PackageHistory, Attachment, Notification)
 - Zod validation pipe for request body and query parameter validation
-- E2E test suites for all endpoints (51 test suites, 281 tests passing)
+- E2E test suites for all endpoints (52 test suites, 288 tests passing)
   - Full request/response cycle against real PostgreSQL database
   - Role-based access guard assertions (401/403 coverage)
   - Test isolation via afterEach TRUNCATE + beforeEach admin seed
