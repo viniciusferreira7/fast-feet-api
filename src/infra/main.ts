@@ -124,7 +124,7 @@ async function bootstrap() {
   });
 
   await app
-    .listen(port ?? 3333)
+    .listen(port ?? 3333, '0.0.0.0')
     .then(() => {
       log.info(`🚀  API running on port ${port}`);
       log.info(
