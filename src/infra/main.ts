@@ -16,6 +16,8 @@ import packageJson from '../../package.json';
 import { AppModule } from './app.module';
 import { EnvService } from './env/env.service';
 import { AllExceptionsFilter } from './filters/all-exceptions.filter';
+import { createShutdownHandler } from './health/graceful-shutdown';
+import { ShutdownService } from './health/shutdown.service';
 import { log } from './logger';
 
 process.on('unhandledRejection', (reason) => {
@@ -123,6 +125,8 @@ async function bootstrap() {
     },
   });
 
+  registerGracefulShutdown(app, envService);
+
   await app
     .listen(port ?? 3333, '0.0.0.0')
     .then(() => {
@@ -132,5 +136,31 @@ async function bootstrap() {
       );
     })
     .catch((err) => log.error(err));
+}
+
+function registerGracefulShutdown(
+  app: NestFastifyApplication,
+  envService: EnvService
+) {
+  const handleShutdown = createShutdownHandler({
+    shutdownService: app.get(ShutdownService),
+    drainDelayMs: envService.get('SHUTDOWN_DRAIN_DELAY_MS'),
+    close: async () => {
+      await app.close();
+      // Best-effort: an unreachable OTLP collector must not fail the shutdown.
+      await sdk
+        .shutdown()
+        .catch((err) => log.error(err, '[Shutdown] failed to flush telemetry'));
+    },
+    logger: log,
+  });
+
+  for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+    process.on(signal, () => {
+      handleShutdown(signal).catch((err) =>
+        log.error(err, '[Shutdown] failed to shut down gracefully')
+      );
+    });
+  }
 }
 bootstrap();
