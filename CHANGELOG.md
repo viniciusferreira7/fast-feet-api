@@ -1,3 +1,18 @@
+# [1.51.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.50.0...v1.51.0) (2026-08-18)
+
+
+### Bug Fixes
+
+* **docker:** point the healthcheck at the readiness probe ([a0edd6d](https://github.com/viniciusferreira7/fast-feet-api/commit/a0edd6d4b90d11661e42b4f050c916eef20e5c04))
+* **env:** return the declared value type from EnvService.get ([9a38ead](https://github.com/viniciusferreira7/fast-feet-api/commit/9a38ead44044177e57814341a13188a0e88bea09))
+* **http:** bind the server to all interfaces ([fe9ccb4](https://github.com/viniciusferreira7/fast-feet-api/commit/fe9ccb4a31c9600596126e7c2674c4a332be1782))
+
+
+### Features
+
+* **health:** drain traffic before shutting down ([931044d](https://github.com/viniciusferreira7/fast-feet-api/commit/931044dcdddac0471e8e4f3176aed920ae15c45f))
+* **health:** expose liveness, readiness and startup probes ([6a774c7](https://github.com/viniciusferreira7/fast-feet-api/commit/6a774c76b93b2c0953a9a02b46bd972c06c89388))
+
 # [1.50.0](https://github.com/viniciusferreira7/fast-feet-api/compare/v1.49.0...v1.50.0) (2026-05-31)
 
 
